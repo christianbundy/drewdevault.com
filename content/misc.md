@@ -5,7 +5,6 @@ layout: page
 
 # Pages
 
-- [All posts in one big, unpaginated list](/all)
 - [Japanese learning resources](/japanese)
 - [Make a blog!](/make-a-blog) (defunct)
 - [Videos of people editing text](/editing)
