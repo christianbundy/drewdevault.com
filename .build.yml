@@ -8,6 +8,10 @@ sources:
   - https://git.sr.ht/~sircmpwn/openring
 secrets:
   - 160a72cf-34d6-47b7-928b-c13b42b4d4f6
+triggers:
+  - action: email
+    condition: always
+    to: Drew DeVault <sir@cmpwn.com>
 tasks:
 - openring: |
     cd openring
