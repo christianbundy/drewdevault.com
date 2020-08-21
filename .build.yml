@@ -12,6 +12,22 @@ tasks:
     cd hugo
     go build --tags extended
     sudo cp hugo /usr/local/bin/
+- openring: |
+    curl -O https://yukari.sr.ht/openring
+    chmod +x openring
+    cd drewdevault.com
+    ../openring \
+      -s https://emersion.fr/blog/rss.xml \
+      -s http://way-cooler.org/feed.xml \
+      -s https://danluu.com/atom.xml \
+      -s https://os.phil-opp.com/rss.xml \
+      -s https://blog.golang.org/feed.atom \
+      -s https://aphyr.com/posts.atom \
+      -s https://sourcehut.org/blog/index.xml \
+      -s https://100r.co/links/rss.xml \
+      -s https://tonsky.me/blog/atom.xml \
+      < _includes/webring-in.template \
+      > _includes/webring-out.html
 - build: |
     cd drewdevault.com
     /usr/local/bin/hugo

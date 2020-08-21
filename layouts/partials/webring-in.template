@@ -16,7 +16,7 @@
       <small class="source">
         via <a href="{{.SourceLink}}">{{.SourceTitle}}</a>
       </small>
-      <small class="date">{{.Date}}</small>
+      <small class="date">{{.Date | date}}</small>
     </div>
     {{end}}
   </section>
