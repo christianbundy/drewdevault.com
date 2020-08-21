@@ -26,8 +26,8 @@ tasks:
       -s https://sourcehut.org/blog/index.xml \
       -s https://100r.co/links/rss.xml \
       -s https://tonsky.me/blog/atom.xml \
-      < content/partials/webring-in.template \
-      > content/partials/webring-out.html
+      < layouts/partials/webring-in.template \
+      > layouts/partials/webring-out.html
 - build: |
     cd drewdevault.com
     /usr/local/bin/hugo
