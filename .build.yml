@@ -8,15 +8,11 @@ sources:
 secrets:
   - 160a72cf-34d6-47b7-928b-c13b42b4d4f6
 tasks:
-- hugo: |
-    cd hugo
-    go build --tags extended
-    sudo cp hugo /usr/local/bin/
 - openring: |
+    cd drewdevault.com
     curl -O https://yukari.sr.ht/openring
     chmod +x openring
-    cd drewdevault.com
-    ../openring \
+    ./openring \
       -s https://emersion.fr/blog/rss.xml \
       -s http://way-cooler.org/feed.xml \
       -s https://danluu.com/atom.xml \
@@ -28,6 +24,10 @@ tasks:
       -s https://tonsky.me/blog/atom.xml \
       < layouts/partials/webring-in.template \
       > layouts/partials/webring-out.html
+- hugo: |
+    cd hugo
+    go build --tags extended
+    sudo cp hugo /usr/local/bin/
 - build: |
     cd drewdevault.com
     /usr/local/bin/hugo
