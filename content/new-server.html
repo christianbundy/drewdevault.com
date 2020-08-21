@@ -1,0 +1,214 @@
+<h1>New Server Checklist</h1>
+<label>
+  <input type="checkbox" /> Set root password
+</label>
+<label>
+  <input type="checkbox" /> Generate fresh sshd host keys
+</label>
+<label>
+  <input type="checkbox" /> Create admin user
+</label>
+<label>
+  <input type="checkbox" /> Add admin to doas group and test doas
+</label>
+<label>
+  <input type="checkbox" /> SSH key added to admin's authorized_keys
+</label>
+<label>
+  <input type="checkbox" /> Disable root login via ssh
+</label>
+<label>
+  <input type="checkbox" /> Disable password login via ssh
+</label>
+<label>
+  <input type="checkbox" /> Set hostname
+</label>
+<label>
+  <input type="checkbox" /> Run system updates
+</label>
+<label>
+  <input type="checkbox" /> Reboot
+</label>
+<label>
+  <input type="checkbox" /> Install &amp; test postfix
+</label>
+
+<style>
+label { display: block; }
+pre { background: #eee; max-width: 720px; padding: 0.5rem; }
+</style>
+
+<h1>doas.conf</h1>
+
+<pre>
+# see doas.conf(5) for configuration details
+
+# Uncomment to allow group "admin" to become root
+# permit :admin
+permit nopass :admin
+permit nopass deploy cmd apk args upgrade -U
+permit nopass deploy cmd service args SERVICE restart
+permit nopass acme cmd nginx args -s reload
+</pre>
+
+<h1>acme setup</h1>
+<p>
+TODO: a package could be made to automate many of these steps
+</p>
+<label>
+	<input type="checkbox" />
+	<code>doas apk add uacme openssl moreutils</code>
+</label>
+
+<label>
+	<input type="checkbox" />
+	<code>doas useradd -md /var/lib/acme -s /sbin/nologin acme</code>
+</label>
+
+<label>
+	<input type="checkbox" />
+	<code>doas mkdir -p /etc/ssl/uacme/private /var/www/.well-known/acme-challenge</code>
+</label>
+
+<label>
+	<input type="checkbox" />
+	<code>doas chown acme:acme /etc/ssl/uacme /etc/ssl/uacme/private</code>
+</label>
+
+<label>
+	<input type="checkbox" />
+	<code>doas chmod g+rX /etc/ssl/uacme /etc/ssl/uacme/private</code>
+</label>
+
+<label>
+	<input type="checkbox" />
+	<code>doas chown acme:acme /var/www/.well-known/acme-challenge</code>
+</label>
+
+<label>
+	<input type="checkbox" />
+	<code>doas touch /var/log/acme.log</code>
+</label>
+
+<label>
+	<input type="checkbox" />
+	<code>doas chown acme:acme /var/log/acme.log</code>
+</label>
+
+<label>
+	<input type="checkbox" />
+	<code>doas vim /usr/local/bin/acme-update-certs</code>
+<pre style="margin-left: 1.5rem">#!/bin/sh -eu
+exec &gt;&gt;/var/log/acme.log 2>&1
+date
+
+stats() {
+	cert="/etc/ssl/uacme/$1/cert.pem"
+	if ! [ -e "$cert" ]
+	then
+		return
+	fi
+	expiration=$(date -d"$(openssl x509 -enddate -noout -in "$cert" \
+		| cut -d= -f2)" -D'%b %d %H:%M:%S %Y GMT' +'%s')
+	printf '# TYPE certificate_expiration gauge\n'
+	printf '# HELP certificate_expiration Timestamp when SSL certificate will expire\n'
+	printf 'certificate_expiration{instance="%s"} %s\n' "$1" "$expiration"
+}
+
+acme() {
+	site=$1
+	shift
+	/usr/bin/uacme -v -h /usr/share/uacme/uacme.sh issue $site $* || true
+	stats $site | curl --data-binary @- https://push.metrics.sr.ht/metrics/job/$site
+}
+
+acme DOMAIN SUBDOMAIN...
+doas nginx -s reload</pre>
+</label>
+
+<label>
+	<input type="checkbox" />
+	<code>doas chmod +x /usr/local/bin/acme-update-certs</code>
+</label>
+
+<label>
+	<input type="checkbox" />
+	<code>doas usermod -aG acme nginx</code>
+</label>
+
+<label>
+	<input type="checkbox" />
+	<code>doas -u acme uacme new sir@cmpwn.com</code>
+</label>
+
+<label>
+	<input type="checkbox" />
+	<code>doas -u acme crontab -e</code>
+<pre style="margin-left: 1.5rem">MAILTO=sir@cmpwn.com
+0 0 * * * chronic /usr/local/bin/acme-update-certs</pre>
+	</code>
+</label>
+
+<label>
+	<input type="checkbox" /> Update nginx configuration
+	(<code>ssl_certificate{,_key}</code> commented)
+</label>
+
+<label>
+	<input type="checkbox" />
+	<code>doas -u acme /usr/local/bin/acme-update-certs</code>
+</label>
+
+<label>
+	<input type="checkbox" />
+	<code>cat /var/log/acme.log # verify success</code>
+</label>
+
+<label>
+	<input type="checkbox" /> Update nginx configuration
+</label>
+
+<label>
+	<input type="checkbox" />
+	<code>doas chmod -R g+rX /etc/ssl/uacme /etc/ssl/uacme/private</code>
+</label>
+
+<label>
+	<input type="checkbox" />
+	<code>doas nginx -s reload</code>
+</label>
+
+<label>
+	<input type="checkbox" /> Verify website has working SSL
+</label>
+
+<h2>nginx config</h2>
+
+<pre>
+server {
+	listen 80;
+	listen [::]:80;
+	server_name DOMAIN;
+
+	location / {
+		return 302 https://$server_name$request_uri;
+	}
+
+	location ^~ /.well-known {
+		root /var/www;
+	}
+}
+
+server {
+	listen 443 ssl http2;
+	listen [::]:443 ssl http2;
+	server_name DOMAIN;
+	ssl_certificate /etc/ssl/uacme/DOMAIN/cert.pem;
+	ssl_certificate_key /etc/ssl/uacme/private/DOMAIN/key.pem;
+
+	gzip on;
+	gzip_types text/css text/html;
+
+	# ...
+}
+</pre>

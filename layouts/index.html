@@ -1,0 +1,37 @@
+{{ partial "head.html" . }}
+
+<main class="index">
+  <section class="article-list">
+    <h1>{{$.Title}}</h1>
+
+    {{ range (where .Site.RegularPages "Section" "blog") }}
+    <div class="article">
+      <span class="date">{{.Date.Format "January 2, 2006"}}</span>
+      <a href="{{.Permalink}}">{{.Title}}</a>
+    </div>
+    {{ end }}
+  </section>
+
+  <aside>
+    <img src="https://drewdevault.com/avatar-148.jpg" />
+
+    <div class="centered">
+      <a class="rss" href="/blog/index.xml">rss</a>
+      ·
+      <a href="misc.html">misc</a>
+    </div>
+
+    <dl class="external-links">
+      <dt>sourcehut</dt>
+      <dd><a href="https://git.sr.ht/~sircmpwn">~sircmpwn</a></dd>
+      <dt>mastodon</dt>
+      <dd><a href="https://cmpwn.com/@sir">@sir@cmpwn.com</a></dd>
+      <dt>email</dt>
+      <dd><a href="mailto:sir@cmpwn.com">sir@cmpwn.com</a></dd>
+      <dt>pgp</dt>
+      <dd><a href="/publickey.txt">7BC79407090047CA</a></dd>
+      <dt>donate</dt>
+      <dd><a href="https://drewdevault.com/donate">fosspay</a></dd>
+    </dl>
+  </aside>
+</main>

@@ -1,0 +1,27 @@
+{{ partial "head.html" . }}
+
+<h1>
+  {{$.Title}}
+  <small>
+    <span class="date">{{.Date.Format "January 2, 2006"}}</span>
+    on
+    <span class="site"><a href="{{.Site.BaseURL}}">{{.Site.Title}}</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    {{.Content}}
+
+    <section class="comment">
+      Have a comment on one of my posts? Start a discussion in my public inbox by
+      sending an email to
+      <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+      [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+    </section>
+  </article>
+
+  {{ partial "webring-out.html" }}
+</main>
+
+{{ partial "foot.html" }}

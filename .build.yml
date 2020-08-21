@@ -1,0 +1,21 @@
+image: alpine/latest
+packages:
+  - rsync
+  - go
+sources:
+  - https://git.sr.ht/~sircmpwn/drewdevault.com
+  - https://git.sr.ht/~sircmpwn/hugo
+secrets:
+  - 160a72cf-34d6-47b7-928b-c13b42b4d4f6
+tasks:
+- hugo: |
+    cd hugo
+    go build --tags extended
+    sudo cp hugo /usr/local/bin/
+- build: |
+    cd drewdevault.com
+    /usr/local/bin/hugo
+- upload: |
+    cd drewdevault.com
+    echo "StrictHostKeyChecking=no" >> ~/.ssh/config
+    rsync -rP public/ deploy@drewdevault.com:/var/www/drewdevault.com/

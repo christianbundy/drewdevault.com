@@ -1,0 +1,14 @@
+baseURL = "https://drewdevault.com/"
+title = "Drew DeVault's blog"
+pygmentsUseClasses = true
+uglyurls = true
+disablePathToLower = true
+
+[permalinks]
+blog = "/:year/:month/:day/:filename"
+
+[markup.goldmark.renderer]
+unsafe = true
+
+[markup.tableOfContents]
+ordered = true
