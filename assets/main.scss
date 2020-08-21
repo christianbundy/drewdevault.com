@@ -61,33 +61,8 @@ h1 {
   }
 
   @media(max-width: 640px) {
-    flex-direction: column;
-
     aside {
-      order: 0;
-      display: flex;
-      flex-direction: row;
-      width: auto;
-      align-items: center;
-      justify-content: space-between;
-
-      img {
-        margin: 0;
-        order: 0;
-      }
-
-      dl {
-        order: 1;
-      }
-
-      .text-center {
-        order: 2;
-        align-self: center;
-      }
-    }
-
-    .article-list {
-      order: 1;
+      display: none;
     }
   }
 }
