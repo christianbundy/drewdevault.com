@@ -23,16 +23,16 @@ Cheshire Cat in particular, and owns quite a bit of relevant merchandise.[^1]
 [^1]: She is not sure how much of that merchandise is officially licensed.
 
 Like many films from their "Golden Age", Disney's *Alice* is itself a derivative
-work, based on Lewis Carol's 1865 book. However, Disney's film won't enter the
+work, based on Lewis Carroll's 1865 book. However, Disney's film won't enter the
 public domain until 2046, and until then, no one can create derivative works of
 their own without receiving permission from and paying a tithe to Disney. And if
 modern-day copyright law, [bought and paid for by Disney][mickey mouse act], had
 been in force at the time Alice in Wonderland was made, they would have released
-their film 17 years *before* Carol's novel entered the public domain.
+their film 17 years *before* Carroll's novel entered the public domain.
 
 [mickey mouse act]: https://en.wikipedia.org/wiki/Copyright_Term_Extension_Act
 
-Carol, who died in 1898, was 53 years dead when the film was released. Everyone
+Carroll, who died in 1898, was 53 years dead when the film was released. Everyone
 who is listed in the credits for Disney's Alice in Wonderland is also dead, with
 the exception of Kathryn Beaumont, who played the role of none other than Alice
 herself.[^2] [^3] She was 12 years old at the time. And still today, the
@@ -42,7 +42,7 @@ Alice-in-Wonderland-themed 53rd birthday party, having been robbed of the
 privilege at age 11.[^4]
 
 [^2]: The last person credited for Alice in Wonderland to have died was [Don Lusk](https://en.wikipedia.org/wiki/Don_Lusk), who died in 2018 at the age of 105. He lived through World War I, fought in World War II, then went on to animate 17 films for Disney. 
-[^3]: Another honorable mention goes to [Ben Sharpsteen](https://en.wikipedia.org/wiki/Ben_Sharpsteen), the production director on *Alice*, who enjoyed the status of oldest staff member on the production, having been born in 1895. He was alive in Lewis Carol's lifetime!
+[^3]: Another honorable mention goes to [Ben Sharpsteen](https://en.wikipedia.org/wiki/Ben_Sharpsteen), the production director on *Alice*, who enjoyed the status of oldest staff member on the production, having been born in 1895. He was alive in Lewis Carroll's lifetime!
 [^4]: Okay, I'll fess up: I never had any plans of an Alice-themed birthday party when I was 11, or at any other age. But you can bet I'm planning one for my 53rd now!
 
 Copyright was established in the United States to incentivize artists,
