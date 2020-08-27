@@ -15,6 +15,7 @@ backups and redundancy. In future posts, I'll talk about security, high
 availability, automation, and more.
 
 [^1]: sr.ht is a software project hosting website, with git hosting, ticket tracking, continuous integration, mailing lists, and more. [Try it out!](https://sr.ht)
+
 [sr.ht-code]: https://git.sr.ht/~sircmpwn?search=sr.ht
 
 As sr.ht is still in the alpha phase, high availability has been on the
