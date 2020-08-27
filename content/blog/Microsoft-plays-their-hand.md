@@ -22,11 +22,11 @@ collaborate using GitHub's proprietary tools. They **extended** git in a
 proprietary way.
 
 Microsoft knows a good deal when they see one, and picked up GitHub for a cool
-$7,500,000,000, after they had already done the completed the two steps in
-Microsoft's [anti-open-source playbook][0]. They joined the Linux Foundation in
-late 2016, after Azure failed to win people back to Windows Server, admitting
-defeat while simultaneously carving out a space from which they could project
-their interests over the kernel.
+$7,500,000,000, after they had already completed the two steps in Microsoft's
+[anti-open-source playbook][0]. They joined the Linux Foundation in late 2016,
+after Azure failed to win people back to Windows Server, admitting defeat while
+simultaneously carving out a space from which they could project their interests
+over the kernel.
 
 [0]: https://en.wikipedia.org/wiki/Embrace,_extend,_and_extinguish
 
