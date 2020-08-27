@@ -50,7 +50,8 @@ email-driven development could be better! But instead of investing $7.5B into
 throwing the baby out with the bathwater, we've [built interactive
 tutorials][2], [designed better mailing lists][3], [built web interfaces for
 patch submission][4], [implemented CI for emails][5] and [sent improvements to
-git upstream][6]. We're planning on web-based review interface, too. The result
+git upstream][6]. I wrote [an entire mail client which makes it easier to use
+these tools][7]. We're planning on web-based review interface, too. The result
 is a UX which provides a similar experience to GitHub, but without disrupting
 the established open ecosystem.
 
@@ -59,6 +60,7 @@ the established open ecosystem.
 [4]: https://sr.ht/_fUk.webm
 [5]: https://sourcehut.org/blog/2020-07-14-setting-up-ci-for-mailing-lists/
 [6]: https://github.com/git/git/commits?author=ddevault 
+[7]: https://aerc-mail.org/
 
 *This* is how you improve the ecosystem, Microsoft. Take notes. Stick with the
 embrace, move your extending *upstream*, and forget about extinguish.
