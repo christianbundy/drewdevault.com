@@ -18,7 +18,7 @@ can only recommend two: Migadu and mailbox.org.
 
 # #1: Migadu
 
-[Migadu](https://www.migadu.com/en/index.html) is my go-to recommendation
+[Migadu](https://www.migadu.com/) is my go-to recommendation
 for a mail service provider.
 
 **Advantages**
