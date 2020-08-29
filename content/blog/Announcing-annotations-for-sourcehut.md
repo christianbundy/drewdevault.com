@@ -10,6 +10,8 @@ Today I'm happy to announce that code annotations are now available for
 src="/img/party.png" /> These allow you to decorate your code with arbitrary
 links and markdown. The end result looks something like this:
 
+**NOTICE**: Annotations were ultimately removed from sourcehut.
+
 ![](https://sr.ht/w767.png)
 
 <small class="text-muted">
