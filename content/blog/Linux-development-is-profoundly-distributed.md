@@ -33,7 +33,7 @@ However, this presents a simplified view. Look carefully at the "DRM" drivers
 ([Direct Rendering Manager][0]); a group of drivers and maintainers who are
 collectively responsible for graphics on Linux. There are many drivers and many
 maintainers, but a careful eye will notice that there are many similarities as
-well. A lot of them use the same mailing list, drm-devel@lists.freedesktop.org,
+well. A lot of them use the same mailing list, dri-devel@lists.freedesktop.org,
 and many of them use the same git repository:
 `git://anongit.freedesktop.org/drm/drm-misc`. It's not mentioned in this file,
 but many of them also shared the FreeDesktop bugzilla until recently, then moved
