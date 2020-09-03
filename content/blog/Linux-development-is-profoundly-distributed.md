@@ -21,7 +21,7 @@ let's start reading some of these entries.
 Each of these represents a different individual or group which has some interest
 in the Linux kernel, often a particular driver. Most of them have an "F" entry,
 which indicates which files they're responsible for in the source code. Most
-have a "L" entry, which has a mailing list you can post questions, bug reports,
+have an "L" entry, which has a mailing list you can post questions, bug reports,
 and patches to, as well as an individual maintainer ("M") or maintainers who are
 known to have expertise and autonomy over this part of the kernel. Many of them
 &mdash; but, hmm, not all &mdash; also have a tree ("T"), which is a dedicated
@@ -63,8 +63,8 @@ and then up again towards meta-meta trees like linux-staging, and eventually to
 Linus' tree[^2]. Along the way it might receive feedback from other projects if it
 has cross-cutting concerns, tracing out an ever growing and shrinking bubble of
 inclusion among the trees, ultimately ending up in every tree. And that's
-*still* a implication &mdash; for example, an important bug fix may sidestep all
-of this entirely and get applied on top of a downstream distribution kernel,
+*still* a simplification &mdash; for example, an important bug fix may sidestep
+all of this entirely and get applied on top of a downstream distribution kernel,
 ending up on end-user machines before it's made much progress upstream at all.
 
 [^2]: That's not the only destination; for example, some patches will end up in the LTS kernels as well.
