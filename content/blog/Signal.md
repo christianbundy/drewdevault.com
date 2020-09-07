@@ -69,6 +69,7 @@ concious users. I bet that [50 million dollar donation][big-bucks] could help,
 given how many people operate F-Droid repositories on a budget of $0.
 
 [^2]: No, it's not.
+
 [gif-shit]: https://signal.org/blog/signal-and-giphy-update/
 [big-bucks]: https://signal.org/blog/signal-foundation/
 
