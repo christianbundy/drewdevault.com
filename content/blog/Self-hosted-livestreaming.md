@@ -12,21 +12,8 @@ these articles to write one of my own explaining the video bit. As is often the
 case with video, we'll be using the excellent [ffmpeg](http://ffmpeg.org/) tool
 for this. If it's A/V-related, ffmpeg can probably do it.
 
-<script src="/js/dash.all.min.js"></script>
-<video
-    data-dashjs-player autoplay muted controls
-    src="/dash/live.mpd"
-    poster="https://sr.ht/JGOY.png"
-    style="width: 100%"
-></video>
-<div style="text-align: center; font-size: 0.8rem; width: 80%; margin: 0 auto 1rem auto;">
-    This is the recordings from the
-    <a href="https://www.indiegogo.com/projects/sway-hackathon-software#/">
-        Sway hackathon
-    </a>
-    we put on earlier this year, plus the current UTC time to prove that it's
-    live. Click unmute if you want to hear the audio stream.
-</div>
+*Note: a demonstration video was previously shown here, but as traffic on this
+article died down I took it offline to reduce unnecessary load.*
 
 ffmpeg has a built-in [DASH](https://dashif.org/) output format, which is the
 current industry standard for live streaming video to web browsers. It works by
