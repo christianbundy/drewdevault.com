@@ -13,7 +13,7 @@ social problems?
 **Federation** is an idea which takes a swing at all of these problems.
 
 To understand the software metaphor of federation, let's review what it means to
-the rest of the world. Consider our the most well-known federation: the United
+the rest of the world. Consider the most well-known federation: the United
 Federation of Planets.
 
 ![The flag of the United Federation of Planets](https://l.sr.ht/VydT.svg)
