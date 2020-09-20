@@ -12,20 +12,12 @@ social problems?
 
 **Federation** is an idea which takes a swing at all of these problems.
 
-To understand the software metaphor of federation, let's review what it means to
-the rest of the world. Consider the most well-known federation: the United
-Federation of Planets.
-
-![The flag of the United Federation of Planets](https://l.sr.ht/VydT.svg)
-
-In the Star Trek universe, the Federation is a group of sovereign planets (and
-species) with strong diplomatic ties, trade, and shared laws. A software system
-which is *federated* is similar, in that the servers are controlled by
-independent, sovereign entities, and that they exist together under a common web
-of communication protocols and social agreements. This occupies a sort of middle
-ground between the centralized architecture and the peer-to-peer (or
-"decentralized") architecture. Federation enjoys the advantages of both, and few
-of the drawbacks.
+The key trait of a software system which is *federated* is that the servers are
+controlled by independent, sovereign entities, and that they exist together
+under a common web of communication protocols and social agreements. This
+occupies a sort of middle ground between the centralized architecture and the
+peer-to-peer (or "decentralized") architecture. Federation enjoys the advantages
+of both, and few of the drawbacks.
 
 In a federated software system, groups of users are built around small,
 neighborly instances of servers. These are usually small servers, sporting only
