@@ -36,8 +36,8 @@ certificate, take the following steps:
 1. Verify that the certificate makes sense. Check the notBefore and notAfter
    dates against the current time, and check that the hostname is correct
    (including wildcards). Apply any other scrutiny you want, like enforcing a
-   good hash algorithm. If these checks do not pass, the trust state is INVALID,
-   GOTO 4.
+   good hash algorithm or an upper limit on the expiration date. If these checks
+   do not pass, the trust state is INVALID, GOTO 4.
 2. Compute the certificate's fingerprint. Use the entire certificate (in OpenSSL
    terms, `X509_digest` will do this), not just the public key.[^1]
 3. Look up the known_hosts record for this hostname. If one is found, but the
@@ -63,14 +63,16 @@ implementation MAY proceed with the request IF the UI displays that a new
 certificate was trusted and provides a means to review the certificate and
 revoke that trust.
 
+Note that being signed by a certificate authority in the system trust store is
+not considered meaningful to this algorithm. Such a cert is TOFU'd all the same.
+
 [^1]: Rationale: this fingerprint matches the output of `openssl x509 -sha512 -fingerprint`.
 
 That's it! If you have feedback on this approach, please [send me an
 email](mailto:sir@cmpwn.com).
 
-Note that my implementation doesn't *entirely* match this behavior, but it's
-close and I'll finish it up before 1.0. If you want to read the code anyway,
-[here it is][2].
+My implementation doesn't *entirely* match this behavior, but it's close and
+I'll finish it up before 1.0. If you want to read the code, [here it is][2].
 
 [2]: https://git.sr.ht/~sircmpwn/gmni/tree/master/src/tofu.c
 
