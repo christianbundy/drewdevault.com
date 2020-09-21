@@ -37,13 +37,13 @@ certificate, take the following steps:
    dates against the current time, and check that the hostname is correct
    (including wildcards). Apply any other scrutiny you want, like enforcing a
    good hash algorithm or an upper limit on the expiration date. If these checks
-   do not pass, the trust state is INVALID, GOTO 4.
+   do not pass, the trust state is INVALID, GOTO 5.
 2. Compute the certificate's fingerprint. Use the entire certificate (in OpenSSL
    terms, `X509_digest` will do this), not just the public key.[^1]
 3. Look up the known_hosts record for this hostname. If one is found, but the
    record is expired, disregard it. If one is found, and the fingerprint does
    not match, the trust state is UNTRUSTED, GOTO 5. Otherwise, the trust state
-   is TRUSTED. GOTO 6.
+   is TRUSTED. GOTO 7.
 4. The trust state is UNKNOWN. GOTO 5.
 5. Display information about the certficate and its trust state to the user, and
    prompt them to choose an action, from the following options:
@@ -53,10 +53,10 @@ certificate, take the following steps:
      must manually edit the known_hosts file to correct the issue.
 6. Complete the requested action:
    - If ABORT, terminate the request.
-   - If TRUST_TEMPORARY, update the session's list of known hosts, then allow
-     the request to proceed.
+   - If TRUST_TEMPORARY, update the session's list of known hosts.
    - If TRUST_ALWAYS, append a record to the known_hosts file and update the
-     session's list of known hosts, then allow the request to proceed.
+     session's list of known hosts.
+7. Allow the request to proceed.
 
 If the trust state is UNKNOWN, instead of requring user input to proceed, the
 implementation MAY proceed with the request IF the UI displays that a new
