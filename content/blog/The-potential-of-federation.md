@@ -12,6 +12,14 @@ social problems?
 
 **Federation** is an idea which takes a swing at all of these problems.
 
+*Note: apparently some cryptocurrency enthusiasts are parading this article
+around to peddle their garbage. Cryptocurrency is the digitally woke techbro's
+ponzi scheme, and is a massive waste of electricity and developer effort. Anyone
+who tells you anything positive about anything which is even remotely connected
+to cryptocurrency almost certainly has ulterior motives and you should steer
+clear. So hopefully that settles that. And cryptocurrency is a P2P system,
+anyway, NOT a federation!*
+
 The key trait of a software system which is *federated* is that the servers are
 controlled by independent, sovereign entities, and that they exist together
 under a common web of communication protocols and social agreements. This
