@@ -11,8 +11,6 @@ is laid out how applications talk directly to the kernel with EGL and so on, but
 that doesn't give you much practical knowledge. I'd like to instead share with
 you details about how the protocol actually works and how you can use it.
 
-This article has been translated: [ру́сский](http://howtorecover.me/vvedenie-v-wayland)
-
 Let's set aside the idea that Wayland has anything to do with graphics. Instead
 we'll treat it like a generic protocol for two parties to share and talk about
 resources. These resources are at the heart of the Wayland protocol - resources
