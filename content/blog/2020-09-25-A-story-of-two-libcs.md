@@ -123,7 +123,7 @@ defined? Grep again... okay... here we are?
 __isctype_f (alnum)
 // ...
 # elif defined __isctype
-# define isalnum(c)     __isctype((c), _ISalnum)
+# define isalnum(c)     __isctype((c), _ISalnum) // <- this is it
 ```
 
 Hey, there's that implementation detail from earlier! Remember this?
