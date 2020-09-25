@@ -136,7 +136,7 @@ pre {
     font-style: italic;
   }
 
-  .c1 {
+  .cm, .c1 {
     color: #333;
     font-style: italic;
   }
@@ -227,4 +227,12 @@ details[open] {
 
 .text-center {
   text-align: center;
+}
+
+blockquote {
+  border-left: 5px solid #bbb;
+  background-color: #eee;
+  padding: 0 1rem;
+  margin-left: calc(-1rem - 5px);
+  margin-right: -1rem;
 }
