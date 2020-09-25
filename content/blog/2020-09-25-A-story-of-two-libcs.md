@@ -1,5 +1,5 @@
 ---
-title: A story of two libc's
+title: A tale of two libcs
 date: 2020-09-25
 ---
 
