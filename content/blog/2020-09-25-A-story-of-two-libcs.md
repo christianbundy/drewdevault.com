@@ -4,7 +4,7 @@ date: 2020-09-25
 ---
 
 I received a bug report from Debian today, who had fed some garbage into
-[scdoc](https://git.sr.ht/~sircmpwn/scdoc), and it gave them a SIGSEV back.
+[scdoc](https://git.sr.ht/~sircmpwn/scdoc), and it gave them a SIGSEGV back.
 Diving into this problem gave me a good opportunity to draw a comparison between
 musl libc and glibc. Let's start with the stack trace:
 
