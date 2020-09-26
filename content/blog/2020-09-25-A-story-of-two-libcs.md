@@ -138,7 +138,7 @@ enum
 };
 ```
 
-Let's suss that out macro real quick:
+Let's suss out that macro real quick:
 
 ```c
 # include <bits/endian.h>
