@@ -12,6 +12,7 @@
 
 # Drew DeVault's geminispace
 
+Some Gemini-related projects:
+
 => gmni.gmi gmni: a Gemini client
 => gmnisrv.gmi gmnisrv: a Gemini server
-=> https://drewdevault.com Drew DeVault's blog on the WWW

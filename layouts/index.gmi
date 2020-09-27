@@ -4,6 +4,8 @@
 {{- if .OutputFormats.Get "gemtext" }}
 => {{replace .Permalink "/gemini" "" 1}} {{.Date.Format "January 2, 2006"}}: {{.Title}}{{ end }}{{ end }}
 
+=> /feed.xml RSS feed
+
 A backlog of additional articles is available on the World Wide Web:
 
 => https://drewdevault.com Drew DeVault's blog
