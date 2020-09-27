@@ -5,10 +5,12 @@
     <h1>{{$.Title}}</h1>
 
     {{ range (where .Site.RegularPages "Section" "blog") }}
+    {{- if .OutputFormats.Get "html" }}
     <div class="article">
       <span class="date">{{.Date.Format "January 2, 2006"}}</span>
       <a href="{{.Permalink}}">{{.Title}}</a>
     </div>
+    {{ end }}
     {{ end }}
   </section>
 

@@ -1,0 +1,16 @@
+# gmni: a Gemini client
+
+gmni is a client for the Gemini protocol. Included are:
+
+* A CLI utility (like curl): gmni
+* A line-mode browser: gmnlm
+
+=> https://sr.ht/~sircmpwn/gmni Development information
+=> https://git.sr.ht/~sircmpwn/gmni Source code (git)
+
+Browser features:
+
+* Page history
+* Regex searches
+* Bookmarks
+* TOFU support

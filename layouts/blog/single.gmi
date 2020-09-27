@@ -1,0 +1,17 @@
+# {{$.Title}}
+
+{{ trim (readFile (replace $.File.Path ".md" ".gmi")) "\n" | safeHTML }}
+
+```An ASCII art rocket
+   \ \_____
+###[==_____>
+   /_/
+```
+
+“{{$.Title}}” was published on {{.Date.Format "January 2, 2006"}}
+
+=> / Back to the home page{{ with .OutputFormats.Get "html" }}
+=> {{.Permalink}} View “{{$.Title}}” on the WWW
+{{- end }}
+
+The content for this site is CC-BY-SA. The code for this site is MIT.

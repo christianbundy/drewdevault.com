@@ -1,13 +1,9 @@
 ---
 title: A tale of two libcs
 date: 2020-09-25
-outputs: ["html", "gemtext"]
 ---
 
-I received a bug report from Debian today, who had fed some garbage into
-[scdoc](https://git.sr.ht/~sircmpwn/scdoc), and it gave them a SIGSEGV back.
-Diving into this problem gave me a good opportunity to draw a comparison between
-musl libc and glibc. Let's start with the stack trace:
+I received a bug report from Debian today, who had fed some garbage into scdoc[0], and it gave them a SIGSEGV back. Diving into this problem gave me a good opportunity to draw a comparison between musl libc and glibc. Let's start with the stack trace:
 
 ```
 ==26267==ERROR: AddressSanitizer: SEGV on unknown address 0x7f9925764184
@@ -21,24 +17,19 @@ musl libc and glibc. Let's start with the stack trace:
     4 0x41b3fd in _start (/scdoc/scdoc+0x41b3fd)
 ```
 
+=> https://git.sr.ht/~sircmpwn/scdoc [0]: scdoc
+
 And if we pull up that line of code, we find...
 
-```c
+```
 if (!isalnum(last) || ((p->flags & FORMAT_UNDERLINE) && !isalnum(next))) {
 ```
 
-Hint: p is a valid pointer. "last" and "next" are both uint32_t. The segfault
-happens in the second call to isalnum. And, the key: it can only be reproduced
-on glibc, not on musl libc. If you did a double-take, you're not alone. There's
-nothing here which could have caused a segfault.
+Hint: p is a valid pointer. "last" and "next" are both uint32_t. The segfault happens in the second call to isalnum. And, the key: it can only be reproduced on glibc, not on musl libc. If you did a double-take, you're not alone. There's nothing here which could have caused a segfault.
 
-Since it was narrowed down to glibc, I pulled up the source code and went
-digging for the isalnum implementation, expecting some stupid bullshit. But
-before I get into their stupid bullshit, of which I can assure you there is *a
-lot*, let's briefly review the happy version. This is what the musl libc
-`isalnum` implementation looks like:
+Since it was narrowed down to glibc, I pulled up the source code and went digging for the isalnum implementation, expecting some stupid bullshit. But before I get into their stupid bullshit, of which I can assure you there is *a lot*, let's briefly review the happy version. This is what the musl libc `isalnum` implementation looks like:
 
-```c
+```
 int isalnum(int c)
 {
 	return isalpha(c) || isdigit(c);
@@ -55,16 +46,11 @@ int isdigit(int c)
 }
 ```
 
-As expected, for any value of `c`, isalnum will never segfault. Because why the
-fuck would isalnum segfault? Okay, now, let's compare this to the
-[glibc implementation][ctype]. When opening this header, you're greeted with the
-typical GNU bullshit, but let's trudge through and grep for isalnum.
+As expected, for any value of `c`, isalnum will never segfault. Because why the fuck would isalnum segfault? Okay, now, let's compare this to the glibc implementation[1]. When opening this header, you're greeted with the typical GNU bullshit, but let's trudge through and grep for isalnum.
 
-[ctype]: https://sourceware.org/git/?p=glibc.git;a=blob;f=ctype/ctype.h;h=351495aa4feaf23993fe65afc0760615268d044e;hb=HEAD
+=> https://sourceware.org/git/?p=glibc.git;a=blob;f=ctype/ctype.h;h=351495aa4feaf23993fe65afc0760615268d044e;hb=HEAD [1]: The glibc implementation
 
-The first result is this:
-
-```c
+```
 enum
 {
   _ISupper = _ISbit (0),        /* UPPERCASE.  */
@@ -76,30 +62,28 @@ enum
 
 This looks like an implementation detail, let's move on.
 
-```c
+```
 __exctype (isalnum);
 ```
 
 But what's `__exctype`? Back up the file a few lines...
 
-```c
+```
 #define __exctype(name) extern int name (int) __THROW
 ```
 
-Okay, apparently that's just the prototype. Not sure why they felt the need to
-write a macro for that. Next search result...
+Okay, apparently that's just the prototype. Not sure why they felt the need to write a macro for that. Next search result...
 
-```c
+```
 #if !defined __NO_CTYPE
 # ifdef __isctype_f
 __isctype_f (alnum)
 // ...
 ```
 
-
 Okay, this looks useful. What is `__isctype_f`? Back up the file now...
 
-```c
+```
 #ifndef __cplusplus
 # define __isctype(c, type) \
   ((*__ctype_b_loc ())[(int) (c)] & (unsigned short int) type)
@@ -113,12 +97,9 @@ Okay, this looks useful. What is `__isctype_f`? Back up the file now...
 #endif
 ```
 
-Oh.... oh dear. It's okay, we'll work through this together. Let's see,
-`__isctype_f` is some kind of inline function... wait, this is the else branch
-of `#ifndef __cplusplus`. Dead end. Where the fuck is isalnum *actually*
-defined? Grep again... okay... here we are?
+Oh.... oh dear. It's okay, we'll work through this together. Let's see, `__isctype_f` is some kind of inline function... wait, this is the else branch of `#ifndef __cplusplus`. Dead end. Where the fuck is isalnum *actually* defined? Grep again... okay... here we are?
 
-```c
+```
 #if !defined __NO_CTYPE
 # ifdef __isctype_f
 __isctype_f (alnum)
@@ -129,7 +110,7 @@ __isctype_f (alnum)
 
 Hey, there's that implementation detail from earlier! Remember this?
 
-```c
+```
 enum
 {
   _ISupper = _ISbit (0),        /* UPPERCASE.  */
@@ -141,7 +122,7 @@ enum
 
 Let's suss out that macro real quick:
 
-```c
+```
 # include <bits/endian.h>
 # if __BYTE_ORDER == __BIG_ENDIAN
 #  define _ISbit(bit)   (1 << (bit))
@@ -150,12 +131,9 @@ Let's suss out that macro real quick:
 # endif
 ```
 
-Oh, for fuck's sake. Whatever, let's move on and just assume this is a magic
-number. The other macro is `__isctype`, which is similar to the `__isctype_f` we
-were just looking at a moment ago. Let's go look at that `ifndef __cplusplus`
-branch again:
+Oh, for fuck's sake. Whatever, let's move on and just assume this is a magic number. The other macro is `__isctype`, which is similar to the `__isctype_f` we were just looking at a moment ago. Let's go look at that `ifndef __cplusplus` branch again:
 
-```c
+```
 #ifndef __cplusplus
 # define __isctype(c, type) \
   ((*__ctype_b_loc ())[(int) (c)] & (unsigned short int) type)
@@ -166,10 +144,9 @@ branch again:
 
 ...
 
-Well, at least we have a pointer dereference now, that could explain the
-segfault. What's `__ctype_b_loc`?
+Well, at least we have a pointer dereference now, that could explain the segfault. What's `__ctype_b_loc`?
 
-```c
+```
 /* These are defined in ctype-info.c.
    The declarations here must match those in localeinfo.h.
 
@@ -194,37 +171,24 @@ extern const __int32_t **__ctype_toupper_loc (void)
      __THROW __attribute__ ((__const__));
 ```
 
-That is just so, super cool of you, glibc. I just *love* dealing with locales.
-Anyway, my segfaulted process is sitting in gdb, and equipped with all of this
-information I wrote the following monstrosity:
+That is just so, super cool of you, glibc. I just *love* dealing with locales. Anyway, my segfaulted process is sitting in gdb, and equipped with all of this information I wrote the following monstrosity:
 
 ```
 (gdb) print ((unsigned int **(*)(void))__ctype_b_loc)()[next]
 Cannot access memory at address 0x11dfa68
 ```
 
-Segfault found. Reading that comment again, we see "ISO C requires that the
-ctype functions work for 'unsigned char' values and for EOF". If we
-cross-reference that with the specification:
+Segfault found. Reading that comment again, we see "ISO C requires that the ctype functions work for 'unsigned char' values and for EOF". If we cross-reference that with the specification:
 
-> In all cases [of functions defined by ctype.h,] the argument is an int, the
-> value of which shall be representable as an unsigned char or shall equal the
-> value of the macro EOF.
+> In all cases [of functions defined by ctype.h,] the argument is an int, the value of which shall be representable as an unsigned char or shall equal the value of the macro EOF.
 
-So the fix is obvious at this point. Okay, fine, my bad. My code is wrong. I
-apparently cannot just hand a UCS-32 codepoint to isalnum and expect it to tell
-me if it's between 0x30-0x39, 0x41-0x5A, or 0x61-0x7A.
+So the fix is obvious at this point. Okay, fine, my bad. My code is wrong. I apparently cannot just hand a UCS-32 codepoint to isalnum and expect it to tell me if it's between 0x30-0x39, 0x41-0x5A, or 0x61-0x7A.
 
-But, I'm going to go out on a limb here: maybe isalnum should never cause a
-program to segfault no matter what input you give it. Maybe because the spec
-says you *can* does not mean you *should*. Maybe, just maybe, the behavior of
-this function should not depend on five macros, whether or not you're using a
-C++ compiler, the endianness of your machine, a look-up table, thread-local
-storage, and two pointer dereferences.
+But, I'm going to go out on a limb here: maybe isalnum should never cause a program to segfault no matter what input you give it. Maybe because the spec says you *can* does not mean you *should*. Maybe, just maybe, the behavior of this function should not depend on five macros, whether or not you're using a C++ compiler, the endianness of your machine, a look-up table, thread-local storage, and two pointer dereferences.
 
 Here's the musl version as a quick reminder:
 
-```c
+```
 int isalnum(int c)
 {
 	return isalpha(c) || isdigit(c);

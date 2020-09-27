@@ -40,3 +40,4 @@ tasks:
     cd drewdevault.com
     echo "StrictHostKeyChecking=no" >> ~/.ssh/config
     rsync -rP public/ deploy@drewdevault.com:/var/www/drewdevault.com/
+    rsync -rP public/gemini/ deploy@drewdevault.com:/srv/gemini/drewdevault.com/

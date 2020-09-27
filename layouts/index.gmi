@@ -1,0 +1,11 @@
+{{readFile (replace (replace $.File.Path ".md" ".gmi") ".html" ".gmi") | safeHTML}}
+## Blog posts
+{{ range (where .Site.RegularPages "Section" "blog") }}
+{{- if .OutputFormats.Get "gemtext" }}
+=> {{replace .Permalink "/gemini" "" 1}} {{.Date.Format "January 2, 2006"}}: {{.Title}}{{ end }}{{ end }}
+
+A backlog of additional articles is available on the World Wide Web:
+
+=> https://drewdevault.com Drew DeVault's blog
+
+The content for this site is CC-BY-SA. The code for this site is MIT.

@@ -1,6 +1,7 @@
 ---
 title: TOFU recommendations for Gemini
 date: 2020-09-21
+outputs: [html, gemtext]
 ---
 
 I will have more to say about [Gemini][0] in the future, but for now, I wanted to
