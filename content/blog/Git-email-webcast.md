@@ -14,10 +14,9 @@ it'd be helpful to clarify my workflow a bit with a short webcast. In this
 video, I narrate my workflow as I review a few
 [sourcehut](https://sourcehut.org) patches and participate in some dicsussions.
 
-<video
-  src="https://yukari.sr.ht/git-screencast.webm"
-  controls
->Your browser does not support HTML5 video, or webm video.</video>
+<video src="https://yukari.sr.ht/git-screencast.webm" controls>
+  Your browser does not support HTML5 video, or webm video.
+</video>
 
 Links:
 
