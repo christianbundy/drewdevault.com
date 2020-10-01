@@ -66,6 +66,12 @@ index 928298b9f2..63e4787c44 100644
  .dfnPanel *, pre:hover .dfnPanel * { text-decoration: none; }
 ```
 
+Hacktoberfest is, and has always been, about one thing: marketing for Digital Ocean.
+
+> In 2017, I asked them to stop sending people to one of my (joke) repos because we also got flooded with PRs. They answered they couldn't do anything on their end. In 2019, they sent us a ticket accusing us of enabling cheaters or something, but kindly "allowed" us to keep the repo.
+
+=> https://oc.todon.fr/@val/104960502585461740 via @val@todon.fr
+
 This is what we get with corporate-sponsored “social coding”, brought to you by Digital Ocean and GitHub and McDonalds, home of the Big Mac™. When you build the Facebook of coding, you get the Facebook of coding. We don’t need to give away T-Shirts to incentivize drive-by drivel from randoms who will never get any closer to open source than a +1/-1 README.md change.
 
 What would actually benefit FOSS is to enable the strong mentorship necessary to raise a new generation of software engineers under the tutelage of maintainers who can rely on a strong support system to do their work. Programs like Google Summer of Code do this better. Programs where a marketing department spends $5,000 on T-Shirts to flood maintainers with garbage and clothe people in ads are doing the opposite: hurting open source.

@@ -1,10 +1,9 @@
-image: alpine/latest
+image: alpine/edge
 packages:
   - rsync
   - go
 sources:
   - https://git.sr.ht/~sircmpwn/drewdevault.com
-  - https://git.sr.ht/~sircmpwn/hugo
   - https://git.sr.ht/~sircmpwn/openring
 secrets:
   - 160a72cf-34d6-47b7-928b-c13b42b4d4f6
@@ -17,10 +16,6 @@ tasks:
     cd openring
     go build -o openring
     sudo cp openring /usr/local/bin/
-- hugo: |
-    cd hugo
-    go build --tags extended
-    sudo cp hugo /usr/local/bin/
 - build: |
     cd drewdevault.com
     /usr/local/bin/openring \
@@ -35,7 +30,7 @@ tasks:
       -s https://tonsky.me/blog/atom.xml \
       < webring-in.template \
       > layouts/partials/webring-out.html
-    /usr/local/bin/hugo
+    hugo
 - upload: |
     cd drewdevault.com
     echo "StrictHostKeyChecking=no" >> ~/.ssh/config

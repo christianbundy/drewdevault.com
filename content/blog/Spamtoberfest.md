@@ -61,6 +61,17 @@ by a bot:
 
 [![Screenshot of a pull request which needlessly comment a CSS file](https://l.sr.ht/F-sU.png)](https://github.com/whatwg/html/pull/5975/files)
 
+Hacktoberfest is, and has always been, about one thing: marketing for Digital
+Ocean.
+
+<iframe
+src="https://oc.todon.fr/@val/104960502585461740/embed"
+class="mastodon-embed"
+style="max-width: 100%; border: 0; margin: 0 auto; display: block;"
+width="400"
+height="530"
+allowfullscreen="allowfullscreen"></iframe>
+
 This is what we get with corporate-sponsored "social coding", brought to you by
 Digital Ocean and GitHub and McDonalds, home of the Big Mac&trade;. When you
 build the Facebook of coding, you get the Facebook of coding. We don't need to
