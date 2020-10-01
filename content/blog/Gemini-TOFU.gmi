@@ -52,3 +52,7 @@ My implementation doesn't *entirely* match this behavior, but it's close and I'l
 => https://git.sr.ht/~sircmpwn/gmni/tree/master/src/tofu.c src/tofu.c
 
 Bonus recommendation for servers: you *should* use a self-signed certificate, and you *should not* use a certificate signed by one of the mainstream certificate authorities. We don't need to carry along the legacy CA cabal into our brave new Gemini future.
+
+See also:
+
+=> gemini://makeworld.gq/gemlog/2020-07-03-tofu-rec.gmi TOFU Recommendations on makeworld.qq
