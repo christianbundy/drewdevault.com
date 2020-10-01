@@ -2,6 +2,7 @@ image: alpine/edge
 packages:
   - rsync
   - go
+  - hugo
 sources:
   - https://git.sr.ht/~sircmpwn/drewdevault.com
   - https://git.sr.ht/~sircmpwn/openring
