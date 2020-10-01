@@ -8,7 +8,7 @@
    /_/
 ```
 
-“{{$.Title}}” was published on {{.Date.Format "January 2, 2006"}}
+“{{$.Title}}” was published on {{.Date.Format "January 2, 2006"}}.
 
 => / Back to the home page{{ with .OutputFormats.Get "html" }}
 => {{.Permalink}} View “{{$.Title}}” on the WWW
