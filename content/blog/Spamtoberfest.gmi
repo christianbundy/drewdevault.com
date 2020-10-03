@@ -77,3 +77,7 @@ This is what we get with corporate-sponsored “social coding”, brought to you
 What would actually benefit FOSS is to enable the strong mentorship necessary to raise a new generation of software engineers under the tutelage of maintainers who can rely on a strong support system to do their work. Programs like Google Summer of Code do this better. Programs where a marketing department spends $5,000 on T-Shirts to flood maintainers with garbage and clothe people in ads are doing the opposite: hurting open source.
 
 => https://twitter.com/shitoberfest Check out @shitoberfest on Twitter for more Hacktoberfest garbage.
+
+Update 2020-10-03: Digital Ocean has updated their rules), among other things asking maintainers to opt-in, to reduce spam.
+
+=> https://hacktoberfest.digitalocean.com/hacktoberfest-update Digital Ocean: Hacktoberfest update

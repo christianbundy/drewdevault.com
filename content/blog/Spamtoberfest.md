@@ -89,3 +89,7 @@ ads are doing the opposite: *hurting* open source.
 
 Check out [@shitoberfest on Twitter](https://twitter.com/shitoberfest) for more
 Hacktoberfest garbage.
+
+**Update 2020-10-03**: Digital Ocean
+[has updated their rules](https://hacktoberfest.digitalocean.com/hacktoberfest-update),
+among other things asking maintainers to opt-in, to reduce spam.
