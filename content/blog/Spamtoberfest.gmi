@@ -78,6 +78,6 @@ What would actually benefit FOSS is to enable the strong mentorship necessary to
 
 => https://twitter.com/shitoberfest Check out @shitoberfest on Twitter for more Hacktoberfest garbage.
 
-Update 2020-10-03: Digital Ocean has updated their rules), among other things asking maintainers to opt-in, to reduce spam.
+Update 2020-10-03: Digital Ocean has updated their rules, among other things asking maintainers to opt-in, to reduce spam.
 
 => https://hacktoberfest.digitalocean.com/hacktoberfest-update Digital Ocean: Hacktoberfest update
