@@ -16,3 +16,4 @@ Some Gemini-related projects:
 
 => gmni.gmi gmni: a Gemini client
 => gmnisrv.gmi gmnisrv: a Gemini server
+=> kineto.gmi kineto: an HTTP to Gemini proxy

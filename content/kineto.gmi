@@ -1,0 +1,7 @@
+# kineto: an HTTP to Gemini proxy
+
+Kineto is an HTTP to Gemini proxy designed to service a single domain, i.e. to make your Gemini site available over HTTP.
+
+=> https://sr.ht/~sircmpwn/kineto Development information (http)
+=> https://git.sr.ht/~sircmpwn/kineto Source code (git)
+=> https://portal.drewdevault.com Live demo (http)
