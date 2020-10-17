@@ -12,6 +12,7 @@ layout: page
 - [New server checklist](/new-server)
 - [New sysadmin lecture](/new-sysadmin-lecture)
 - [Dynamic linking bad](/dynlib)
+- [Deep time](/time)
 
 # Talks
 
