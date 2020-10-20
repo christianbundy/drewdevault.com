@@ -1,5 +1,6 @@
 ---
 # vim: tw=80
+date: 2015-12-20
 title: State of Sway - December 2015
 layout: post
 tags: [sway]

@@ -1,4 +1,5 @@
 ---
+date: 2020-07-15
 layout: post
 title: Status update, July 2020
 tags: ["status update"]
