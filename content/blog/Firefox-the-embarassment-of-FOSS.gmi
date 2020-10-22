@@ -17,7 +17,7 @@ In the time since my last article on the subject, Mozilla has:
 * Built a walled garden for add-ons, then let the walls crash in⁶
 * Started, and killed, a dozen projects which were not Firefox⁷
 
-The most interesting things they've been involved in in the past few years are Rust and Servo, and they fired most or all of their engineers involved in both. And, yesterday, Mozilla published a statement⁸ siding with Google on anti-trust, failing disclosing the fact that Google pays to keep their lights on.
+The most interesting things they've been involved in in the past few years are Rust and Servo, and they fired most or all of their engineers involved in both. And, yesterday, Mozilla published a statement⁸ siding with Google on anti-trust, failing to disclose the fact that Google pays to keep their lights on.
 
 Is this the jewel of open source? No, not anymore. Firefox is the embarrassment of open source, and it's the only thing standing between Google and an all-encompassing monopoly over the web. Mozilla has divested from Firefox and started funnelling what money is left out of their engineering payroll and into their executive pockets. The web is dead, and its fetid corpse persists only as the layer of goop that Google scrapes between its servers and your screen.  Anyone who still believes that Mozilla will save the web is a fool.
 

@@ -36,7 +36,7 @@ In the time since my last article on the subject, Mozilla has:
 The most interesting things they've been involved in in the past few years are 
 Rust and Servo, and they fired most or all of their engineers involved in both.
 And, yesterday, [Mozilla published a statement][abject betrayal] siding with
-Google on anti-trust, failing disclosing the fact that Google pays to keep their
+Google on anti-trust, failing to disclose the fact that Google pays to keep their
 lights on.
 
 [abject betrayal]: https://blog.mozilla.org/blog/2020/10/20/mozilla-reaction-to-u-s-v-google/
