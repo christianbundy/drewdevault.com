@@ -21,7 +21,7 @@ In the time since my last article on the subject, Mozilla has:
 - Raised executive pay 400% as their market share declined 85%[^2]
 - Sent a record of all browsing traffic to CloudFlare by default[^3]
 - Added advertisements to the new tab page on Firefox[^4]
-- Used their brand enter the saturated VPN grift market[^5]
+- Used their brand to enter the saturated VPN grift market[^5]
 - Built a walled garden for add-ons, then let the walls crash in[^6]
 - Started, and killed, a dozen projects which were not Firefox[^7]
 
