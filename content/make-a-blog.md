@@ -59,7 +59,6 @@ most to least active:
 - [Alexander Pluhar](https://www.alexander-pluhar.de/)
 - [L. McNulty's blog](https://lmcnulty.gitlab.io/blog/index.html)
 - [Lauro Silva](https://laurosilva.com/)
-- [berfr blog](https://berfr.me/)
 - [Nils Schulte's blog](https://nilsschulte.de/posts/)
 - [Nix Adventures](http://nixing.mx/blog/blog.html)
 - [Stefan Schick's personal Blog](https://stefanschick.eu/)
@@ -103,3 +102,4 @@ Now-defunct blogs:
 - ~~Tech Monk~~
 - ~~Joel's Blog~~
 - ~~Zack Lofgren~~
+- ~~berfr blog~~
