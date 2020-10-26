@@ -12,8 +12,12 @@
 
 # Drew DeVault's geminispace
 
-Some Gemini-related projects:
+My Gemini-related projects:
 
 => gmni.gmi gmni: a Gemini client
 => gmnisrv.gmi gmnisrv: a Gemini server
 => kineto.gmi kineto: an HTTP to Gemini proxy
+
+Gemini services:
+
+=> /cgi-bin/man.sh Look up a POSIX man page
