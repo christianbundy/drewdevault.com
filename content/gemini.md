@@ -12,4 +12,4 @@ To connect with Gemini, you will need a Gemini client. I wrote one called
 [others]: https://gemini.circumlunar.space/clients.html
 
 Once you have your client working, direct it to `gemini://drewdevault.com` and
-you'll be your way.
+you'll be on your way.
