@@ -11,6 +11,7 @@ Features:
 * CGI script support
 * Directory auto-indexing
 * Multiple domains and routing configs
+* Regex routing and URL rewriting
 
 The configuration is straightforward:
 
