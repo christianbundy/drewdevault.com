@@ -236,3 +236,9 @@ blockquote {
   margin-left: calc(-1rem - 5px);
   margin-right: -1rem;
 }
+
+ul {
+  li:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+}
