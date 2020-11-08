@@ -21,4 +21,5 @@ My Gemini-related projects:
 Gemini services:
 
 => /cgi-bin/man.sh Look up a POSIX man page
+=> /cgi-bin/web.sh Browse the web over Gemini
 => /cgi-bin/hn.py Browse Hacker News
