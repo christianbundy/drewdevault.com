@@ -10,13 +10,13 @@ Note that it's kind of finicky (and, to be honest, so is gmnisrv), so we can hop
 
 The HTML to Gemtext conversion works even better than I expected. The guts of it are in a small JavaScript program:
 
-=> gemini://drewdevault.com/cgi-bin/hn.py/view?https%3A//git.sr.ht/~sircmpwn/gci-scripts/tree/master/web2gmi.js web2gmi.js (viewed on git.sr.ht via the readability converter!)
+=> gemini://drewdevault.com/cgi-bin/web.sh?https://git.sr.ht/~sircmpwn/gci-scripts/tree/master/web2gmi.js web2gmi.js (viewed on git.sr.ht via the readability converter!)
 
 This can stand alone pretty well on its own, so I might refactor things to convert this less from a purpose-built HN viewer and into a more general-purpose gemini-to-web gateway. Patches also welcome, if anyone wants to help out with that.
 
 The other component is just a little bit of rigging to consult the HN API, render the front page as Gemtext, and handle the linkage to the web to gemtext converter.
 
-=> gemini://drewdevault.com/cgi-bin/hn.py/view?https%3A//git.sr.ht/~sircmpwn/gci-scripts/tree/master/hn.py hn.py (via git.sr.ht)
+=> gemini://drewdevault.com/cgi-bin/web.sh?https://git.sr.ht/~sircmpwn/gci-scripts/tree/master/hn.py hn.py (via git.sr.ht)
 
 The source code is available in my CGI scripts repository:
 
