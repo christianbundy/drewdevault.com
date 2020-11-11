@@ -2,6 +2,8 @@ In 2019, I was on the election board as a machine inspector for the primary elec
 
 Once 2020 rolled around, it became clear that this election was important, and was likely to be the subject of attempted subversion. I reached out to let the board of elections know that I was prepared to help out with this election as well, and reprised my role: machine inspector, division 18/19, PA. The machine inspector for 18/5 didn't show up, so I ended up doing their work as well until relief arrived partway through the day.
 
+NOTE: I made some educated guesses about the responsibilities of other poll workers, which I am not too familiar with myself. A couple of errors have been pointed out to me in those respects. Descriptions of roles other than machine inspector should be taken with a grain of salt.
+
 Officially, the only role of the machine inspector is to open the polls at the beginning of the day, keep the machines sanitized throughout, and close the polls at the end of the day. However, any qualified board member is also permitted to do most of the tasks required of the election board, so I helped out where I could throughout the remainder of my (15 and a half hour!) workday. We were issued basic surgical masks (I wore two) and face shields, and more than enough sanitizer to wipe the machines, pens, and working areas down with.
 
 At 6 AM, we arrived to set up for the 7 AM opening. I gathered my materials from the official Box of Election Things (it has a name, but I forgot it), and got to work. Each division had two voting machines. I removed the covers (checking and writing down the seal numbers), plugged them in, and removed the seal protecting the bin on the back — where, among other things, the blank paper ballots are stored. These were handed off to the other officials, and I opened up the administrative controls box. In here is a flash drive which stores (one copy of) the election results for this machine, a power and mode switching button, and another numbered seal. This other seal is used as a tamper-evident seal for the admin box itself, once I'm done with the initial setup. This box, and the area where the filled-in paper ballots are collected, are also locked with a barrel key that came with the election materials.
@@ -51,3 +53,5 @@ Overall, the election day experience was decent enough. The voters were mostly p
 EDIT: After answering a few questions about this post, I think it would be helpful to share this link:
 
 => https://files7.philadelphiavotes.com/election-workers/Primary_2020_Election_Board_Training_Guide.pdf Guide for Election Board Officials in Philadelphia County (PDF)
+
+EDIT 10:05 PM: Added note regarding other election board roles.
