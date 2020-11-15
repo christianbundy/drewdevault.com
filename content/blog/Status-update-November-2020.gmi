@@ -1,40 +1,20 @@
----
-title: Status update, November 2020
-date: 2020-11-15
-outputs: [html, gemtext]
----
+Greetings, humanoids! Our fleshy vessels have aged by 2.678×10⁶ seconds, and you know what that means: time for another status update! Pour a cup of your favorite beverage stimulant and gather 'round for some news.
 
-Greetings, humanoids! Our fleshy vessels have aged by 2.678×10⁶ seconds, and you
-know what that means: time for another status update! Pour a cup of your
-favorite beverage stimulant and gather 'round for some news.
+First off, today is the second anniversary of SourceHut's alpha being opened to the public, and as such, I've prepared a special blog post for you to read. I'll leave the sr.ht details out of this post and just send you off to read about it there.
 
-First off, today is the second anniversary of SourceHut's alpha being opened to
-the public, and as such, I've prepared a special [blog post][sr.ht 2 years] for
-you to read. I'll leave the sr.ht details out of this post and just send you off
-to read about it there.
+=> https://sourcehut.org/blog/2020-11-15-sourcehut-2-year-alpha/ SourceHut's second year in alpha
 
-[sr.ht 2 years]: https://sourcehut.org/blog/2020-11-15-sourcehut-2-year-alpha/
+What else is new? Well, a few things. For one, I've been working more on Gemini.  I added CGI support to gmnisrv and wrote a few CGI scripts to do neato Gemini things with. I've also added regexp routing and URL rewriting support. We can probably ship gmnisrv 1.0 as soon as the last few bugs are flushed out, and a couple of minor features are added, and we might switch to another SSL implementation as well. Thanks to the many contributors who've helped out: William Casarin, Tom Lebreux, Kenny Levinsen, Eyal Sawady, René Wagner, dbandstra, and mbays.
 
-What else is new? Well, a few things. For one, I've been working more on Gemini.
-I added CGI support to [gmnisrv](https://sr.ht/~sircmpwn/gmnisrv) and wrote a
-few [CGI scripts](https://git.sr.ht/~sircmpwn/cgi-scripts) to do neato Gemini
-things with. I've also added regexp routing and URL rewriting support. We can
-probably ship gmnisrv 1.0 as soon as the last few bugs are flushed out, and a
-couple of minor features are added, and we might switch to another SSL
-implementation as well. Thanks to the many contributors who've helped out:
-William Casarin, Tom Lebreux, Kenny Levinsen, Eyal Sawady, René Wagner,
-dbandstra, and mbays.
+=> https://git.sr.ht/~sircmpwn/cgi-scripts CGI scripts
 
-In [BARE](https://baremessages.org) news: Elm, Erlang, Ruby, Java, and Ruby
-implementations have appeared, and I have submitted a
-[draft RFC](https://datatracker.ietf.org/doc/draft-devault-bare/) to the IETF
-for standardization.
+In BARE news: Elm, Erlang, Ruby, Java, and Ruby implementations have appeared, and I have submitted a draft RFC to the IETF for standardization.
 
-Finally, I wrote a new Wayland server for you. Its only dependencies are a POSIX
-system and a C11 compiler &mdash; and it works with Nvidia GPUs, or even systems
-without OpenGL support at all. Here's the code:
+=> https://datatracker.ietf.org/doc/draft-devault-bare/ IETF: draft-ddevault-bare
 
-```c
+Finally, I wrote a new Wayland server for you. Its only dependencies are a POSIX system and a C11 compiler &mdash; and it works with Nvidia GPUs, or even systems without OpenGL support at all. Here's the code:
+
+```
 #include <poll.h>
 #include <signal.h>
 #include <stdint.h>
