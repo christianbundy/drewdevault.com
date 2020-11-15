@@ -4,7 +4,7 @@
   <section class="article-list">
     <h1>{{$.Title}}</h1>
 
-    {{ range (where .Site.RegularPages "Section" "blog") }}
+    {{ range (where (where .Site.RegularPages "Section" "blog") "Params.nohtml" "!=" "true") }}
     <div class="article">
       <span class="date">{{.Date.Format "January 2, 2006"}}</span>
       {{- if .OutputFormats.Get "html" }}
