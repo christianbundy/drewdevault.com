@@ -25,7 +25,7 @@ implementation as well. Thanks to the many contributors who've helped out:
 William Casarin, Tom Lebreux, Kenny Levinsen, Eyal Sawady, René Wagner,
 dbandstra, and mbays.
 
-In [BARE](https://baremessages.org) news: Elm, Erlang, Ruby, Java, and Ruby
+In [BARE](https://baremessages.org) news: Elm, Erlang, Java, and Ruby
 implementations have appeared, and I have submitted a
 [draft RFC](https://datatracker.ietf.org/doc/draft-devault-bare/) to the IETF
 for standardization.

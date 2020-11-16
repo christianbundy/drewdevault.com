@@ -8,7 +8,7 @@ What else is new? Well, a few things. For one, I've been working more on Gemini.
 
 => https://git.sr.ht/~sircmpwn/cgi-scripts CGI scripts
 
-In BARE news: Elm, Erlang, Ruby, Java, and Ruby implementations have appeared, and I have submitted a draft RFC to the IETF for standardization.
+In BARE news: Elm, Erlang, Java, and Ruby implementations have appeared, and I have submitted a draft RFC to the IETF for standardization.
 
 => https://datatracker.ietf.org/doc/draft-devault-bare/ IETF: draft-ddevault-bare
 
