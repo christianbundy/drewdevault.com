@@ -12,6 +12,8 @@
 
 # Drew DeVault's geminispace
 
+Contact: sir@cmpwn.com
+
 My Gemini-related projects:
 
 => gmni.gmi gmni: a Gemini client
