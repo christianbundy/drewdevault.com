@@ -136,7 +136,7 @@ homura.localdomain local:homura
 This will deliver mail normally to `$user@homura` (my hostname), but will
 forward mail sent to `$user@lists.homura` to the Unix socket where the
 [lists.sr.ht LMTP
-server](https://git.sr.ht/~sircmpwn/lists.sr.ht/tree/lists-srht-lmtp) lives.
+server](https://git.sr.ht/~sircmpwn/lists.sr.ht/tree/master/listssrht-lmtp) lives.
 
 Add the subdomain to `/etc/hosts`:
 
