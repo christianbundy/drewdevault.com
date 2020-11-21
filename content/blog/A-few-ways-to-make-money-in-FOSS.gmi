@@ -16,7 +16,7 @@ One way to make money in FOSS is to get someone to pay you to write free softwar
 I have a little trick that I often suggest to people who vaguely want to work “in FOSS”, but who aren’t trying to find the monetization potential in their own projects. Use git to clone the source repositories for some (large) projects you’re interested in, the kind of stuff you want to work on, and then run this command:
 
 ```
-git log -n100000 --format="%ae" | cut -d@ -f2 | sort -u | less
+git log -n100000 --format="%ae" | cut -d@ -f2 | sort | uniq -c | sort -nr | less
 ```
 
 => https://drewdevault.com/2020/08/10/How-to-contribute-to-FOSS.html See also: I want to contribute to your project, how do I start?

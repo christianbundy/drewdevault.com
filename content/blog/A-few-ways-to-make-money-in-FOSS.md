@@ -37,7 +37,7 @@ you're interested in,
 and then run this command:
 
 ```
-git log -n100000 --format="%ae" | cut -d@ -f2 | sort -u | less
+git log -n100000 --format="%ae" | cut -d@ -f2 | sort | uniq -c | sort -nr | less
 ```
 
 This will output a list of the email domains who have committed to the
