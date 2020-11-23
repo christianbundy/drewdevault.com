@@ -43,7 +43,7 @@ for a mail service provider.
   advertise.
 
 Full disclosure: SourceHut and Migadu agreed to a consulting arrangement to
-build their [new webmail system](https://git.sr.ht/~emersion/alps), which should
+build their [new webmail system](https://git.sr.ht/~migadu/alps), which should
 be going into production soon. However, I had evaluated and started recommending
 Migadu prior to the start of this project, and I believe that Migadu fares well
 under the criteria I give at the end of this post.
@@ -115,5 +115,5 @@ If you represent a mail service provider which you believe meets this criteria,
 please [send me an email](mailto:sir@cmpwn.com).
 
 [^1]: This also rules out ProtonMail and Tutanota, doubly damning them, especially because it provides an excuse for skipping IMAP and SMTP, which conveniently enables vendor lock-in.
-[^2]: This rules out Fastmail because of their government (Australlia)'s hostile and subversive laws regarding encryption.
+[^2]: This rules out Fastmail because of their government (Australia)'s hostile and subversive laws regarding encryption.
 [^3]: Alarmingly rare, this one. It seems to be either this, or a captcha like mailbox.org does. I would be interested in seeing the use of client-side proof of work, or requiring someone to enter their payment details and successfully complete a charge instead.
