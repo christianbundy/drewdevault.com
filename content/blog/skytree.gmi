@@ -26,4 +26,4 @@
 
 => /pictures/venue.jpg 会場
 
-=> /pictures/live.jpg ライブ
+=> /pictures/live.png ライブ
