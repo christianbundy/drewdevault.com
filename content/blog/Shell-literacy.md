@@ -7,8 +7,8 @@ outputs: [html, gemtext]
 Shell literacy is one of the most important skills you ought to possess as a
 programmer. The Unix shell is one of the most powerful ideas ever put to code,
 and should be second nature to you as a programmer. No other tool is nearly as
-effective at commanding your computer to complex tasks quickly &mdash; or at
-storing them as scripts you can use later.
+effective at commanding your computer to perform complex tasks quickly &mdash;
+or at storing them as scripts you can use later.
 
 In my workflow, I use Vim as my editor, and Unix as my "IDE". I don't trick out
 [my vimrc](https://git.sr.ht/~sircmpwn/dotfiles/tree/master/.vimrc) to add a
