@@ -25,7 +25,7 @@ the proof is computationally expensive and resistant to highly parallel attacks
 spammers to register accounts in bulk, while still allowing Tor users to
 register with their anonymity intact.
 
-On the Gemini front, patches from Mark Dain, William Casarin, and Ewal Sawady
+On the Gemini front, patches from Mark Dain, William Casarin, and Eyal Sawady
 have improved [gmnisrv](https://git.sr.ht/~sircmpwn/gmnisrv) in several respects
 &mdash; mainly bugfixes &mdash; and [gmnlm](https://git.sr.ht/~sircmpwn/gmni)
 has grown the "&lt;n&gt;|" command, which pipes the Nth link into a shell

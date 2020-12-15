@@ -8,7 +8,7 @@ I also wrote a little tool this month called mkproof, after brainstorming some w
 
 => https://git.sr.ht/~sircmpwn/mkproof mkproof on sourcehut
 
-On the Gemini front, patches from Mark Dain, William Casarin, and Ewal Sawady have improved gmnisrv in several respects — mainly bugfixes — and gmnlm has grown the “<n>|” command, which pipes the Nth link into a shell command. Thanks are due to Alexey Yerin as well, who sent a little bugfix with redirect handling.
+On the Gemini front, patches from Mark Dain, William Casarin, and Eyal Sawady have improved gmnisrv in several respects — mainly bugfixes — and gmnlm has grown the “<n>|” command, which pipes the Nth link into a shell command. Thanks are due to Alexey Yerin as well, who sent a little bugfix with redirect handling.
 
 The second draft of the BARE specification was submitted to the IETF this month. Will revisit it again in several weeks. John Mulligan has also sent several patches improving go-bare — thanks!
 
