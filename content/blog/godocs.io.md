@@ -44,3 +44,8 @@ appreciate your patch.
 
 [^1]: Which have problems of their own, which, when I raised them, where quickly dismissed by the Go team.
 [^2]: "Useful for intranets" is obviously not the defining reason why FOSS projects are good.
+
+Update: [implemented full-text search](https://git.sr.ht/~sircmpwn/gddo/commit/c916d5629996d6a4cbd67e48e25af40a966b5d69)
+on top of Postgres in about 30 minutes with a friend's help. Aside from the
+dataset (which will grow naturally as the service is used), this should be for
+all intents and purposes equivalent to pre-pkg.go.dev godoc.org now. Enjoy!
