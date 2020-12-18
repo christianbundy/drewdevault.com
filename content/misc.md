@@ -3,6 +3,11 @@ title: Miscellaneous links
 layout: page
 ---
 
+# Services
+
+- [godocs.io](https://godocs.io)
+- [Gemini portal](https://portal.drewdevault.com)
+
 # Pages
 
 - [Japanese learning resources](/japanese)

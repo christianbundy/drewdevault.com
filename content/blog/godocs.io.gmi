@@ -1,0 +1,19 @@
+The inevitable forced migration to pkg.go.dev is shipping with known regressions. It’s rolling on out without fixing, for example, a problem I pointed out in June. godoc.org uses special meta tags which can link up a source path and line number with a URL for a git host’s source view. pkg.go.dev instead hardcodes a list of hosted git forges. git.sr.ht is among them — getting it added was my introduction to this mess — but only the hosted instance, and no third-party git.sr.ht instances. hg.sr.ht is still missing, too. The Go team committed to not shipping with regressions, but that was (predictably) false.
+
+=> https://github.com/golang/go/issues/38986 Raising the issue in June
+
+I have previously written about the botched pkg.go.dev roll-out. It’s a microcosm of Google’s toxic engineering culture, demonstrating how Google engineers are out-of-touch with the values and needs of their community. It initially shipped as a proprietary replacement, with no intention of making it open source until the community demanded it, under the rationale that it wasn’t useful for intranets. They didn’t take the opportunity to address any of the flaws in godoc.org’s design, and instead introduced regressions and made those flaws even worse.
+
+=> https://drewdevault.com/2020/08/01/pkg-go-dev-sucks.html Previously on Drew Hates pkg.go.dev
+
+And it’s shipping, in this state, in Q1 2021.
+
+This pattern appears to be common to many Google affairs, because it’s the primary means by which Googlers get promoted.
+
+In light of this, godocs.io is now available, running the last version of godoc.org that pre-dates pkg.go.dev. It is my intention to keep this running indefinitely, and you’re welcome to use it for your own purposes or projects.
+
+=> https://godocs.io godocs.io
+
+I haven’t made any especially interesting changes, but the source code is available on git.sr.ht — feel free to send patches along to sir@cmpwn.com if you want to submit (minor) improvements or bugfixes. One change I will definitely have to make is a new solution for full-text search (probably just Postgres), because I don't want to use AppEngine. If anyone wants to help with this, I would appreciate your patch.
+
+=> https://git.sr.ht/~sircmpwn/gddo The code
