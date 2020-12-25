@@ -1,6 +1,6 @@
 ---
 title: How to design a new programming language from scratch
-date: 2020-12-26
+date: 2020-12-25
 outputs: [html, gemtext]
 ---
 
