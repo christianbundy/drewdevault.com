@@ -1,4 +1,4 @@
-baseURL = "https://drewdevault.com/"
+baseURL = "."
 title = "Drew DeVault's blog"
 pygmentsUseClasses = true
 uglyurls = true
