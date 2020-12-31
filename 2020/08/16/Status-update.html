@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Status update, August 2020</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Status update, August 2020
+  <small>
+    <span class="date">August 16, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Greetings! Today is another rainy day here in Philadelphia, which rather sours
+my plans of walking over to the nearby cafe to order some breakfast to-go. But I
+am tired, and if I&rsquo;m going to make it to the end of this blog post in one piece,
+I&rsquo;m gonna need a coffee. brb.</p>
+<p>Hey, that was actually pretty refreshing. It&rsquo;s just drizzling, and the rain is
+nice and cool. Alright, here goes! What&rsquo;s new? I&rsquo;ll leave the Wayland news for
+<a href="https://emersion.fr/blog">Simon Ser&rsquo;s blog</a> this month - he&rsquo;s been working on
+some exciting stuff. The <a href="https://baremessages.org/">BARE encoding</a> announced
+last month has received some great feedback and refinements, and there are now
+six projects providing BARE support for their author&rsquo;s favorite programming
+language<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. There have also been some improvements to the Go implementation
+which should help with some SourceHut plans later on.</p>
+<p>On the subject of SourceHut, I&rsquo;ve focused mainly on infrastructure improvements
+this month. There is a new server installed for hg.sr.ht, which will also be
+useful as a testbed for additional ops work planned for future expansion.
+Additionally, the PostgreSQL backup system has been overhauled and made more
+resilient, both to data loss and to outages. A lot of other robustness
+improvements have been made fleet-wide in monitoring. I&rsquo;ll be working on more
+user-facing features again next month, but in the meanwhile, contributors like
+наб have sent many patches in which I&rsquo;ll cover in detail in the coming &ldquo;What&rsquo;s
+cooking&rdquo; post for <a href="https://sourcehut.org/blog">sourcehut.org</a>.</p>
+<p>Otherwise, I&rsquo;ve been taking it easy this month. I definitely haven&rsquo;t been
+spending a lot of my time on a secret project, no sir. Thanks again for your
+support! I&rsquo;ll see you next month.</p>
+<details>
+<summary>?</summary>
+<pre>
+use io;
+use io_uring = linux::io_uring;
+use linux;
+use strings;
+<p>export fn main void = {
+let uring = match (io_uring::init(256u32, 0u32)) {
+err: linux::error =&gt; {
+io::println(&ldquo;io_uring::init error:&quot;);
+io::println(linux::errstr(err));
+return;
+},
+u: io_uring::io_uring =&gt; u,
+};</p>
+<pre><code>let buf: [8192]u8 = [0u8...];
+let text: nullable *str = null;
+let wait = 0u;
+let offs = 0z;
+let read: *io_uring::sqe = null: *io_uring::sqe,
+    write: *io_uring::sqe = null: *io_uring::sqe;
+let eof = false;
+
+while (!eof) {
+    read = io_uring::must_get_sqe(&amp;uring);
+    io_uring::prep_read(read, linux::STDIN_FILENO,
+        &amp;buf, len(buf): u32, offs);
+    io_uring::sqe_set_user_data(read, &amp;read);
+    wait += 1u;
+
+    let ev = match (io_uring::submit_and_wait(&amp;uring, wait)) {
+        err: linux::error =&gt; {
+            io::println(&quot;io_uring::submit error:&quot;);
+            io::println(linux::errstr(err));
+            return;
+        },
+        ev: uint =&gt; ev,
+    };
+
+    wait -= ev;
+
+    for (let i = 0; i &lt; ev; i += 1) {
+        let cqe = match (io_uring::get_cqe(&amp;uring, 0u, 0u)) {
+            err: linux::error =&gt; {
+                io::println(&quot;io_uring::get_cqe error:&quot;);
+                io::println(linux::errstr(err));
+                return;
+            },
+            c: *io_uring::cqe =&gt; c,
+        };
+
+        if (io_uring::cqe_get_user_data(cqe) == &amp;read) {
+            if (text != null) {
+                free(text);
+            };
+
+            if (cqe.res == 0) {
+                eof = true;
+                break;
+            };
+
+            text = strings::must_decode_utf8(buf[0..cqe.res]);
+            io_uring::cqe_seen(&amp;uring, cqe);
+
+            write = io_uring::must_get_sqe(&amp;uring);
+            io_uring::prep_write(write, linux::STDOUT_FILENO,
+                text: *char, len(text): u32, 0);
+            io_uring::sqe_set_user_data(write, &amp;write);
+            wait += 1u;
+            offs += cqe.res;
+        } else if (io_uring::cqe_get_user_data(cqe) == &amp;write) {
+            assert(cqe.res &gt; 0);
+            io_uring::cqe_seen(&amp;uring, cqe);
+        } else {
+            assert(false, &quot;Unknown CQE user data&quot;);
+        };
+    };
+};
+
+io_uring::close(&amp;uring);
+</code></pre>
+<p>};
+</pre></p>
+<details>
+<summary>hmm?</summary>
+<p>I might note that I wrote this program to test my io_uring wrapper; it's not
+representative of how normal programs will do I/O in the future.</p>
+</details>
+</details>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Or in some cases, the language the author is begrudgingly stuck with. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

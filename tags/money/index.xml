@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>money on Drew DeVault&#39;s blog</title>
+    <link>./tags/money.html</link>
+    <description>Recent content in money on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 06 May 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/money/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Calculating your donation&#39;s value following Patreon&#39;s fee changes</title>
+      <link>./2019/05/06/Calculate-your-doation-fees-for-Patreon.html</link>
+      <pubDate>Mon, 06 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/05/06/Calculate-your-doation-fees-for-Patreon.html</guid>
+      <description>In January 2018, I wrote a blog post which included a fee calculator. Patreon changes their fee model tomorrow, and it&amp;rsquo;s time for an updated calculator. I&amp;rsquo;m grandfathered into the old fees, so not much has changed for me, but I want to equip Patreon users - creators and supporters - with more knowledge of how their money is moving through the platform.
+Patreon makes money by siphoning some money off the top of a donation flow between supporters and creators.</description>
+    </item>
+    
+    <item>
+      <title>I&#39;m going to work full-time on free software</title>
+      <link>./2019/01/15/Im-doing-FOSS-full-time.html</link>
+      <pubDate>Tue, 15 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/01/15/Im-doing-FOSS-full-time.html</guid>
+      <description>Sorry for posting two articles so close to each other - but this is important! As I&amp;rsquo;m certain many of you know, I maintain a large collection of free software projects, including sway, wlroots, sr.ht, scdoc, aerc, and many, many more. I contribute to more still, working on projects like Alpine Linux, mrsh, musl libc, and anything else I can. Until now, I&amp;rsquo;ve been working on these in my spare time, but just under a year ago I wrote &amp;ldquo;The path to sustainably working on FOSS full-time&amp;rdquo; laying out my future plans.</description>
+    </item>
+    
+    <item>
+      <title>The path to sustainably working on FOSS full-time</title>
+      <link>./2018/02/24/The-road-to-sustainable-FOSS.html</link>
+      <pubDate>Sat, 24 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/02/24/The-road-to-sustainable-FOSS.html</guid>
+      <description>This is an article I didn&amp;rsquo;t think I&amp;rsquo;d be writing any time soon. I&amp;rsquo;ve aspired to work full-time on my free and open source software projects for a long time now, but I have never expected that it could work. However, as of this week, I finally have enough recurring donation revenue to break even on FOSS, and I&amp;rsquo;ve started to put the extra cash away. I needed to set the next donation goal and ran the numbers to figure out what it takes to work on FOSS full-time.</description>
+    </item>
+    
+    <item>
+      <title>Fee breakdown for various donation platforms</title>
+      <link>./2018/01/16/Fees-on-donation-platforms.html</link>
+      <pubDate>Tue, 16 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/01/16/Fees-on-donation-platforms.html</guid>
+      <description>Understanding fees are a really confusing part of supporting creators of things you like. I provide a few ways for people to support my work, and my supporters can struggle to understand the differences between them. It comes down to fees, of which there are several kinds (note: I just made these terms up):
+ Transaction fees are charged by the payment processor (the company that takes down your card number and runs the transaction with your bank).</description>
+    </item>
+    
+    <item>
+      <title>On the profitability of image hosting websites</title>
+      <link>./2014/10/10/The-profitability-of-online-services.html</link>
+      <pubDate>Fri, 10 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>./2014/10/10/The-profitability-of-online-services.html</guid>
+      <description>I&amp;rsquo;ve been doing a lot of thought about whether or not it&amp;rsquo;s even possible to both run a simple website and turn a profit from it and maintain a high quality of service. In particular, I&amp;rsquo;m thinking about image hosts, considering that I run one (a rather unprofitable one, too), but I would think that my thoughts on this matter apply to more kinds of websites. That being said, I&amp;rsquo;ll just talk about media hosting because that&amp;rsquo;s where I have tangible expertise.</description>
+    </item>
+    
+  </channel>
+</rss>

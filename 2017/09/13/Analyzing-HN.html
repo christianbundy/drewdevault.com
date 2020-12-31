@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Analyzing HN moderation &amp; censorship</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Analyzing HN moderation &amp; censorship
+  <small>
+    <span class="date">September 13, 2017</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p><a href="https://news.ycombinator.com">Hacker News</a> is a popular
+&ldquo;<a href="http://www.catb.org/jargon/html/H/hacker.html">hacker</a>&rdquo; news board. One thing
+I love about HN is that the moderation generally does an excellent job. The site
+is free of spam and the conversations are usually respectful and meaningful (if
+pessimistic at times). However, there is always room for improvement, and
+moderation on Hacker News is no exception.</p>
+<p><strong>Notice</strong>: on 2017-10-19 this article was updated to incorporate feedback the
+Hacker News moderators sent to me to clarify some of the points herein. You may
+view a diff of these changes
+<a href="https://github.com/SirCmpwn/sircmpwn.github.io/commit/553d051c84a4631c3bd3264a437dfbc6c9807d13">here</a>.</p>
+<p>For some time now, I&rsquo;ve been scraping the HN API and website to learn how the
+moderators work, and to gather some interesting statistics about posts there
+in general. Every 5 minutes, I take a sample of the front page, and every 30
+minutes, I sample the top 500 posts (note that HN may return fewer than this
+number). During each sample, I record the ID, author, title, URL, status
+(dead/flagged/dupe/alive), score, number of comments, rank, and compute the rank
+based on <a href="https://news.ycombinator.com/item?id=231209">HN&rsquo;s published algorithm</a>.
+A note is made when the title, URL, or status changes.</p>
+<p><a href="https://hn.0x2237.club/post/15217697"><img src="https://sr.ht/IFCA.png" alt=""></a></p>
+<p>The information gathered is publicly available at
+<a href="https://hn.0x2237.club">hn.0x2237.club</a> (sorry about the stupid domain, I just
+picked one at random). You can search for most posts here going back to
+2017-04-14, as well as view recent
+<a href="https://hn.0x2237.club/title-changes">title</a> and
+<a href="https://hn.0x2237.club/url-changes">url</a> changes or <a href="https://hn.0x2237.club/deleted">deleted
+posts</a>
+(<a href="https://hn.0x2237.club/deleted-10">score&gt;10</a>). Raw data is available as JSON
+for any post at <code>https://hn.0x2237.club/post/:id/json</code>. Feel free to explore the
+site later, or <a href="https://git.sr.ht/~sircmpwn/hnstats">its shitty code</a>. For now,
+let&rsquo;s dive into what I&rsquo;ve learned from this data.</p>
+<h3 id="tools-hn-mods-use">Tools HN mods use</h3>
+<p>The main tools I&rsquo;m aware of that HN moderators can use to perform their duties
+are:</p>
+<ul>
+<li>Editing link titles or URLs</li>
+<li>Influencing story rank via &ldquo;downweighting&rdquo; or &ldquo;burying&rdquo;</li>
+<li>Deleting or &ldquo;killing&rdquo; posts</li>
+<li>Detaching off-topic or rulebreaking comment threads from their parents</li>
+<li><abbr title="Banning them without making it known to them">Shadowbanning</abbr>
+misbehaving users</li>
+<li>Banning misbehaving users (and telling them)</li>
+</ul>
+<p>The moderators emphasize a difference between deleting a post and killing a
+post. The former, deleting a post, will remove it from all public view like it
+had never existed, and is a tool used infrequently. Killing a post will mark it
+as [dead] so it doesn&rsquo;t show up on the post listing.</p>
+<p>Influencing a post&rsquo;s rank can also be done through several means of varying
+severity. &ldquo;Burying&rdquo; a post will leave a post alive, but plunge it in rank.
+&ldquo;Downweighting&rdquo; is similar, but does not push its rank as far.</p>
+<p>There are also automated tools for detecting spam and <abbr title="Posts
+influenced by a group of early voters hoping to get it on the front page">voting
+rings</abbr>, as well as automated de-emphasizing of posts based on certain
+<abbr title="'Bitcoin' was known to at some point be one of these">secret
+keywords</abbr> and controls to prevent flamewars. Automated tools on Hacker
+News are used to downweight or kill posts, but never to bury or delete them.
+Dan spoke about these tools and their usage for me:</p>
+<blockquote>
+<p>Of these four interventions (deleting, killing, burying, and downweighting),
+the only one that moderators do frequently is downweighting. We downweight
+posts in response to things that go against the site guidelines, such as when a
+submission is unsubstantive, baity or sensational. Typically such posts remain
+on the front page, just at a lower rank. We bury posts when they&rsquo;re dupes,
+but rarely otherwise. We kill posts when they&rsquo;re spam, but rarely
+otherwise. [&hellip;] We never delete a post unless the author asks us to.</p>
+</blockquote>
+<p>Dan also further clarified the difference between dead and deleted for me:</p>
+<blockquote>
+<p>The distinction between &lsquo;dead&rsquo; and &lsquo;deleted&rsquo; is important. Dead posts
+are different from deleted ones in that people can still see them if
+they set &lsquo;showdead&rsquo; to &lsquo;yes&rsquo; in their profile. That way, users who
+want a less moderated view can still see everything that has been
+killed by moderators or software or user flags. Deleted posts, on the
+other hand, are erased from the record and never seen again. On HN,
+authors can delete their own posts for a couple hours (unless they are
+comments that have replies). After that, if they want a post deleted
+they can ask us and we usually are happy to oblige.</p>
+</blockquote>
+<p>Moderators can also artificially influence rank upwards - one way is by inviting
+the user to re-submit a post that they want to give another shot at the front
+page. This gives the post a healthy upvote to begin with and prevents it from
+being flagged. The moderators invited me to re-submit this very article using
+this mechanism on 2017-10-19.</p>
+<p>Banning users is another mechanism that they can use. There are two ways bans
+are typically applied around the net - telling users they&rsquo;ve been banned, and
+keeping it quiet. The latter - shadowbanning - is a useful tool against spammers
+and serial ban evaders who might otherwise try to circumvent their ban. However,
+it&rsquo;s important that this does <em>not</em> become the first line of defense against
+rulebreaking users, who should instead be informed of the reason for their ban
+so they have a chance to reform and appeal it. Here&rsquo;s what Dan has to say about
+it:</p>
+<blockquote>
+<p>Shadowbanning has proven to still be useful for spammers and trolls
+(i.e. when a new account shows up and is clearly breaking the site
+guidelines off the bat). Most such abuse is by a relatively small
+number of users who create accounts over and over again to do the same
+things. When there&rsquo;s evidence that we&rsquo;ve repeatedly banned someone
+before, I don&rsquo;t feel obliged to tell them we&rsquo;re banning them again.
+[&hellip;] When we&rsquo;re banning an established account, though, we post a comment
+saying so, and nearly always only after warning that user beforehand. Many such
+users had no idea they were breaking the site guidelines and are
+quite happy to improve their posts, which is a win for everyone.</p>
+</blockquote>
+<p>Dan also shared a link to search for comments where moderators have explained
+to users why they&rsquo;ve been banned. Of course, this doesn&rsquo;t include users who were
+banned without explanation, or that use slightly different language:</p>
+<p><a href="https://hn.algolia.com/?query=by:dang%20we%20banned&amp;sort=byDate&amp;dateRange=all&amp;type=comment&amp;storyText=false&amp;prefix&amp;page=0">dang&rsquo;s bans</a></p>
+<p><a href="https://hn.algolia.com/?query=by:sctb%20we%20banned&amp;sort=byDate&amp;dateRange=all&amp;type=comment&amp;storyText=false&amp;prefix=false&amp;page=0">sctb&rsquo;s bans</a></p>
+<h2 id="data-based-insights">Data-based insights</h2>
+<p>Here&rsquo;s an example of a fairly common moderator action:</p>
+<p><img src="https://sr.ht/PhJM.png" alt=""></p>
+<p><a href="https://hn.0x2237.club/post/15217697">This post</a> had its title changed at
+around 09-11-17 12:10 UTC, and had the rank artificially adjusted to push it
+further down the front page. We can tell that the drop was artificial just by
+correlating it with the known moderator action, but we can also compare it
+against the computed base rank:</p>
+<p><img src="https://sr.ht/IJQI.png" alt=""></p>
+<p>Note however that the base rank is often wildly different from the rank observed
+in practice; the factors that go into adjusting it are rather complex. We can
+also see that despite the action, the post&rsquo;s score continued to increase, even
+at an accelerated pace:</p>
+<p><img src="https://sr.ht/FmNU.png" alt=""></p>
+<p>This &ldquo;title change and derank&rdquo; is a fairly common action - here are some more
+examples from the past few days:</p>
+<p><a href="https://hn.0x2237.club/post/15219154">Betting on the Web - Why I Build PWAs</a></p>
+<p><a href="https://hn.0x2237.club/post/15210767">Silicon Valley is erasing individuality</a></p>
+<p><a href="https://hn.0x2237.club/post/15208565">Chinese government is working on a timetable to end sales of fossil-fuel cars</a></p>
+<p>Users can change their own post titles, which I&rsquo;m unable to distinguish from
+moderator changes. However, correlating them with a strange change in rank is
+generally a good bet. Submitters also generally will edit their titles earlier
+rather than later, so a later change may indicate that it was seen by a
+moderator after it rose some distance up the page.</p>
+<p>I also occasionally find what seems to be the opposite - artificially bumping a
+post further up the page. Here&rsquo;s two examples:
+<a href="https://hn.0x2237.club/post/15213371">15213371</a> and
+<a href="https://hn.0x2237.club/post/15209377">15209377</a>. Rank influencing in either
+direction also happens without an associated title or URL change, but
+automatically pinning such events down is a bit more subtle than my tools can
+currently handle.</p>
+<p>Moderators can also delete a post or indicate it as a dupe. The latter can be
+(and is) detected by my tools, but the former is indistinguishable from the user
+opting to delete posts themselves. In theory, posts that are deleted <em>after</em> the
+author is no longer allowed to could be detected, but this happens rarely and my
+tools don&rsquo;t track posts once they get old enough.</p>
+<h3 id="flagging">Flagging</h3>
+<p>The users have some moderation tools at their disposal, too - downvotes,
+flagging, and vouching. When a comment is downvoted, it is moved towards the
+bottom of the thread and is gradually colored grayer to become less visible, and
+can be reversed with upvotes. When a comment gets enough flags, it is removed
+entirely unless you have showdead enabled in your profile. Flagged posts are
+downweighted or killed when enough flags accumulate. These posts are moved to
+the bottom of the ranked posts even if you have showdead enabled, and can also
+be seen in /new. Flagging can be reversed with the vouch feature, but flagged
+stories are almost never vouched back into existence.</p>
+<p><strong>Note</strong>: detection of post flagged status is very buggy with my tools. The API
+exposes a boolean for dead posts, so I have to fall back on scraping to
+distinguish between different kinds of dead-ness. But this is pretty buggy, so I
+encourage you to examine the post yourself when browsing my site if in doubt.</p>
+<h3 id="are-these-tools-abused-for-censorship">Are these tools abused for censorship?</h3>
+<p>Well, with all of this data, was I able to find evidence of censorship? There
+are two answers: yes and maybe. The &ldquo;yes&rdquo; is because users are <em>definitely</em>
+abusing the flagging feature. The &ldquo;maybe&rdquo; is because moderator action leaves
+room for interpretation. I&rsquo;ll get to that later, but let&rsquo;s start with flagging
+abuse.</p>
+<h4 id="censorship-by-users">Censorship by users</h4>
+<p>The threshold for removing a story due to flags is rather low, though I don&rsquo;t
+know the exact number. Here are some posts whose flags I consider questionable:</p>
+<p><a href="https://hn.0x2237.club/post/15129859">Harvey, the Storm That Humans Helped Cause</a> (23 points)</p>
+<p><a href="https://hn.0x2237.club/post/15116132">ES6 imports syntax considered harmful</a> (12 points)</p>
+<p><a href="https://hn.0x2237.club/post/14415411">White-Owned Restaurants Shamed for Serving Ethnic Food</a> (33 points)</p>
+<p><a href="https://hn.0x2237.club/post/14152602">The evidence is piling up – Silicon Valley is being destroyed</a> (27 points)</p>
+<p>A good place to discover these sorts of events is to browse hnstats for posts
+deleted with a score <a href="https://hn.0x2237.club/deleted-10">&gt;10 points</a>. There are
+also occasions where the flags seem to be due to a poor title, which is a
+fixable problem for which flagging is a harsh solution:</p>
+<p><a href="https://hn.0x2237.club/post/14679207">Poettering downvoted 5 (at time of this writing) times</a></p>
+<p><a href="https://hn.0x2237.club/post/14676296">Germany passes law restricting free speech on the internet</a></p>
+<p>The main issue with flags is that they&rsquo;re often used as an alternative to the
+HN&rsquo;s (by design) lack of a downvoting feature. HN also gives users no guidelines
+on <em>why</em> they should flag posts, which mixes poorly with automated removal of a
+post given enough flags.</p>
+<h4 id="censorship-by-moderators">Censorship by moderators</h4>
+<p>Moderator actions are a bit more difficult to judge. Moderation on HN is a black
+box - most of the time, moderators don&rsquo;t make the reasoning behind their actions
+clear. Many of their actions (such as rank influence) are also subtle and easy
+to miss. Thankfully they are often receptive to being asked why some moderation
+occurred, but only as often as not.</p>
+<p>Anecdotally, I also find that moderators occasionally moderate selectively, and
+keep quiet in the face of users asking them why. Notably this is a problem for
+<abbr title="links for which you have to pay money to read the
+content">paywalled</abbr> articles, which are <a href="https://news.ycombinator.com/newsfaq.html">against the
+rules</a> but are often allowed to
+remain.</p>
+<p>Dan sent me a response to this section:</p>
+<blockquote>
+<p>[It&rsquo;s true that we don&rsquo;t explain our actions], but mostly because it would be
+hopeless to try. We could do that all day and still not make everything clear,
+because the quantity is overwhelming and the cost of a high-quality explanation
+is steep. Moreover the experiment would be impossible to run because one
+would die of boredom long before reaching 100%. Our solution to this
+conundrum is not to try to explain everything but to answer specific
+questions as best we can. We don&rsquo;t answer every question, but that&rsquo;s
+mostly because we don&rsquo;t see every question. If people ask us things on
+HN itself, odds are we won&rsquo;t see it (also, the site guidelines ask
+users not to do this, per (<a href="https://news.ycombinator.com/newsguidelines.html">our
+guidelines</a>). If they
+<a href="mailto:hn@ycombinator.com">email us</a>, the probability of a
+response approaches 1.</p>
+</blockquote>
+<p>I can attest personally to success reaching out to <a href="mailto:hn@ycombinator.com">hn@ycombinator.com</a> for
+clarification and even reversal of some moderator decisions, though at a
+response ratio further from 1 than this implies. That being said, I don&rsquo;t think
+that private discourse between the submitter and the moderators is the only
+solution. Other people may be invested in the topic, too - users who upvoted the
+story might not notice its disappearance, but would like more attention drawn to
+the topic and enjoy more discussion. Commenters are even more invested in the
+posts. The submitter is not the only one whoses interests are at stake. This is
+even more of a problem for posts which are moderated via user flags - the HN
+mods are pretty discretionate but users are much less so.</p>
+<p>Explaining every action is not necessary - I don&rsquo;t think anyone needs you to
+explain why someone was banned when they were submitting links to earn money at
+home in your spare time. However, I think a public audit log of moderator
+actions would go a long way, and could be done by software - avoiding the need
+to explain everything. I envision a change to your UI for banning users or
+moderating posts with that adds a dropdown of common reasons and a textbox for
+further elaboration when appropriate - then makes this information appear on
+/moderation.</p>
+<h3 id="conclusions">Conclusions</h3>
+<p>I should again emphasize that most moderator actions are benign and agreeable.
+They do a great job on the whole, but striving to do even better would be
+admirable. I suggest a few changes:</p>
+<ul>
+<li>Make a public audit log of moderation activity, or at least reach out to me to
+see what small changes could be done to help improve my statistics gathering.</li>
+<li>Minimize use of more subtle actions like rank influence, and when used,</li>
+<li>More frequently leave comments on posts where moderation has occurred
+explaining the rationale and opening an avenue for public discussion and/or
+appeal.</li>
+<li>Put flagged posts into a queue for moderator review and don&rsquo;t remove posts
+simply because they&rsquo;re flagged.</li>
+<li>Consider appointing one or two moderators from the community, ideally people
+with less bias towards SV or startup culture.</li>
+</ul>
+<p>Hacker News is a great place for just that - hacker news. It has been for a long
+time and I hope it continues to be. Let&rsquo;s work together on running it
+transparently to the benefit of all.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

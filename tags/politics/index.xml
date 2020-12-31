@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>politics on Drew DeVault&#39;s blog</title>
+    <link>./tags/politics.html</link>
+    <description>Recent content in politics on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 20 Nov 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/politics/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>China</title>
+      <link>./2019/11/20/China.html</link>
+      <pubDate>Wed, 20 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/11/20/China.html</guid>
+      <description>This article will be difficult to read and was difficult to write. I hope that you can stomach the uncomfortable nature of this topic and read my thoughts in earnest. I usually focus on technology-related content, but at the end of the day, this is my personal blog and I feel that it would betray my personal principles to remain silent. I&amp;rsquo;ve made an effort to provide citations for all of my assertions.</description>
+    </item>
+    
+  </channel>
+</rss>

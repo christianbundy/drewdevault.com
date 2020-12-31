@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on Drew DeVault&#39;s blog</title>
+    <link>./categories.html</link>
+    <description>Recent content in Categories on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 12 Jun 2020 00:00:00 +0000</lastBuildDate><atom:link href="./categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>oauth</title>
+      <link>./categories/oauth.html</link>
+      <pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./categories/oauth.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>security</title>
+      <link>./categories/security.html</link>
+      <pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./categories/security.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tls</title>
+      <link>./categories/tls.html</link>
+      <pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./categories/tls.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>rants</title>
+      <link>./categories/rants.html</link>
+      <pubDate>Tue, 18 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./categories/rants.html</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

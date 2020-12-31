@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Linux development is distributed - profoundly so</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Linux development is distributed - profoundly so
+  <small>
+    <span class="date">September 2, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>The standard introduction to git starts with an explanation of what it means to
+use a &ldquo;distributed&rdquo; version control system. It&rsquo;s pointed out that every
+developer has a complete local copy of the repository and can work independently
+and offline, often contrasting this design with systems like SVN and CVS.  The
+explanation usually stops here. If you want to learn more, consider git&rsquo;s roots:
+it is the version control system purpose-built for Linux, the largest and most
+active open source project in the world. To learn more about the true nature of
+distributed development, we should observe Linux.</p>
+<p>Pull up your local copy of the Linux source code (you have one of those,
+right?<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>) and open the MAINTAINERS file. Scroll down to line 150 or so and
+let&rsquo;s start reading some of these entries.</p>
+<p>Each of these represents a different individual or group which has some interest
+in the Linux kernel, often a particular driver. Most of them have an &ldquo;F&rdquo; entry,
+which indicates which files they&rsquo;re responsible for in the source code. Most
+have an &ldquo;L&rdquo; entry, which has a mailing list you can post questions, bug reports,
+and patches to, as well as an individual maintainer (&ldquo;M&rdquo;) or maintainers who are
+known to have expertise and autonomy over this part of the kernel. Many of them
+— but, hmm, not all — also have a tree (&ldquo;T&rdquo;), which is a dedicated
+git repo with their copy of Linux, for staging changes to the kernel. This is
+common with larger drivers or with &ldquo;meta&rdquo; organizations, which oversee
+development of entire subsystems.</p>
+<p>However, this presents a simplified view. Look carefully at the &ldquo;DRM&rdquo; drivers
+(<a href="https://en.wikipedia.org/wiki/Direct_Rendering_Manager">Direct Rendering Manager</a>); a group of drivers and maintainers who are
+collectively responsible for graphics on Linux. There are many drivers and many
+maintainers, but a careful eye will notice that there are many similarities as
+well. A lot of them use the same mailing list, <a href="mailto:dri-devel@lists.freedesktop.org">dri-devel@lists.freedesktop.org</a>,
+and many of them use the same git repository:
+<code>git://anongit.freedesktop.org/drm/drm-misc</code>. It&rsquo;s not mentioned in this file,
+but many of them also shared the FreeDesktop bugzilla until recently, then moved
+to the FreeDesktop GitLab; and many of them share the <code>#dri-devel</code> IRC channel
+on Freenode. And again I&rsquo;m simplifying — there are also many related IRC
+channels and git repos, and some larger drivers like AMDGPU have dedicated
+mailing lists and trees.</p>
+<p>There&rsquo;s more complexity to this system still. For example, not all of these
+subsystems are using git. The Intel TXT subsystem uses Mercurial. The Device
+Mapper team (one of the largest and most important Linux subsystems) uses
+<a href="https://savannah.nongnu.org/projects/quilt">Quilt</a>. And like Linux DRM is a meta-project for many DRM-related subsystems
+&amp; drivers, there are higher-level meta projects still, such as driver-core,
+which manages code and subsystems common to <em>all</em> I/O drivers. There are also
+cross-cutting concerns, such as the interaction between linux-usb and various
+network driver teams.</p>
+<p>Patches to any particular driver could first end up on a domain-specific mailing
+list, with a particular maintainer being responsible for reviewing and
+integrating the patch, with their own policies and workflows and tooling. Then
+it might flow upwards towards another subsystem with its own similar features,
+and then up again towards meta-meta trees like linux-staging, and eventually to
+Linus' tree<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>. Along the way it might receive feedback from other projects if it
+has cross-cutting concerns, tracing out an ever growing and shrinking bubble of
+inclusion among the trees, ultimately ending up in every tree. And that&rsquo;s
+<em>still</em> a simplification — for example, an important bug fix may sidestep
+all of this entirely and get applied on top of a downstream distribution kernel,
+ending up on end-user machines before it&rsquo;s made much progress upstream at all.</p>
+<p>This complex <em>graph</em> of Linux development has code flowing smoothly between
+hundreds of repositories, emails exchanging between hundreds of mailing lists,
+passing through the hands of dozens of maintainers, several bug trackers,
+various CI systems, all day, every day, ten-thousand fold. This is truly
+illustrative of <strong>distributed</strong> software development, well above and beyond the
+typical explanation given to a new git user. The profound potential of the
+distributed git system can be plainly seen in the project for which it was
+principally designed. It&rsquo;s also plain to see how difficult it would be to adapt
+this system to something like GitHub pull requests, despite how easy many who
+are perplexed by the email-driven workflow wish it to be<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>. As a matter of
+fact, several Linux teams are already using GitHub and GitLab and even pull or
+merge requests on their respective platforms.  However, scaling this system up
+to the entire kernel would be a great challenge indeed.</p>
+<p>By the way — that MAINTAINERS file? Scroll to the bottom. My copy is
+<em>19,000 lines long</em>.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Okay, just in case: <code>git clone https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git</code> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>That&rsquo;s not the only destination; for example, some patches will end up in the LTS kernels as well. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>If you are among the perplexed, <a href="https://git-send-email.io">my interactive git send-email tutorial</a> takes about 10 minutes and is often recommended to new developers by Greg KH himself. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Managing my dotfiles as a git repository</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Managing my dotfiles as a git repository
+  <small>
+    <span class="date">December 30, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>There are many tools for managing your dotfiles - user-specific configuration
+files. GNU stow is an example. I&rsquo;ve tried a few solutions over the years, but I
+settled on a very simple system several years ago which has served me very well
+in the time since: my $HOME is a git repository. <a href="https://git.sr.ht/~sircmpwn/dotfiles">This
+repository</a>, in fact. This isn&rsquo;t an
+original idea, but I&rsquo;m not sure where I first heard it from either, and I&rsquo;ve
+extended upon it somewhat since.</p>
+<p>The key to making this work well is my one-byte <code>.gitignore</code> file:</p>
+<pre><code>*
+</code></pre><p>With this line, and git will ignore all of the files in my $HOME directory, so I
+needn&rsquo;t worry about leaving personal files, music, videos, other git
+repositories, and so on, in my public dotfiles repo. But, in order to track
+anything at all, we need to override the gitignore file on a case-by-case basis
+with <code>git add -f</code>, or <code>--force</code>. To add my vimrc, I used the following command:</p>
+<pre><code>git add -f .vimrc
+</code></pre><p>Then I can commit and push normally, and .vimrc is tracked by git. The gitignore
+file does not apply to any files which are already being tracked by git, so any
+future changes to my vimrc show up in git status, git diff, etc, and can be
+easilly committed with <code>git commit -a</code>, or added to the staging area normally
+with <code>git add</code> — using <code>-f</code> is no longer necessary. Setting up a new
+machine is quite easy. After the installation, I run the following commands:</p>
+<pre><code>cd ~
+git init
+git remote add origin git@git.sr.ht:~sircmpwn/dotfiles
+git fetch
+git checkout -f master
+</code></pre><p>A quick log-out and back in and I feel right at $HOME. Additionally, I have
+configured $HOME as a prefix, so that ~/bin is full of binaries, ~/lib has
+libraries, and so on; though I continue to use ~/.config rather than ~/etc. I
+put $HOME/bin ahead of anything else in my path, which allows me to shadow
+system programs with wrapper scripts as necessary. For example, ~/bin/xdg-open
+is as follows:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/sh
+</span><span class="cp"></span><span class="k">case</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">1</span><span class="p">%%:*</span><span class="si">}</span><span class="s2">&#34;</span> in
+	http<span class="p">|</span>https<span class="p">|</span>*.pdf<span class="o">)</span>
+		<span class="nb">exec</span> qutebrowser <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span>
+		<span class="p">;;</span>
+	mailto<span class="o">)</span>
+		<span class="nb">exec</span> aerc <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span>
+		<span class="p">;;</span>
+	*<span class="o">)</span>
+		<span class="nb">exec</span> /usr/bin/xdg-open <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span>
+		<span class="p">;;</span>
+<span class="k">esac</span>
+</code></pre></div><p>Replacing the needlessly annoying-to-customize xdg-open with one that just
+does what I want, falling back to /usr/bin/xdg-open if necessary. Many other
+non-shadowed scripts and programs are found in ~/bin as well.</p>
+<p>However, not all of my computers are configured equally. Some run different
+Linux (or non-Linux) distributions, or have different concerns being desktops,
+servers, laptops, phones, etc. It&rsquo;s often useful for this reason to be able to
+customize my configuration for each host. For example, before $HOME/bin in my
+$PATH, I have $HOME/bin/$(hostname). I also run several machines on
+different architectures, so I include $HOME/bin/$(uname -m)<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> as well. To
+customize my sway configuration to consider the different device configurations
+of each host, I use the following directive in ~/.config/sway/config:</p>
+<pre><code>include ~/.config/sway/`hostname`
+</code></pre><p>Then I have a host-specific configuration there, also tracked by git so I can
+conveniently update one machine from another. I take a similar approach to
+per-host configuration for many other pieces of software I use.</p>
+<p>Rather than using (and learning) any specialized tools, I find my needs quite
+adequately satisfied by a simple composition of several Unix primitives with a
+tool I&rsquo;m already very familiar with: git. Version controlling your configuration
+files is a desirable trait even with other systems, so why not ditch the
+middleman?</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><code>uname -m</code> prints out the system architecture. Try it for yourself, I bet it&rsquo;ll read &ldquo;x86_64&rdquo; or maybe &ldquo;aarch64&rdquo;. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

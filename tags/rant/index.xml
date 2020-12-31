@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>rant on Drew DeVault&#39;s blog</title>
+    <link>./tags/rant.html</link>
+    <description>Recent content in rant on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 26 Jun 2020 00:00:00 +0000</lastBuildDate><atom:link href="./tags/rant/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>General-purpose OS, special-purpose OS, and now: vendor-purpose OS</title>
+      <link>./2020/06/26/Vendor-purpose-OS.html</link>
+      <pubDate>Fri, 26 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/06/26/Vendor-purpose-OS.html</guid>
+      <description>There have, historically, been two kinds of operating systems: general-purpose, and special-purpose. These roles are defined by the function they serve for the user. Examples of general-purpose operating systems include Unix (Linux, BSD, etc), Solaris, Haiku, Plan 9, and so on. These are well-suited to general computing tasks, and are optimized to solve the most problems possible, perhaps at the expense of those in some niche domains. Special-purpose operating systems serve those niche domains, and are less suitable for general computing.</description>
+    </item>
+    
+  </channel>
+</rss>

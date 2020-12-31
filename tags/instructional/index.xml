@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>instructional on Drew DeVault&#39;s blog</title>
+    <link>./tags/instructional.html</link>
+    <description>Recent content in instructional on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 29 Oct 2018 00:00:00 +0000</lastBuildDate><atom:link href="./tags/instructional/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How does virtual memory work?</title>
+      <link>./2018/10/29/How-does-virtual-memory-work.html</link>
+      <pubDate>Mon, 29 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/10/29/How-does-virtual-memory-work.html</guid>
+      <description>Virtual memory is an essential part of your computer, and has been for several decades. In my earlier article on pointers, I compared memory to a giant array of octets (bytes), and explained some of the abstractions we make on top of that. In actual fact, memory is more complicated than a flat array of bytes, and in this article I&amp;rsquo;ll explain how.
+An astute reader of my earlier article may have considered that pointers on, say, an x86_64 system, are 64 bits long1.</description>
+    </item>
+    
+    <item>
+      <title>Getting started with qemu</title>
+      <link>./2018/09/10/Getting-started-with-qemu.html</link>
+      <pubDate>Mon, 10 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/09/10/Getting-started-with-qemu.html</guid>
+      <description>I often get asked questions about using my software, particularly sway, on hypervisors like VirtualBox and VMWare, as well as for general advice on which hypervisor to choose. My answer is always the same: qemu. There&amp;rsquo;s no excuse to use anything other than qemu, in my books. But I can admit that it might be a bit obtuse to understand at first. qemu&amp;rsquo;s greatest strength is also its greatest weakness: it has so many options that it&amp;rsquo;s hard to know which ones you need just to get started.</description>
+    </item>
+    
+    <item>
+      <title>Setting up a local dev mail server</title>
+      <link>./2018/08/05/Local-mail-server.html</link>
+      <pubDate>Sun, 05 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/08/05/Local-mail-server.html</guid>
+      <description>As part of my work on lists.sr.ht, it was necessary for me to configure a self-contained mail system on localhost that I could test with. I hope that others will go through a similar process in the future when they set up the code for hacking on locally or when working on other email related software, so here&amp;rsquo;s a guide on how you can set it up.
+There are lots of things you can set up on a mail server, like virtual mail accounts backed by a relational database, IMAP access, spam filtering, and so on.</description>
+    </item>
+    
+    <item>
+      <title>Writing a Wayland compositor with wlroots: shells</title>
+      <link>./2018/07/29/Wayland-shells.html</link>
+      <pubDate>Sun, 29 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/07/29/Wayland-shells.html</guid>
+      <description>I apologise for not writing about wlroots more frequently. I don&amp;rsquo;t really enjoy working on the McWayface codebase this series of blog posts was originally about, so we&amp;rsquo;re just going to dismiss that and talk about the various pieces of a Wayland compositor in a more free-form style. I hope you still find it useful!
+Today, we&amp;rsquo;re going to talk about shells. But to make sure we&amp;rsquo;re on the same page first, a quick refresher on surfaces.</description>
+    </item>
+    
+    <item>
+      <title>Input handling in wlroots</title>
+      <link>./2018/07/17/Input-handling-in-wlroots.html</link>
+      <pubDate>Tue, 17 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/07/17/Input-handling-in-wlroots.html</guid>
+      <description>I&amp;rsquo;ve said before that wlroots is a &amp;ldquo;batteries not included&amp;rdquo; kind of library, and one of the places where that is most apparent is with our approach to input handling. We implemented a very hands-off design for input, in order to support many use-cases: desktop input, phones with and without USB-OTG HIDs plugged in, multiple mice bound to a single cursor, multiple keyboards per seat, simulated input from fake input devices, on-screen keyboards, input which is processed by the compositor but not sent to clients&amp;hellip; we support all of these use-cases and even more.</description>
+    </item>
+    
+    <item>
+      <title>Writing a Wayland Compositor, Part 3: Rendering a window</title>
+      <link>./2018/02/28/Writing-a-wayland-compositor-part-3.html</link>
+      <pubDate>Wed, 28 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/02/28/Writing-a-wayland-compositor-part-3.html</guid>
+      <description>This is the third in a series of articles on the subject of writing a Wayland compositor from scratch using wlroots. Check out the first article if you haven&amp;rsquo;t already. We left off with a Wayland server which accepts client connections and exposes a handful of globals, but does not do anything particularly interesting yet. Our goal today is to do something interesting - render a window!
+The commit that this article dissects is 342b7b6.</description>
+    </item>
+    
+    <item>
+      <title>Writing a Wayland Compositor, Part 2: Rigging up the server</title>
+      <link>./2018/02/22/Writing-a-wayland-compositor-part-2.html</link>
+      <pubDate>Thu, 22 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/02/22/Writing-a-wayland-compositor-part-2.html</guid>
+      <description>This is the second in a series of articles on the subject of writing a Wayland compositor from scratch using wlroots. Check out the first article if you haven&amp;rsquo;t already. Last time, we ended up with an application which fired up a wlroots backend, enumerated output devices, and drew some pretty colors on the screen. Today, we&amp;rsquo;re going to start accepting Wayland client connections, though we aren&amp;rsquo;t going to be doing much with them yet.</description>
+    </item>
+    
+    <item>
+      <title>Writing a Wayland Compositor, Part 1: Hello wlroots</title>
+      <link>./2018/02/17/Writing-a-Wayland-compositor-1.html</link>
+      <pubDate>Sat, 17 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/02/17/Writing-a-Wayland-compositor-1.html</guid>
+      <description>This is the first in a series of many articles I&amp;rsquo;m writing on the subject of building a functional Wayland compositor from scratch. As you may know, I am the lead maintainer of sway, a reasonably popular Wayland compositor. Along with many other talented developers, we&amp;rsquo;ve been working on wlroots over the past few months. This is a powerful tool for creating new Wayland compositors, but it is very dense and difficult to understand.</description>
+    </item>
+    
+    <item>
+      <title>Introduction to POSIX shell</title>
+      <link>./2018/02/05/Introduction-to-POSIX-shell.html</link>
+      <pubDate>Mon, 05 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/02/05/Introduction-to-POSIX-shell.html</guid>
+      <description>What the heck is the POSIX shell anyway? Well, the POSIX (the Portable Operating System Interface) shell is the standard Unix shell - standard meaning it was formally defined and shipped in a published standard. This makes shell scripts written for it portable, something no other shell can lay claim to. The POSIX shell is basically a formalized version of the venerable Bourne shell, and on your system it lives at /bin/sh, unless you&amp;rsquo;re one of the unlucky masses for whom this is a symlink to bash.</description>
+    </item>
+    
+    <item>
+      <title>An introduction to Wayland</title>
+      <link>./2017/06/10/Introduction-to-Wayland.html</link>
+      <pubDate>Sat, 10 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/06/10/Introduction-to-Wayland.html</guid>
+      <description>Wayland is the new hotness on the Linux graphics stack. There are plenty of introductions to Wayland that give you the high level details on how the stack is laid out how applications talk directly to the kernel with EGL and so on, but that doesn&amp;rsquo;t give you much practical knowledge. I&amp;rsquo;d like to instead share with you details about how the protocol actually works and how you can use it.</description>
+    </item>
+    
+    <item>
+      <title>A broad intro to networking</title>
+      <link>./2016/12/06/A-broad-intro-to-networking.html</link>
+      <pubDate>Tue, 06 Dec 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/12/06/A-broad-intro-to-networking.html</guid>
+      <description>Disclaimer: I am not a network engineer. That&amp;rsquo;s the point of this blog post, though - I want to share with non-networking people enough information about networking to get by. Hopefully by the end of this post you&amp;rsquo;ll know enough about networking to keep up with a conversation on networking, or know what to search for when something breaks, or know what tech to research more in-depth when you are putting together something new.</description>
+    </item>
+    
+  </channel>
+</rss>

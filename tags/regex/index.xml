@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>regex on Drew DeVault&#39;s blog</title>
+    <link>./tags/regex.html</link>
+    <description>Recent content in regex on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 13 Aug 2017 00:00:00 +0000</lastBuildDate><atom:link href="./tags/regex/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>When not to use a regex</title>
+      <link>./2017/08/13/When-not-to-use-a-regex.html</link>
+      <pubDate>Sun, 13 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/08/13/When-not-to-use-a-regex.html</guid>
+      <description>The other day, I saw Learn regex the easy way. This is a great resource, but I felt the need to pen a post explaining that regexes are usually not the right approach.
+Let&amp;rsquo;s do a little exercise. I googled &amp;ldquo;URL regex&amp;rdquo; and here&amp;rsquo;s the first Stack Overflow result:
+https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&amp;amp;//=]*) source This is a bad regex. Here are some valid URLs that this regex fails to match:
+ http://x.org http://nic.science http://名がドメイン.</description>
+    </item>
+    
+  </channel>
+</rss>

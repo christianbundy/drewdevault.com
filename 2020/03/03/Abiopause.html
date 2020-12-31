@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>The Abiopause</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  The Abiopause
+  <small>
+    <span class="date">March 3, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>The sun has an influence on its surroundings. One of these is in the form of
+small particles that are constantly ejected from the sun in all directions,
+which exerts an outward pressure, creating an expanding sphere of particles that
+moves away from the sun. These particles are the solar wind. As the shell of
+particles expands, the density (and pressure) falls. Eventually the solar wind
+reaches the <em>interstellar medium</em> — the space between the stars —
+which, despite not being very dense, is not empty. It exerts a pressure that
+pushes inwards, towards the sun.</p>
+<p>Where the two pressures balance each other is an interesting place. The sphere
+up to this point is called the <em>heliosphere</em> — which can be roughly
+defined as the zone in which the influence of the sun is the dominant factor.
+The <em>termination shock</em> is where the change starts to occur. The plasma from the
+sun slows, compresses, and heats, among other changes. The physical interactions
+here are interesting, but aren&rsquo;t important to the metaphor. At the
+termination shock begins the <em>heliosheath</em>. This is a turbulent place where
+particles from the sun and from the interstellar medium mix. The interactions in
+this area are complicated and interesting, you should read up about it later.</p>
+<p><img src="https://legacy.sr.ht/_FIT.svg" alt="Picture of a faucet pouring into a sink"></p>
+<div class="text-center">
+  <small>Yanpas via Wikimedia Commons, CC-BY-SA</small>
+</div>
+<p>Finally, we reach the <em>heliopause</em>, beyond which the influence of the
+interstellar medium is dominant. Once crossing this threshold, you are said to
+have left the solar system. The Voyager 1 space probe, the first man-made object
+to leave the solar system, crossed this point on August 25th, 2012. Voyager 2
+completed the same milestone on November 12th, 2018<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
+<p>In the world of software, the C programming language clearly stands out as the
+single most important and influential programming language.  Everything
+forming the critical, foundational parts of your computer is written in it:
+kernels, drivers, compilers, interpreters, runtimes, hypervisors, databases,
+libraries, and more are almost all written in C.<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> For this reason, any
+programming language which wants to get anything useful done is certain to
+support a C FFI (foreign function interface), which will allow programmers to
+communicate with C code from the comfort of a high-level language. No other
+language has the clout or ubiquity to demand this level of deference from
+everyone else.</p>
+<p>The way that an application passes information back and forth with its
+subroutines is called its <em>ABI</em>, or application binary interface. There are a
+number of ABIs for C, but the most common is the System-V ABI, which is used on
+most modern Unix systems. It specifies details like which function parameters to
+put in which registers, what goes on the stack, the structure and format of
+these values, and how the function returns a value to the caller. In order to
+interface with C programs, the FFI layers in other programs have to utilize this
+ABI to pass information to and from C functions.</p>
+<p>Other languages often have their own ABIs. C, being a different programming
+language from $X, naturally has different semantics. The particular semantics of
+C don&rsquo;t necessarily line up to the semantics the language designers want $X to
+have, so the typical solution is to define functions with C &ldquo;linkage&rdquo;, which
+means they&rsquo;re called with the C ABI. It&rsquo;s from this that we get keywords like
+<code>extern &quot;C&quot;</code> (C++, Rust), <code>export</code> in Go, <code>[DllImport]</code> in C#, and so on.
+Naturally, these keywords come with a lot of constraints on how the function
+works, limiting the user to the mutually compatible subset of the two ABIs, or
+else using some kind of translation layer.</p>
+<p>I like to think of the place where this happens as the &ldquo;abiopause&rdquo;, and draw
+comparisons with the solar system&rsquo;s heliopause. Within the &ldquo;abiosphere&rdquo;, the
+programming language you&rsquo;re using is the dominant influence. The idioms and
+features of the language are used to their fullest extent to write idiomatic
+code. However, the language&rsquo;s sphere of influence is but a bubble in a sea of C
+code, and the interface between these two areas of influence is often quite
+turbulent. Directly using functions with C linkage from the abiosphere is not
+pleasant, as the design of good C APIs do not match the semantics of good
+$X APIs. Often there are layers to this transition, much like our solar
+system, where some attempt is made to wrap the C interface in a more idiomatic
+abstraction.</p>
+<p>I don&rsquo;t really like this boundary, and I think most programmers who have worked
+here would agree. If you like C, you&rsquo;re stuck either writing bad C code or using
+poorly-suited tools to interface badly with an otherwise good API. If you like
+$X, you&rsquo;re stuck writing very non-idiomatic $X code to interface with a foreign
+system. I don&rsquo;t know how to fix this, but it&rsquo;s interesting to me that the
+&ldquo;abiopause&rdquo; appears to be an interface full of a similar turbulence and
+complexity as we find in the heliopause.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>It took longer because Voyager 2 went on to see Uranus and Neptune. Voyager 1 just swung around Saturn and was shot directly up and out of the solar system. Three other man-made objects are currently on trajectories which will leave the solar system. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Even if you don&rsquo;t like C, it would be ridiculous to dismiss its influence and importance. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

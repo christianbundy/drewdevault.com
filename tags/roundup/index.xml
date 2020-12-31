@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>roundup on Drew DeVault&#39;s blog</title>
+    <link>./tags/roundup.html</link>
+    <description>Recent content in roundup on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 05 Feb 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/roundup/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>My experiences at FOSDEM 2019</title>
+      <link>./2019/02/05/FOSDEM-recap.html</link>
+      <pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/02/05/FOSDEM-recap.html</guid>
+      <description>Currently in a plane on my way home from FOSDEM and, as seems to be a recurring pattern when I fly long distances home after attending a conference, a recap is readily flowing from my fingertips. This was my first year at FOSDEM, and I&amp;rsquo;m glad that I came. I&amp;rsquo;m already excited for next year! It was also my first year volunteering, which was equally great and another thing I expect to repeat.</description>
+    </item>
+    
+    <item>
+      <title>Sway &amp; wlroots at XDC 2018</title>
+      <link>./2018/09/30/Sway-wlroots-at-XDC-2018.html</link>
+      <pubDate>Sun, 30 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/09/30/Sway-wlroots-at-XDC-2018.html</guid>
+      <description>Just got my first full night of sleep after the return flight from Spain after attending XDC 2018. It was a lot of fun! I attended along with four other major wlroots contributors. Joining me were Simon Ser (emersion) (a volunteer) and Scott Anderson (ascent12) of Collabora, who work on both wlroots and sway. ongy works on wlroots, hsroots, and waymonad, and joined us on behalf of IGEL. Finally, we were joined by Guido Günther (agx) of Purism, who works with us on wlroots and on the Librem 5.</description>
+    </item>
+    
+    <item>
+      <title>Sway reporting in from KDE&#39;s Berlin development sprint</title>
+      <link>./2018/04/28/KDE-Sprint-retrospective.html</link>
+      <pubDate>Sat, 28 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/04/28/KDE-Sprint-retrospective.html</guid>
+      <description>I&amp;rsquo;m writing to you from an airplane on my way back to Philadelphia, after spending a week in Berlin working with the KDE team. It was great to meet those folks and work with them for a while. It&amp;rsquo;ll take me some time to get the taste of C++ out of my mouth, though! In all seriousness, it was a very productive week and I feel like we have learned a lot about each other&amp;rsquo;s projects and have a strengthened interest in collaborating more in the future.</description>
+    </item>
+    
+  </channel>
+</rss>

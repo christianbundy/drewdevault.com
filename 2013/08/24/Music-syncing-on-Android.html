@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Custom Music Syncing on Android</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Custom Music Syncing on Android
+  <small>
+    <span class="date">August 24, 2013</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I have an HTC One, with CyanogenMod installed. I usually use Spotify, but I&rsquo;ve been wanting to move away from it for a while.
+The biggest thing keeping me there was the ease of syncing up with my phone - I added music on my PC and it just showed up
+on my phone.</p>
+<p>So, I finally decided to make it work on my phone without Spotify. You might have success if you aren&rsquo;t using CyanogenMod,
+but you definitely need to be rooted and you need to access a root shell on your phone. I was using <code>adb shell</code> to start with,
+but it has poor terminal emulation. Instead, I ended up installing an SSH daemon on the phone and just using that. Easier to
+use vim in such an enviornment.</p>
+<p>The end result is that a cronjob kicks off each hour on my phone and runs a script that uses rsync to sync up my phone&rsquo;s music
+with my desktop&rsquo;s music. That&rsquo;s another thing - a prerequisite of this working is that you have to expose your music to the
+outside world on an SSH server somewhere.</p>
+<p>I&rsquo;ll tell you how I got it working, then you can see if it works for you. It might take some effort on your part to tweak
+these instructions to fit your requirements.</p>
+<h2 id="sanity-checks">Sanity checks</h2>
+<p>Get into your phone&rsquo;s shell and make sure you have basic things installed. You&rsquo;ll need to make sure you have:</p>
+<ul>
+<li>bash</li>
+<li>cron</li>
+<li>ssh</li>
+<li>rsync</li>
+</ul>
+<p>If you don&rsquo;t have them, you can probably get them by installing busybox.</p>
+<h2 id="setting-up-ssh">Setting up SSH</h2>
+<p>We need to generate a key. I tried using ssh-keygen before, but it had problems with rsync on Android. Instead, we use
+dropbearkey. Generate your key with <code>dropbearkey -t rsa -f /data/.ssh/id_rsa</code>. You&rsquo;ll see the public key echoed to stdout.
+It&rsquo;s not saved anywhere for you, so grab it out of your shell and put it somewhere - namely, in the authorized_keys file
+on the SSH server you plan to pull music from.</p>
+<p>At this point, you can probably SSH into the server you want to pull from. Run <code>ssh -i /data/.ssh/id_rsa &lt;your server here&gt;</code>
+to double check. Note that this isn&rsquo;t just for fun - you need to do this to get your server into known_hosts, so we can
+non-interactively access it.</p>
+<h2 id="making-android-more-sane">Making Android more sane</h2>
+<p>Now that this is working, we need to clean up a little before cron will run right. Android is only a &ldquo;Linux&rdquo; system in the
+sense that <code>uname</code> outputs &ldquo;Linux&rdquo;. It grossly ignores the FHS and you need to fix it a little. Figure out how to do a
+nice init.d script on your phone. For my CyanogenMod install, I can add scripts to <code>/data/local/userlocal.d/</code> and they&rsquo;ll
+be run at boot. Here&rsquo;s my little script for making Android a little more sane:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/system/bin/sh
+</span><span class="cp"></span><span class="c1"># Making /system rw isn&#39;t strictly needed</span>
+mount -o remount,rw /system
+mount -o remount,rw /
+ln -s /data/var /var
+ln -s /system/bin /bin
+ln -s /data/.ssh /.ssh
+crond
+</code></pre></div><h2 id="update-script-and-initial-import">Update script and initial import</h2>
+<p>The following is the script we&rsquo;ll use to update your phone&rsquo;s music library.</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/system/xbin/bash
+</span><span class="cp"></span><span class="c1"># Syncs music between a remote computer and this phone</span>
+<span class="nv">RHOST</span><span class="o">=</span>&lt;remote hostname&gt;
+<span class="nv">EHOST</span><span class="o">=</span>&lt;fallback, I use this <span class="k">for</span> connecting from outside my LAN&gt;
+<span class="nv">RPORT</span><span class="o">=</span><span class="m">22</span>
+<span class="nv">RUSER</span><span class="o">=</span>&lt;username&gt;
+<span class="nv">ID</span><span class="o">=</span>/data/.ssh/id_rsa
+<span class="nv">RPATH</span><span class="o">=</span>/path/to/your/remote/music
+<span class="c1"># Omit the final directory. On my setup, this goes to /sdcard/Music, and my remote is /home/sircmpwn/Music</span>
+<span class="nv">LPATH</span><span class="o">=</span>/sdcard
+
+<span class="nb">echo</span> <span class="k">$(</span>date<span class="k">)</span> &gt;&gt; /var/log/update-music.log
+
+rsync -ruvL --delete --rsh<span class="o">=</span><span class="s2">&#34;ssh -p </span><span class="nv">$RPORT</span><span class="s2"> -i </span><span class="nv">$ID</span><span class="s2">&#34;</span> <span class="nv">$RUSER</span>@<span class="nv">$RHOST</span>:<span class="nv">$RPATH</span> <span class="nv">$LPATH</span> &gt;&gt; /var/log/update-music-rsync-so.log 2&gt;<span class="p">&amp;</span><span class="m">1</span>
+<span class="k">if</span> <span class="o">[[</span> <span class="nv">$?</span> !<span class="o">=</span> <span class="m">0</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+    rsync -ruvL --delete --rsh<span class="o">=</span><span class="s2">&#34;ssh -p </span><span class="nv">$RPORT</span><span class="s2"> -i </span><span class="nv">$ID</span><span class="s2">&#34;</span> <span class="nv">$RUSER</span>@<span class="nv">$EHOST</span>:<span class="nv">$RPATH</span> <span class="nv">$LPATH</span> &gt;&gt; /var/log/update-music-rsync-so.log 2&gt;<span class="p">&amp;</span><span class="m">1</span>
+<span class="k">fi</span>
+</code></pre></div><p>Save this script to <code>/data/updateMusic</code>, make it executable with <code>chmod +x /data/updateMusic</code>, then run the initial import
+with <code>/data/updateMusic</code>. After a while, you&rsquo;ll have all your computer&rsquo;s music on your phone. Now, we just need to make it
+update automatically.</p>
+<p>Note: I set up a couple of logs for you. <code>/var/log/update-music.log</code> has the timestamp of every time it did an update. Also,
+<code>/var/log/update-music-rsync-so.log</code> has the output of rsync from each run.</p>
+<h2 id="cron">Cron</h2>
+<p>Finally, we need to set up a cronjob. If you followed the instructions so far (and if you&rsquo;re lucky), you should have everything
+ready for cron. The biggest pain in my ass was getting cron to coorperate, but the init script earlier should take care of
+that. Run <code>crontab -e</code> and write your crontab:</p>
+<pre><code>0 * * * * /data/updateMusic
+</code></pre>
+<p>Nice and simple. Your phone will now sync up your music every hour, on the hour, with your home computer. Here are some
+possible points for improvement:</p>
+<ul>
+<li>Check wlan0 and only sync if it&rsquo;s up</li>
+<li>Log cron somewhere</li>
+<li>Alter the update script to do a little bit better about the &ldquo;fallback&rdquo;</li>
+<li>Sync more than just music</li>
+</ul>
+<p>After all of this, I now have a nice setup that syncs music to my phone so I can listen to it with Apollo. I might switch
+away from Apollo, though, it&rsquo;s pretty buggy. <a href="mailto:sir@cmpwn.com">Let me know</a> if you can suggest an alternative music
+player, or if you get stuck working through this procedure yourself.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Announcing code annotations for SourceHut</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Announcing code annotations for SourceHut
+  <small>
+    <span class="date">July 8, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Today I&rsquo;m happy to announce that code annotations are now available for
+<a href="https://sourcehut.org">SourceHut</a>! <img style="display: inline; height: 1.2rem"
+src="/img/party.png" /> These allow you to decorate your code with arbitrary
+links and markdown. The end result looks something like this:</p>
+<p><strong>NOTICE</strong>: Annotations were ultimately removed from sourcehut.</p>
+<p><img src="https://sr.ht/w767.png" alt=""></p>
+<small class="text-muted">
+  <a href="https://sourcehut.org">SourceHut</a> is the "hacker's forge", a
+  100% open-source platform for hosting Git &amp; Mercurial repos, bug trackers,
+  mailing lists, continuous integration, and more. No JavaScript required!
+</small>
+<p>The annotations shown here are sourced from a JSON file which you can generate
+and upload during your CI process. It looks something like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&#34;98bc0394a2f15171fb113acb5a9286a7454f22e7&#34;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;markdown&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;lineno&#34;</span><span class="p">:</span> <span class="mi">33</span><span class="p">,</span>
+      <span class="nt">&#34;title&#34;</span><span class="p">:</span> <span class="s2">&#34;1 reference&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;content&#34;</span><span class="p">:</span> <span class="s2">&#34;- [../main.c:123](https://example.org)&#34;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;link&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;lineno&#34;</span><span class="p">:</span> <span class="mi">38</span><span class="p">,</span>
+      <span class="nt">&#34;colno&#34;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+      <span class="nt">&#34;len&#34;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+      <span class="nt">&#34;to&#34;</span><span class="p">:</span> <span class="s2">&#34;#L6&#34;</span>
+    <span class="p">},</span>
+    <span class="err">...</span>
+</code></pre></div><p>You can probably infer from this that annotations are very powerful. Not only
+can you annotate your code&rsquo;s semantic elements to your heart&rsquo;s content, but you
+can also do exotic things we haven&rsquo;t thought of yet, for every programming
+language you can find a parser for.</p>
+<p>I&rsquo;ll be going into some detail on the thought process that went into this
+feature&rsquo;s design and implementation in a moment, but if you&rsquo;re just excited and
+want to try it out, here are a few interesting annotated repos to browse:</p>
+<ul>
+<li><a href="https://git.sr.ht/~sircmpwn/scdoc/tree/master/src/main.c">~sircmpwn/scdoc</a>: man page generator (C)</li>
+<li><a href="https://git.sr.ht/~sircmpwn/aerc/tree/master/widgets/msgviewer.go">~sircmpwn/aerc</a>: TUI email client (Go)</li>
+<li><a href="https://git.sr.ht/~mcf/cproc/tree/master/scan.c">~mcf/cproc</a>: C compiler (C)</li>
+</ul>
+<p>And here are the docs for generating your own: <a href="https://man.sr.ht/git.sr.ht/annotations.md">annotations on
+git.sr.ht</a>. Currently annotators are
+available for C and Go, and I intend to write another for Python. For the rest,
+I&rsquo;ll be relying on the community to put together annotators for their favorite
+programming languages, and to help me expand on the ones I&rsquo;ve built.</p>
+<h2 id="design">Design</h2>
+<p>A lot of design thought went into this feature, but I knew one thing from the
+outset: I wanted to make a generic system that users could use to annotate their
+source code in any manner they chose. My friend Andrew Kelley (of
+<a href="https://ziglang.org/">Zig</a> fame) once expressed to me his frustration with
+GitHub&rsquo;s refusal to implement syntax highlighting for &ldquo;small&rdquo; languages, citing
+a shortage of manpower. It&rsquo;s for this reason that it&rsquo;s important to me that
+SourceHut&rsquo;s open-source platform allows users large and small to volunteer to
+build the perfect integration for their needs - I don&rsquo;t scale alone<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
+<p>To get a head start for the most common use-cases - scanning source files and
+linking references and definitions together - the best approach was unclear. I
+spent a lot of time studying <a href="http://ctags.sourceforge.net/">ctags</a>, for
+example, which supports a huge set of programming languages, but unfortunately
+only finds definitions. I thought about combining this with another approach for
+finding references, but the only generic library with lots of parsers I&rsquo;m aware
+of is <a href="http://pygments.org/">Pygments</a>, and I didn&rsquo;t necessarily want to bring
+Python into every user&rsquo;s CI process if they weren&rsquo;t already using it. That
+approach would also make it more difficult to customize the annotations for each
+language. Other options I considered were
+<a href="http://cscope.sourceforge.net/">cscope</a> and
+<a href="https://www.gnu.org/software/global/">gtags</a>, but the former doesn&rsquo;t have many
+programming languages supported (making the tradeoff questionable), and the
+latter just uses Pygments anyway.</p>
+<p>So I decided: I&rsquo;m going to write my own annotators for each language. Or at
+least the languages I use the most:</p>
+<ul>
+<li>C, because I like it but also because
+<a href="https://git.sr.ht/~sircmpwn/scdoc">scdoc</a> is the demo repo shown on the
+<a href="https://sourcehut.org">SourceHut marketing page</a>.</li>
+<li>Python, because SourceHut is largely written in Python and using it to browse
+itself would be cool.</li>
+<li>Go, because parts of SourceHut are written in it but also because I use it a
+lot for <a href="https://git.sr.ht/~sircmpwn/aerc">my own projects</a>. I also knew that
+Go had at least <em>some</em> first-class support for working with its AST - and boy
+was I in for a surprise.</li>
+</ul>
+<p>With these initial languages decided, let&rsquo;s turn to the implementations.</p>
+<h2 id="annotating-c-code">Annotating C code</h2>
+<p>I began with the C annotator, because I knew it would be the most difficult.
+There does not exist any widely available standalone C parsing library to
+provide C programs with access to an AST. There&rsquo;s LLVM, but I have a deeply held
+belief that programming language compiler and introspection tooling should be
+implemented in the language itself. So, I set about to write a C parser from
+scratch.</p>
+<p>Or, almost from scratch. There exist two standard POSIX tools for writing
+compilers with: <a href="https://pubs.opengroup.org/onlinepubs/9699919799/utilities/lex.html">lex</a> and <a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/yacc.html">yacc</a>, which are respectively a lexer
+generator and a compiler compiler. Additionally, there are <a href="http://www.quut.com/c/ANSI-C-grammar-y.html">pre-fab lex and
+yacc files</a> which <em>mostly</em>
+implement the C11 standard grammar. However, C is <a href="https://eli.thegreenplace.net/2007/11/24/the-context-sensitivity-of-cs-grammar/">not a context-free
+language</a>, so additional work was necessary to track typedefs and use
+them to change future tokens emitted by the scanner. A little more work was also
+necessary for keeping track of line and column numbers in the lexer. Overall,
+however, this was relatively easy, and in less than a day&rsquo;s work I had a fully
+functional C11 parser.</p>
+<p>However, my celebration was short-lived as I started to feed my parser C
+programs from the wild. The GNU C Compiler, GCC, implements many C extensions,
+and their use, while inadvisable, is extremely common. Not least of the
+offenders is glibc, and thus running my parser on any system with glibc headers
+installed would likely immediately run into syntax errors.  GCC&rsquo;s extensions are
+not documented in the form of an addendum to the C specification, but rather as
+end-user documentation and a 15 million lines-of-code compiler for you to
+reverse engineer. It took me almost a week of frustration to get a parser which
+worked passably on a large subset of the C programs found in the wild, and I
+imagine I&rsquo;ll be dealing with GNU problems for years to come. Please don&rsquo;t use C
+extensions, folks.</p>
+<p>In any case, the result now works fairly well for a lot of programs, and I have
+plans on expanding it to integrate more nicely with build systems like meson.
+Check out the code here: <a href="https://git.sr.ht/~sircmpwn/annotatec">annotatec</a>. The
+features of the C annotator include:</p>
+<ul>
+<li>Annotating function definitions with a list of files/linenos which call them</li>
+<li>Linking function calls to the definition of that function</li>
+</ul>
+<p>In the future I intend to add support for linking to external symbols as well -
+for example, linking to the POSIX spec for functions specified by POSIX, or to
+the Linux man pages for Linux calls. It would also be pretty cool to support
+linking between related projects, so that wlroots calls in sway can be linked to
+their declarations in the wlroots repo.</p>
+<h2 id="annotating-go-code">Annotating Go code</h2>
+<p>The Go annotator was far easier. I started over my morning cup of coffee today
+and I was finished with the basics by lunch. Go has a bunch of support in the
+standard library for parsing and analyzing Go programs - I was very impressed:</p>
+<ul>
+<li><a href="https://golang.org/pkg/go/ast/">go/ast</a></li>
+<li><a href="https://golang.org/pkg/go/scanner/">go/scanner</a></li>
+<li><a href="https://golang.org/pkg/go/token/">go/token</a></li>
+<li><a href="https://golang.org/pkg/go/types/">go/types</a></li>
+</ul>
+<p>To support Go 1.12&rsquo;s go modules, the experimental (but good enough)
+<a href="https://godoc.org/golang.org/x/tools/go/packages">packages</a> module is available
+as well. All of this is nicely summarized by a lovely document in the <a href="https://github.com/golang/example/tree/master/gotypes">golang
+examples repository</a>. The
+type checker is also available as a library, something which is less common even
+among languages with parsers-as-libraries, and allows for many features which
+would be very difficult without it. Nice work, Go!</p>
+<p>The <a href="https://git.sr.ht/~sircmpwn/annotatego">resulting annotator</a> clocks in at
+just over 250 lines of code - compare that to the C annotator&rsquo;s ~1,300 lines of
+C, lex, and yacc source code. The Go annotator is more featureful, too, it can:</p>
+<ul>
+<li>Link function calls to their definitions, and in reverse</li>
+<li>Link method calls to their definitions, and in reverse</li>
+<li>Link variables to their definitions, even in other files</li>
+<li>Link to godoc for symbols defined in external packages</li>
+</ul>
+<p>I expect a lot more to be possible in the future. It might get noisy if you turn
+everything on, so each annotation type is gated behind a command line flag.</p>
+<h2 id="displaying-annotations">Displaying annotations</h2>
+<p>Displaying these annotations required a bit more effort than I would have liked,
+but the end result is fairly clean and reusable. Since SourceHut uses Pygments
+for syntax highlighting, I ended up writing a <a href="http://pygments.org/docs/formatterdevelopment/">custom
+Formatter</a> based on the existing
+Pygments HtmlFormatter. The result is the [AnnotationFormatter]<a href="https://git.sr.ht/~sircmpwn/git.sr.ht/tree/master/gitsrht/annotations.py">git.sr.ht
+formatter</a>, which splices annotations into the highlighted code. One downside of
+this approach is that it works at the token level - a more sophisticated
+implementation will be necessary for annotations that span more than a single
+token. Annotations are fairly expensive to render, so the rendered HTML is
+stowed in Redis.</p>
+<h2 id="the-future">The future?</h2>
+<p>I intend to write a Python annotator soon, and I&rsquo;ll be relying on the community
+to build more. If you&rsquo;re looking for a fun weekend hack and a chance to learn
+more about your favorite programming language, this&rsquo;d be a great project. The
+format for annotations on SourceHut is also pretty generalizable, so I encourage
+other code forges to reuse it so that our annotators are useful on every code
+hosting platform.</p>
+<p>builds.sr.ht will also soon grow first-class support for making these annotators
+available to your build process, as well as for making an OAuth token available
+(ideally with a limited set of permissions) to your build environment. Rigging
+up an annotator is a bit involved today (<a href="https://man.sr.ht/git.sr.ht/annotations.md">though the docs
+help</a>), and streamlining that
+process will be pretty helpful. Additionally, this feature is only available for
+git.sr.ht, though it should generalize to hg.sr.ht fairly easily and I hope
+we&rsquo;ll see it available there soon.</p>
+<p>I&rsquo;m also looking forward to seeing more novel use-cases for annotation. Can we
+indicate code coverage by coloring a gutter alongside each line of code? Can we
+link references to ticket numbers in the comments to your bug tracker? If you
+have any cool ideas, I&rsquo;m all ears. Here&rsquo;s that list of cool annotated repos to
+browse again, if you made it this far and want to check them out:</p>
+<ul>
+<li><a href="https://git.sr.ht/~sircmpwn/scdoc/tree/master/src/main.c">~sircmpwn/scdoc</a>: man page generator (C)</li>
+<li><a href="https://git.sr.ht/~sircmpwn/aerc/tree/master/widgets/msgviewer.go">~sircmpwn/aerc</a>: TUI email client (Go)</li>
+<li><a href="https://git.sr.ht/~mcf/cproc/tree/master/scan.c">~mcf/cproc</a>: C compiler (C)</li>
+</ul>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>For the syntax highlighting problem, by the way, this is accomplished by using Pygments. Improvements to Pygments reach not only SourceHut, but a large community of projects, making the software ecosystem better for everyone. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

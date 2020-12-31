@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Embrace, extend, and finally extinguish - Microsoft plays their hand</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Embrace, extend, and finally extinguish - Microsoft plays their hand
+  <small>
+    <span class="date">August 27, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>GitHub took a note out of the Microsoft &ldquo;<abbr title="Embrace, Extend,
+Extinguish">EEE</abbr>&rdquo; playbook when designing their git services. They
+<strong>embraced</strong> git, and then rather than building an interface on top of email
+— the collaboration mechanism that git was designed to use, and which is
+still used for Linux kernel development<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> — they built their &ldquo;pull
+requests&rdquo; mechanism.</p>
+<p>They took terminology which already had meaning — &ldquo;fork&rdquo;, meaning the
+creation a separate governing body and development upstream for a codebase, a
+rather large task; and &ldquo;pull request&rdquo;, a git workflow which prepares an email
+asking a receipient to pull a large branch of changes from a non-centralized
+source — and replaced these decentralized, open systems with a completely
+incompatible system designed to keep you on GitHub and to teach you to
+collaborate using GitHub&rsquo;s proprietary tools. They <strong>extended</strong> git in a
+proprietary way.</p>
+<p>Microsoft knows a good deal when they see one, and picked up GitHub for a cool
+$7,500,000,000, after they had already completed the two steps in Microsoft&rsquo;s
+<a href="https://en.wikipedia.org/wiki/Embrace,_extend,_and_extinguish">anti-open-source playbook</a>. They joined the Linux Foundation in late 2016,
+after Azure failed to win people back to Windows Server, admitting defeat while
+simultaneously carving out a space from which they could project their interests
+over the kernel.</p>
+<p>Today, I discovered this article, &ldquo;<a href="https://www.theregister.com/2020/08/25/linux_kernel_email/">Relying on plain-text email is a
+&lsquo;barrier to entry&rsquo; for kernel development, says Linux Foundation board
+member</a>&rdquo;, a title which conveniently chooses to refer to Sarah Novotny by
+her role as a Linux Foundation board member, rather than by her full title,
+&ldquo;Sarah Novotny, Microsoft employee, transitive owner of GitHub, and patroness
+saint of conflicts of interests.&rdquo; Finally, they&rsquo;re playing the <strong>extinguish</strong>
+card. Naturally, a representative of Microsoft, a company which has long waged
+war against open source, and GitHub, a company which explicitly built an
+incompatible proprietary system to extend git, would have an interest in
+dismantling the distributed, open system that git was designed for.</p>
+<p>I represent <a href="https://sourcehut.org">sourcehut</a>, a GitHub competitor which does
+what GitHub wouldn&rsquo;t — interoperate with open, distributed protocols, and
+in the form of 100% free and open-source software. I agree that the UX of
+email-driven development could be better! But instead of investing $7.5B into
+throwing the baby out with the bathwater, we&rsquo;ve <a href="https://git-send-email.io/">built interactive
+tutorials</a>, <a href="https://lists.sr.ht/~emersion/mrsh-dev/patches/4728">designed better mailing lists</a>, <a href="https://sr.ht/_fUk.webm">built web interfaces for
+patch submission</a>, <a href="https://sourcehut.org/blog/2020-07-14-setting-up-ci-for-mailing-lists/">implemented CI for emails</a> and <a href="https://github.com/git/git/commits?author=ddevault">sent improvements to
+git upstream</a>. I wrote <a href="https://aerc-mail.org/">an entire mail client which makes it easier to use
+these tools</a>. We&rsquo;re planning on web-based review interface, too. The result
+is a UX which provides a similar experience to GitHub, but without disrupting
+the established open ecosystem.</p>
+<p><em>This</em> is how you improve the ecosystem, Microsoft. Take notes. Stick with the
+embrace, move your extending <em>upstream</em>, and forget about extinguish.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>And hundreds of other projects, including git itself. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

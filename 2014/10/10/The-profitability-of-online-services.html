@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>On the profitability of image hosting websites</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  On the profitability of image hosting websites
+  <small>
+    <span class="date">October 10, 2014</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I&rsquo;ve been doing a lot of thought about whether or not it&rsquo;s even possible to both
+run a simple website <em>and</em> turn a profit from it <em>and</em> maintain a high quality
+of service. In particular, I&rsquo;m thinking about image hosts, considering that I
+run one (a rather unprofitable one, too), but I would
+think that my thoughts on this matter apply to more kinds of websites. That
+being said, I&rsquo;ll just talk about media hosting because that&rsquo;s where I have
+tangible expertise.</p>
+<p>I think that all image hosts suffer from the same sad pattern of eventual
+failure. That pattern is:</p>
+<ol>
+<li>Create a great image hosting website (you should stop here)</li>
+<li>Decide to monetize it</li>
+<li>Add advertising</li>
+<li>Stop allowing hotlinking</li>
+<li>Add more advertising</li>
+<li>Add social tools like comments, voting - attempt build a community to look at
+your ads</li>
+</ol>
+<p>Monetization is a poison. You start realizing that you wrote a shitty website in
+PHP on shared hosting and it can&rsquo;t handle the traffic. You spend more money on
+it and realize you don&rsquo;t like spending your money on it, so you decide to
+monetize, and now the poison has got you. There&rsquo;s an extremely fine line to walk
+with monetization. You start wanting to make enough money to support your
+servers, but then you think to yourself &ldquo;well, I worked hard for this, maybe I
+should make a living from it!&rdquo; This introduces several problems.</p>
+<p>First of all, you made an image hosting website. It&rsquo;s already perfect. Almost
+anything you can think of adding will only make it worse. If you suddenly decide
+that you need to spend more time on it to justify taking money from it, then you
+have a lot of time to get things wrong. You eventually run out of the good
+features and start implementing the bad ones.</p>
+<p>More importantly, though, you realize that you should be making <em>more</em> money.
+Maybe you can turn this into a nice job working on your own website! And that
+means you should start a business and assign yourself a salary and start making
+a profit and hire new people. The money has to come from somewhere. So you make
+even more compromises. Eventually, people stop using your service. People start
+to <em>detest</em> your service. It can get so bad that people will refuse to click on
+any link that leads to your website. Your users will be harassed for continuing
+to use your site. <strong>You fail, and everyone hates you.</strong></p>
+<p>This trend is observable with PhotoBucket, ImageShack, TinyPic, the list goes
+on. The conclusion I&rsquo;ve drawn from this is that <strong>it is impossible to run a
+profitable image hosting service without sacrificing what makes your service
+worthwhile</strong>. We have arrived at a troubling place with the case of Imgur,
+however.  MrGrim (the creator of Imgur) also identified this trend and decided
+to put a stop to it by building a simple image hosting service for Reddit. It
+had great intentions, check out the old archive.org mirror of it<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.  With
+these great intentions and a great service, Imgur rose to become the 46th most
+popular website globally<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, and 18th in the United States alone, on the
+shoulders of Reddit, which now ranks 47th. I&rsquo;m going to expand upon this here,
+particularly with respect to Reddit, but I included the ranks here to dissuade
+anyone who says &ldquo;there&rsquo;s more than Reddit out there&rdquo; in response to this post.
+Reddit is a <em>huge</em> deal.</p>
+<p>Other image hosts died down when people recognized their problems. Imgur has
+reached a critical mass where that will not happen. 20% of all new Reddit posts
+are Imgur, and most users just don&rsquo;t know better than to use anything else. That
+being said, Imgur shows the signs of the image hosting poison. They stopped
+being an image hosting website and became their own community. They added
+advertising, which is fine on its own, but then they started redirecting direct
+links<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> to pages with ads. And still, their userbase is just as strong,
+despite better alternatives appearing.</p>
+<p>I&rsquo;m not sure what to do about Imgur. I don&rsquo;t like that they&rsquo;ve won the mindshare
+with a staggering margin. I do know that I&rsquo;ve tried to make my own service
+immune to the image hosting poison. We run it incredibly lean - we handle over
+10 million HTTP requests per day on a single server that also does transcoding
+and storage for $200 per month. We get about $20-$30 in monthly revenue from our
+Project Wonderful<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> ads, and a handful of donations that usually amount to
+less than $20. Fortunately, $150ish isn&rsquo;t a hard number to pay out of our own
+pockets every month, and we&rsquo;ve made a damn good website that&rsquo;s extremely
+scalable to keep our costs low. We haven&rsquo;t taken seed money, and we&rsquo;re not
+really the sort to fix problems by throwing more money at it. We also won&rsquo;t be
+hiring any paid staff any time soon, so our costs are pretty much constant. On
+top of that, if we do fall victim to the image hosting poison, 100% of our code
+is open source, so the next service can skip R&amp;D and start being awesome
+immediately. Even with all of that, though, all I can think of doing is sticking
+around until people realize that Imgur really does suck.</p>
+<p><em>2017-03-07 update</em></p>
+<ul>
+<li>mediacru.sh shut down (out of money)</li>
+<li>pomf.se shut down (out of money)</li>
+<li>minus.com shut down after going down the decline described in this post</li>
+</ul>
+<p>I have started a private service called <a href="https://sr.ht">sr.ht</a>, which I aim to
+use to fix the problem by only letting my friends and I use it. It has
+controlled growth and won&rsquo;t get too big and too expensive. It&rsquo;s on Github if you
+want to <a href="https://github.com/SirCmpwn/sr.ht">use it</a>.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://web.archive.org/web/20090225014924/http://imgur.com/">Original Imgur home page</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="http://www.alexa.com/siteinfo/imgur.com">Imgur on Alexa</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://dillpickle.github.io/imgur-please-dont-be-the-next-tinypic-or-imageshack.html">Imgur redirects &ldquo;direct&rdquo; links based on referrals</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://www.projectwonderful.com/">Project Wonderful, an advertising service that doesn&rsquo;t suck</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Writing a Wayland compositor with wlroots: shells</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Writing a Wayland compositor with wlroots: shells
+  <small>
+    <span class="date">July 29, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I apologise for not writing about wlroots more frequently. I don&rsquo;t really enjoy
+working on the McWayface codebase this series of blog posts was originally
+about, so we&rsquo;re just going to dismiss that and talk about the various pieces of
+a Wayland compositor in a more free-form style. I hope you still find it useful!</p>
+<p>Today, we&rsquo;re going to talk about shells. But to make sure we&rsquo;re on the same page
+first, a quick refresher on surfaces. A basic primitive of the Wayland protocol
+is the concept of a &ldquo;surface&rdquo;. A surface is a rectangular box of pixels sent
+from the client to the compositor to display on-screen. A surface can source
+its pixels from a number of places, including raw pixel data in memory, or
+opaque handles to GPU resources that can be rendered without copying pixels on
+the CPU. These surfaces can also evolve over time, using &ldquo;damage&rdquo; to indicate
+which parts have changed to reduce the workload of the compositor when
+re-rendering them. However, making a surface and filling it with pixels is not
+enough to get the compositor to show them.</p>
+<p>Shells are how surfaces in Wayland are given meaning. Consider that there are
+several kinds of surfaces you&rsquo;ll encounter on your desktop. There are
+application windows, sure, but there are also tooltips, right-click menus and
+menubars, desktop panels, wallpapers, lock screens, on-screen keyboards, and so
+on. Each of these has different semantics - your wallpaper cannot be minimized
+or dragged around and resized, but your application windows can be.  Likewise,
+your application windows cannot cover the entire screen and soak up all input
+like your lock screen can. Each of these use cases is fulfilled with a <em>shell</em>,
+which generally takes a surface resource, assigns it a role (e.g.  application
+window), and returns a handle with shell-specific interfaces for manipulating
+it.</p>
+<h2 id="shells-in-wlroots">Shells in wlroots</h2>
+<p>I want to first discuss features common to shells as implemented by wlroots.
+Each shell has a shell-specific interface that sits on top of the surface. Each
+time a client connects and creates one of these, the shell raises a <code>wl_signal</code>,
+<code>events.new_surface</code>, and passes to it a pointer to a shell-specific structure
+which encapsulates that shell surface&rsquo;s state.</p>
+<p>Many shells require some configuration between the creation of the shell surface
+and displaying it on screen. For example, during this period application windows
+will typically set the window title so that the compositor never has to show an
+empty title. All Wayland interfaces aim for atomicity, so that all changes are
+applied in a single fell swoop and we never display an invalid frame. This is
+why Wayland is known for addressing vsync problems X suffers from, but is
+pervasive across the ecosystem. Even things like setting the window title are
+done atomically.</p>
+<p>So, once the client is done communiciating the new shell surface&rsquo;s desired
+traits to the compositor, it will commit the surface to atomically apply the
+changes. The first time this happens, the client is ready to be shown, and the
+shell-specific wlroots shell surface interface will communicate this to you with
+the surface&rsquo;s <code>events.map</code> signal. The reverse is sometimes communicated with
+<code>events.unmap</code>, when the shell surface should be hidden.</p>
+<h2 id="xdg-shell">xdg-shell</h2>
+<p>xdg-shell is currently the only shell whose protocol is considered stable, and
+it is the shell which describes application windows. You can read the xdg-shell
+protocol specification (XML)
+<a href="https://cgit.freedesktop.org/wayland/wayland-protocols/tree/stable/xdg-shell/xdg-shell.xml">here</a>
+(you are strongly encouraged to read through the XML for all protocols mentioned
+in this article).</p>
+<p>The xdg-shell is quite complicated, as it attempts to encapsulate every feature
+of a typical graphical desktop session in a single protocol. An xdg-shell
+surface is a <code>wl_surface</code> wrapped twice - once in a <code>xdg_surface</code> and then again
+in a <code>xdg_toplevel</code> or <code>xdg_popup</code>, depending on what kind of window it is. The
+wlroots <code>wlr_xdg_surface</code> type (the one emitted by
+<code>xdg_shell.events.new_surface</code>) contains tagged union of <code>wlr_xdg_toplevel</code> and
+<code>wlr_xdg_popup</code>, selected from the <code>role</code> field. You can wire up the xdg-shell
+with <code>wlr_xdg_shell_create</code>.</p>
+<p>Most application windows you see are called toplevels. These windows are the
+root node of a tree of surfaces which may include arbitrarily nested popups, for
+example, as you navigate through a deep menu. These windows can have titles;
+parent surfaces; app IDs (e.g. &ldquo;gnome-calculator&rdquo;); minimum and maximum sizes;
+and maximized, minimized, and fullscreen states. They also often<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> draw their
+own window decorations and drop shadows, and tell the compositor when you click
+and drag on the titlebar to move or resize the window.  Unfortunately, if the
+client is not responding or misbehaving, the user cannot use these controls to
+move, resize, or minimize the window<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
+<p>The compositor can tell the window to adopt a specific size, though the client
+can choose to ignore this. The compositor also lets the client know when it&rsquo;s
+&ldquo;activated&rdquo;, which is used by GTK+, for example, to start rendering the caret
+and render a different set of client-side decorations. It can also toggle the
+fullscreen, minimized, maximized, and other states.</p>
+<p>Each of the various state transitions involved are expressed through
+the <code>wlr_xdg_toplevel.events</code> signals. The most recent atomically agreed-upon
+state is stored in <code>wlr_xdg_toplevel.current</code>. When each of the signals in
+<code>events</code> are emitted, the state change will have been applied to
+<code>client_pending</code>. However, you must consent to these changes by calling a
+corresponding function on the xdg_toplevel (e.g.
+<code>wlr_xdg_toplevel_set_fullscreen</code>), which will apply the change to
+<code>server_pending</code>. You shouldn&rsquo;t consider these changes atomically set until the
+<code>wlr_surface.events.commit</code> signal has been raised. At that point, you can start
+showing the window in fullscreen or whatever. There&rsquo;s also some
+configure/ack-configure stuff going on here which may eventually become relevant
+to you<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>, but wlroots takes care it for the most part.</p>
+<p>The popup interface is used to show a &ldquo;popup&rdquo; window, which can be used for a
+variety of purposes. These include context menus (or &ldquo;right click&rdquo; menus),
+tooltips, some confirmation modals<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>, etc. The lifecycle of a popup resource
+is managed similarly to that of a toplevel resource, of course with different
+states that can be atomically updated. Arguably, the most fundamental of these
+states is the relative X and Y position of the popup with respect to its parent
+toplevel surface.</p>
+<p>The position of the popup can be influenced by an extraordinarily complicated
+interface called <code>xdg_positioner</code>, also provided by xdg-shell. Since these
+articles focus on the compositor side of things, and they focus on using
+wlroots, I can thankfully save you from understanding most of the specifics of
+this interface. The purpose of this interface is to adjust the position and size
+of <code>xdg_popup</code> surfaces with respect to the display they live on - for example,
+to prevent them from being partially off-screen. The rub is that if you&rsquo;re using
+wlroots, when the popup is created you can just call
+<code>wlr_xdg_popup_unconstrain_from_box</code> to deal with everything, passing it a box
+which represents the available space surrounding the parent toplevel for the
+popup to be placed in.</p>
+<p>Popups are also able to take &ldquo;grabs&rdquo;, which indicate that they should keep
+focus without respect to any of the other goings-on of the seat. This is used so
+that you can, for example, use the keyboard to pick items from a context menu.
+Grabs are automatically handled for you with <code>wlr_seat</code> for you. If you want to
+deny or cancel grabs, you can do so through the appropriate <code>wlr_seat</code>
+interfaces.</p>
+<p>One last note: xdg-shell only recently became stable, so client support for the
+stable version is hit and miss. The last unstable protocol, xdg-shell v6, is
+also supported by wlroots. It mostly behaves in the same way. Eventually it
+will be removed from wlroots.</p>
+<h2 id="layer-shell">layer-shell</h2>
+<p>Under the umbrella of wlroots, 8 Wayland compositors have been collaborating on
+the design of a new shell for desktop shell components. The result is <a href="https://github.com/swaywm/wlr-protocols/blob/master/unstable/wlr-layer-shell-unstable-v1.xml">layer
+shell
+(XML)</a>.
+The purpose of this shell is to provide an interface for desktop components like
+panels, lock screens, wallpapers, on-screen keyboards, notifications, and so on,
+to display on your compositor.</p>
+<p>The layer-shell is organized into four discrete layers: background, bottom, top,
+and overlay, which are rendered in that order. Between bottom and top,
+application windows are displayed. A wallpaper client might choose to go in the
+bottom layer, while a notification could show on the top layer, and a panel on
+the bottom layer.</p>
+<p>The compositor&rsquo;s job is to decide where to place each surface and how large the
+surface can be. The client can specify either or both of its dimensions (width
+and height) for the compositor to specify, then provide some hints for the
+compositor to do so. The client can, for example, choose to be anchored to edges
+of the screen. A notification might be anchored to <code>TOP | RIGHT</code>, and a panel
+might be anchored to <code>LEFT | BOTTOM | RIGHT</code>. A layer surface anchored to an
+edge, like our panel, can also request an exclusive zone, which is a number of
+pixels from the edge that should not be occluded by other layer surfaces or
+application windows. This is used, for example, when maximizing application
+windows to prevent them from occluding the panel (or in sway&rsquo;s case, when
+arranging tiled windows).</p>
+<p>Layer surfaces also have special keyboard input semantics. Some layer surfaces
+want to receive keyboard input, such as an application launcher overlay. Others
+might prefer that application windows continue to receive keyboard events, such
+as a notification. To this end, a layer surface can toggle a boolean indicating
+its &ldquo;keyboard interactivity&rdquo;. For layers beneath application windows, layer
+surfaces participate in keyboard focus normally, usually meaning they need to be
+clicked to receive keyboard focus. Above application windows, the top-most layer
+always has keyboard focus if it requests it.</p>
+<p>In wlroots, you can wire up a layer shell to the display with
+<code>wlr_layer_shell_create</code>. From there it behaves similarly to xdg-shell with
+respect to the creation of new surfaces and the handling of atomic state. The
+main concern of yours is that, when the surface is committed, you need to
+arrange the surfaces in the affected layer and communicate the final dimensions
+of the layer surface to the client with <code>wlr_layer_surface_configure</code>. You can
+implement the arrangement however you want, but you may find the <a href="https://github.com/swaywm/sway/blob/master/sway/desktop/layer_shell.c#L18-L215">sway
+implementation</a> to be a useful reference. Also check out the
+wlroots <a href="https://github.com/swaywm/wlroots/blob/master/examples/layer-shell.c">example client</a> to test out your implementation.</p>
+<p>Layer surfaces can also have popups, for example when right-clicking on a
+taskbar. This borrows xdg-shell&rsquo;s xdg_popup interface, except the parent is set
+to the layer surface (this is explicitly allowed for through the xdg_popup spec,
+and you may see future shells doing something similar). Most of your code for
+xdg_popups can be reused with layer surfaces.</p>
+<h2 id="xwayland">Xwayland</h2>
+<p>Some Wayland developers turn up their nose when I refer to Xwayland as a shell,
+and perhaps with good reason. However, wlroots treats Xwayland like a shell, so
+the API remains consistent. For that reason, we&rsquo;ll treat it as one in this
+article as well.</p>
+<p>We figured that you might be writing a Wayland compositor so that you <em>don&rsquo;t</em>
+have to write an X11 window manager, too. So we wrote one for you, and it&rsquo;s
+called <code>wlr_xwayland</code>. This interface provides an abstraction over Xwayland
+which makes it behave similarly to our other shells. It still lets you dig your
+heels into it in any degree so that you can adjust the behavior of your
+compositor to suit X-specific needs as necessary.</p>
+<p>The resulting wlr_xwayland API is similar to the other shells we&rsquo;ve described.
+We have a series of events for configuring Xwayland surfaces, a map and unmap
+event, and we expose a whole bunch of info about Xwayland surfaces so you can
+make the judgement call about how much or how little to obey their requests (X11
+windows make more unreasonable requests than other shells, since X11 was the
+wild wild west and a lot of clients took advantage of that).</p>
+<p>This should be enough to get you started, and if you have questions ask on IRC
+for the time being. I could go into more detail, but I think Xwayland deserves
+its own article, and probably not written by me.</p>
+<h2 id="other-shells">Other shells</h2>
+<p>There are three other shells of note. Two are not very interesting:</p>
+<ul>
+<li>wl_shell, the now-deprecated original desktop shell of Wayland</li>
+<li>ivi-shell, used for &ldquo;in-vehicle infotainment&rdquo; systems running Wayland</li>
+</ul>
+<p>wlroots supports neither (though I guess we&rsquo;d accept a patch adding IVI-shell
+support, maybe if the vehicle industry was open to improving that protocol&hellip;),
+and neither is interesting for desktops, phones, etc. You probably don&rsquo;t need to
+worry about them.</p>
+<p>The other is the fullscreen-shell, which is used for optimizing the rendering of
+fullscreen appliations. I don&rsquo;t know much about how it works, and it&rsquo;s not
+supported by wlroots yet; it&rsquo;s not required of a functional Wayland compositor.
+Maybe someday!</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://cgit.freedesktop.org/wayland/wayland-protocols/tree/unstable/xdg-decoration/xdg-decoration-unstable-v1.xml">But not always</a>. You&rsquo;re welcome. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Which is one of the reasons we made the protocol mentioned in footnote<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>For example, this is relevant for sway, which needs to reach deeper into our shell implementations to atomically syncronize the resizing of several clients at once when rearranging the layout. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p>Some popup windows, the GTK+ file chooser for example, prefer to make a new xdg_toplevel and assign its parent to the application window. This is useful if you want your window to show up in taskbars, be able to be minimized and maximized separately, etc. <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

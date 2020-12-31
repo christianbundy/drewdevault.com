@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Status update, August 2019</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Status update, August 2019
+  <small>
+    <span class="date">August 15, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Outside my window, the morning sun can be seen rising over the land of the
+rising sun, as I sip from a coffee purchased at the konbini down the street. I
+almost forgot to order it, as the staffer behind the counter pointed out with a
+smile and a joke that, having been told in Japanese, mostly went over my head.
+It&rsquo;s on this quiet Osaka morning I write today&rsquo;s status update - there are lots
+of existing developments to share!</p>
+<p>Let&rsquo;s start with sourcehut news. I deployed a cool feature yesterday - SSH
+access to builds.sr.ht. You can now SSH into a failed build to examine the
+failure and investigate the root cause. You can also get a shell on-demand for
+any build image, including for experimental arm64 support. I&rsquo;ll be writing a
+full-length blog post going into detail about this feature later in the week.
+Additionally, with contributor Ryan Chan&rsquo;s help, man.sr.ht received a huge
+overhaul which moved wikis out of man.sr.ht&rsquo;s dedicated git subsystem and into
+git.sr.ht repositories, allowing you to make your wiki out of a branch of your
+main project repo or browse the git data on the web. I&rsquo;ll be posting more sr.ht
+news to sr.ht-announce later today if you want to hear more!</p>
+<p><img src="https://sr.ht/thL-.png" alt="Screenshot of a failed build on builds.sr.ht offering SSH access to the buildenvironment"></p>
+<p><a href="https://git.sr.ht/~sircmpwn/aerc/refs/0.2.0">aerc 0.2.0</a> has been released,
+which included nearly 200 changes from 34 contributors. I&rsquo;m grateful to the
+community for this crazy amount of support - working together we&rsquo;ll make aerc
+amazing in no time. Highlights include maildir and sendmail transports, search
+and filtering, support for <code>mailto:</code> links, tab completion, and more. We haven&rsquo;t
+slowed down since, and the next release already has support lined up for
+notmuch, more tab completion support, and more features for mail composition. In
+related news, Greg Kroah-Hartman of Linux kernel fame was kind enough to <a href="http://www.kroah.com/log/blog/2019/08/14/patch-workflow-with-mutt-2019/">write
+up</a>
+details about his email workflow to help guide the direction of aerc. I&rsquo;ll be
+writing a follow-up post next week explaining how aerc aims to solve the
+problems he lays out.</p>
+<p>Sway and wlroots continue chugging along as well, with the release of Sway
+1.2-rc1 coming earlier this week. This release adds many features from the
+recent i3 4.17 release, and adds a handful of small features and bug fixes. The
+corresponding wlroots release will be pretty cool, too, adding support for
+direct scanout and fixing dozens of bugs. I&rsquo;d like to draw your attention as
+well to a cool project from the Sway community: Jason Francis&rsquo;s
+<a href="https://github.com/cyclopsian/wdisplays">wdisplays</a>, a GUI for arranging and
+configuring displays on wlroots-based desktops. The changes necessary for it to
+work will land in sway 1.2, and users building from git can try it out today.</p>
+<p><img src="https://sr.ht/iyU4.png" alt=""></p>
+<p>On the DRM leasing and VR for Wayland work I was discussing in the last update,
+I&rsquo;m happy to share that I&rsquo;ve got it working with SteamVR! I&rsquo;ve written a
+<a href="/2019/08/09/DRM-leasing-and-VR-for-Wayland.html">detailed blog post</a> which
+explains all of the work that went into this project, if you want to learn about
+it in depth and watch some cool videos summing up the work. There&rsquo;s still a lot
+of work to do in negotiating the standardization of new interfaces to support
+this feature in several projects, but all of the unknowns have been discovered
+and answered. We will have VR on Wayland soon. I plan on making my way to the
+<a href="https://monado.dev/">Monado</a> and <a href="https://www.khronos.org/openxr">OpenXR</a> to
+help realize a top-to-bottom free software VR stack designed with Wayland in
+mind. I&rsquo;ll also be joining many members of the wlroots gang at
+<a href="https://xdc2019.x.org/">XDC</a> in October, where I hope to meet the people
+working on OpenXR.</p>
+<p>I&rsquo;ve also invested more time into my Wayland book, because I&rsquo;ve realized that at
+my current pace it won&rsquo;t be done any time soon. It&rsquo;s now about half complete and
+I&rsquo;ve picked up the pace considerably. If you&rsquo;re interested in helping review the
+drafts, please let me know!</p>
+<p>That&rsquo;s all for today. Thank you for your continued support!</p>
+<small class="text-muted">
+This work was possible thanks to users who support me financially. Please
+consider <a href="/donate">donating to my work</a> or <a
+href="https://sourcehut.org">buying a sourcehut.org subscription</a>. Thank you!
+</small>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

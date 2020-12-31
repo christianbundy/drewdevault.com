@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>hacker news on Drew DeVault&#39;s blog</title>
+    <link>./tags/hacker-news.html</link>
+    <description>Recent content in hacker news on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 13 Sep 2017 00:00:00 +0000</lastBuildDate><atom:link href="./tags/hacker-news/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Analyzing HN moderation &amp; censorship</title>
+      <link>./2017/09/13/Analyzing-HN.html</link>
+      <pubDate>Wed, 13 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/09/13/Analyzing-HN.html</guid>
+      <description>Hacker News is a popular &amp;ldquo;hacker&amp;rdquo; news board. One thing I love about HN is that the moderation generally does an excellent job. The site is free of spam and the conversations are usually respectful and meaningful (if pessimistic at times). However, there is always room for improvement, and moderation on Hacker News is no exception.
+Notice: on 2017-10-19 this article was updated to incorporate feedback the Hacker News moderators sent to me to clarify some of the points herein.</description>
+    </item>
+    
+  </channel>
+</rss>

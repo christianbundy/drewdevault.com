@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>firefox on Drew DeVault&#39;s blog</title>
+    <link>./tags/firefox.html</link>
+    <description>Recent content in firefox on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sat, 16 Dec 2017 00:00:00 +0000</lastBuildDate><atom:link href="./tags/firefox/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Firefox is on a slippery slope</title>
+      <link>./2017/12/16/Firefox-is-on-a-slippery-slope.html</link>
+      <pubDate>Sat, 16 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/12/16/Firefox-is-on-a-slippery-slope.html</guid>
+      <description>For a long time, it was just setting the default search provider to Google in exchange for a beefy stipend. Later, paid links in your new tab page were added. Then, a proprietary service, Pocket, was bundled into the browser - not as an addon, but a hardcoded feature. In the past few days, we&amp;rsquo;ve discovered an advertisement in the form of browser extension was sideloaded into user browsers. Whoever is leading these decisions at Mozilla needs to be stopped.</description>
+    </item>
+    
+    <item>
+      <title>In Memoriam - Mozilla</title>
+      <link>./2016/05/11/In-Memoriam-Mozilla.html</link>
+      <pubDate>Wed, 11 May 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/05/11/In-Memoriam-Mozilla.html</guid>
+      <description>Today we look back to the life of Mozilla, a company that was best known for creating the Firefox web browser. I remember a company that made the web better and more open by providing a browser that was faster and more customizable than anyone had ever seen, and by making that browser free and open source.
+I expect many of my readers will be older than I am, but my first memories of Firefox are back in high school with Firefox 3.</description>
+    </item>
+    
+  </channel>
+</rss>

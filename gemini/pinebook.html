@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8" />
+<title>ThinkPad T420 vs Pinebook Pro</title>
+<style>
+body {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  border-bottom: 1px solid black;
+  line-height: 1.5;
+}
+
+td { text-align: center; }
+
+th:first-child {
+  font-weight: normal;
+  text-align: right;
+}
+
+.yes { color: green; font-weight: bold; }
+.no { color: red; }
+.maybe { color: orange; }
+
+sup {
+  color: black;
+  font-weight: normal;
+  position: absolute;
+  font-size: 0.75rem;
+}
+
+p { line-height: 1.3; }
+</style>
+
+<table>
+  <thead>
+    <tr>
+      <td></td>
+      <th>ThinkPad T420</th>
+      <th>Pinebook Pro</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Upstream kernel</th>
+      <td class="yes">✓</td>
+      <td class="no">✗</td>
+    </tr>
+
+    <tr>
+      <th>Open BIOS</th>
+      <td class="yes">✓<sup>1</sup></td>
+      <td class="yes">✓</td>
+    </tr>
+
+    <tr>
+      <th>Sane bootloader</th>
+      <td class="yes">BIOS</td>
+      <td class="no">uBoot</td>
+    </tr>
+
+    <tr>
+      <th>Open display firmware</th>
+      <td class="yes">✓</td>
+      <td class="no">✗</td>
+    </tr>
+
+    <tr>
+      <th>Open wireless firmware</th>
+      <td class="no">✗</td>
+      <td class="no">✗</td>
+    </tr>
+
+    <tr>
+      <th>Wireless kill switch</th>
+      <td class="yes">✓</td>
+      <td class="yes">✓</td>
+    </tr>
+
+    <tr>
+      <th>Bluetooth 5.0</th>
+      <td class="no">✗</td>
+      <td class="yes">✓</td>
+    </tr>
+
+    <tr>
+      <th>Storage</th>
+      <td class="yes">500G</td>
+      <td class="no">64G</td>
+    </tr>
+
+    <tr>
+      <th>Upgradable storage</th>
+      <td class="yes">✓</td>
+      <td class="yes">✓</td>
+    </tr>
+
+    <tr>
+      <th>RAM</th>
+      <td class="yes">16G</td>
+      <td class="no">4G</td>
+    </tr>
+
+    <tr>
+      <th>Upgradable memory</th>
+      <td class="yes">✓</td>
+      <td class="no">✗</td>
+    </tr>
+
+    <tr>
+      <th>Weight</th>
+      <td class="no">2.2kg</td>
+      <td class="yes">1.3kg</td>
+    </tr>
+
+    <tr>
+      <th>Battery life</th>
+      <td class="no">3.5-5.8 hours</td>
+      <td class="yes">6-8 hours</td>
+    </tr>
+
+    <tr>
+      <th>Replacable battery</th>
+      <td class="yes">✓</td>
+      <td class="maybe">requires screwdriver</td>
+    </tr>
+
+    <tr>
+      <th>User-serviceable parts</th>
+      <td class="yes">✓</td>
+      <td class="maybe">some</td>
+    </tr>
+
+    <tr>
+      <th>HD video playback</th>
+      <td class="yes">✓</td>
+      <td class="maybe">good luck</td>
+    </tr>
+
+    <tr>
+      <th>Usable web browsing</th>
+      <td class="yes">✓</td>
+      <td class="maybe">good luck</td>
+    </tr>
+
+    <tr>
+      <th class="bold">Price</th>
+      <td class="yes">$150 (eBay)</td>
+      <td class="no">$200 (Pine store)</td>
+    </tr>
+
+    <tr>
+      <th class="bold">Release year</th>
+      <td>2011</td>
+      <td>2019<sup>2</sup></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+The Pinebook Pro is a decent laptop. It is lightweight, has a good display, and
+a good battery life. I am happy with Pine64 as a company and think that it is a
+good product. There is a place for it in my life. Pine64 has their heart in the
+right place and I support them and buy their products because I want them to
+succeed.
+
+<p>
+But, is this the best the modern laptop industry can come up with? As a
+workstation, it doesn't compete. The performance of the ARM CPU is absolutely
+put to shame by the 8 year old T420, even for basic tasks. Is this 8 years of
+advancement in the state of the art?
+
+<p>
+Get your shit together, laptop vendors. Fuck's sake.
+
+<hr />
+
+<p>
+1: Aftermarket via <a href="https://doc.coreboot.org/mainboard/lenovo/t420.html">coreboot</a>
+
+<p>
+2: Limited release, full release in 2020

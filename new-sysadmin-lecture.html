@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>New sysadmin lecture</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  New sysadmin lecture
+</h1>
+
+<main>
+  <p>You&rsquo;re a production sysadmin now. That comes with certain responsibilities. In
+short:</p>
+<ol>
+<li>Respect the user&rsquo;s privacy, and look at only what you must.</li>
+<li>Think before you type.</li>
+<li>With great power comes great responsibility.</li>
+</ol>
+<p>Assorted tips:</p>
+<ul>
+<li>Practice your changes on localhost first.</li>
+<li>Ask for help if you need it.</li>
+<li>Always run your SQL queries in a transaction.</li>
+<li><code>SELECT things, you, want FROM x;</code> is generally better than <code>SELECT * FROM x;</code>
+when considering the user&rsquo;s privacy.</li>
+<li>Share information on a need-to-know basis, both with people and with
+computers.</li>
+<li>Avoid doing things that cannot be undone.</li>
+</ul>
+<h2 id="spear-phishing">Spear Phishing</h2>
+<p>Because you now have access to production systems, you may be a target for spear
+phishing. A bad actor may target you directly in a social engineering attack in
+an attempt to get you to leverage your access to mistakenly compromise the
+system. For example, someone may impersonate another admin and ask you to add an
+SSH key to a server. You need to be aware of this risk.</p>
+<p>If you receive a request to leverage your access for any reason, double check
+the veracity of the request. Is the person on IRC identified with NickServ for
+the correct account? Is the email they sent DKIM signed and verified from the
+right sender? If in doubt, ask for a secondary form of authentication, such as a
+PGP challenge.</p>
+<p>This also applies to normal requests from users - don&rsquo;t let someone impersonate
+another user in an attempt to gain access to or manipulate their account. Be
+especially careful with requests from users with 2FA enabled.</p>
+
+</main>
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

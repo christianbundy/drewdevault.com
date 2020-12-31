@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>sr.ht, the hacker&#39;s forge, now open for public alpha</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  sr.ht, the hacker&#39;s forge, now open for public alpha
+  <small>
+    <span class="date">November 15, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I&rsquo;m happy to announce today that I&rsquo;m opening <a href="https://sr.ht">sr.ht</a> (pronounced
+&ldquo;sir hat&rdquo;, or any other way you want) to the general public for the remainder of
+the alpha period. Though it&rsquo;s missing some of the features which will be
+available when it&rsquo;s completed, sr.ht today represents a very capable software
+forge which is already serving the needs of many projects in the free &amp; open
+source software community. If you&rsquo;re familiar with the project and ready to
+register your account, you can head straight to <a href="https://sr.ht">the sign up
+page</a>.</p>
+<p>For those who are new, let me explain what makes sr.ht special. It provides many
+of the trimmings you&rsquo;re used to from sites like GitHub, Gitlab, BitBucket, and
+so on, including git repository hosting, bug tracking software, CI, wikis, and
+so on. However, the sr.ht model is different from these projects - where many
+forges attempt to replicate GitHub&rsquo;s success with a thinly veiled clone of the
+GitHub UI and workflow, sr.ht is fundamentally different in its approach.</p>
+<blockquote>
+<p>The sr.ht platform excites me more than any project in recent memory. It’s a
+fresh concept, not a Github wannabe like Gitlab. I always thought that if
+something is going to replace Github it would have to be a paradigm change, and
+I think that’s what we’re seeing here. Drew’s project blends the wisdom of the
+kernel hackers with a tasteful web interface.</p>
+</blockquote>
+<div style="margin-top: -1rem; margin-bottom: 1rem"><small>&mdash;<a href="https://lobste.rs/s/h1udkf/git_is_already_federated_decentralized#c_smnkic">begriffs on lobste.rs</a></small></div>
+<p>The 500 foot view is that sr.ht is a <a href="https://git.sr.ht/~sircmpwn/?search=sr.ht">100% free and open
+source</a> software forge, with a hosted
+version of the services running <em>at</em> <a href="https://sr.ht">sr.ht</a> for your
+convenience. Unlike GitHub, which is almost entirely closed source, and Gitlab,
+which is mostly open source but with a proprietary premium offering, all of
+sr.ht is completely open source, with a copyleft license<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. You&rsquo;re welcome
+to install it on your own hardware, and <a href="https://man.sr.ht/installation.md">detailed
+instructions</a> are available for those who
+want to do so. You can also send patches upstream, which are then integrated
+into the hosted version.</p>
+<p>sr.ht is special because it&rsquo;s extremely modular and flexible, designed with
+interoperability with the rest of the ecosystem in mind. On top of that, sr.ht
+is one of the most lightweight websites on the internet, with the average page
+weighing less than 10 KiB, with <strong>no tracking</strong> and <strong>no JavaScript</strong>. Each
+component - git hosting, continuous integration, etc - is a standalone piece of
+software that integrates deeply with the rest of sr.ht <em>and</em> with the rest of
+the ecosystem outside of sr.ht. For example, you can use builds.sr.ht to compile
+your GitHub pull requests, or you can keep your repos on git.sr.ht and host
+everything in one place. Unlike GitHub, which favors its own in-house pull
+request workflow<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, sr.ht embraces and improves upon the email-based
+workflow favored by git itself, along with many of the more hacker-oriented
+projects around the net. I&rsquo;ve put a lot of work into making this powerful
+workflow more <a href="https://man.sr.ht/git.sr.ht/send-email.md">accessible and
+comprehensible</a> to the average
+hacker.</p>
+<p>The flagship product from sr.ht is its continuous integration platform,
+builds.sr.ht, which is easily the most capable continuous integration system
+available today. It&rsquo;s so powerful that I&rsquo;ve been working with multiple Linux
+distributions on bringing them onboard because it&rsquo;s the only platform which can
+scale to the automation needs of an entire Linux distribution. It&rsquo;s so powerful
+that I&rsquo;ve been working with maintainers of <em>non-Linux</em> operating systems, from
+BSD to even Hurd, because it&rsquo;s the only platform which can even consider
+supporting their needs. Smaller users are loving it, too, many of whom are
+jumping ship from Travis and Jenkins in favor of the simplicity and power of
+builds.sr.ht.</p>
+<p>On builds.sr.ht, simple YAML-based <a href="https://man.sr.ht/builds.sr.ht/#build-manifests">build
+manifests</a>, similar to those
+you see on other platforms, are used to describe your builds. You can submit
+these through the web, the API, or various integrations.  Within seconds, a
+virtual machine is booted with KVM, your build environment is sent to it, and
+your scripts start running. A diverse set of base images are supported on a
+variety of architectures, soon to include the first hardware-backed RISC-V
+cycles available to the general public. builds.sr.ht is used to automate
+everything from the deployment of this Jekyll-based blog, testing GitHub pull
+requests for <a href="https://swaywm.org">sway</a>, building and testing packages for
+<a href="https://postmarketos.org/">postmarketOS</a>, and deploying complex applications
+like builds.sr.ht itself. Our base images <a href="https://builds.sr.ht/~sircmpwn/alpine/edge">build, test, and deploy
+themselves</a> every day.</p>
+<p>The lists.sr.ht service is another important part of sr.ht, and a large part of
+how sr.ht embraces the model used by major projects like Linux, Postgresql, git
+itself, and many more. lists.sr.ht finally modernizes mailing lists, with a
+powerful and elegant web interface for hacking on and talking about your
+projects. Take a look at the <a href="https://lists.sr.ht/~sircmpwn/sr.ht-dev">sr.ht-dev</a> list to see patches
+developed for sr.ht itself. Another good read is the <a href="https://lists.sr.ht/~emersion/mrsh-dev">mrsh-dev</a> list,
+used for development on the <a href="https://git.sr.ht/~emersion/mrsh">mrsh</a> project, or my own <a href="https://lists.sr.ht/~sircmpwn/public-inbox">public
+inbox</a>, where I take comments for this blog and grab-bag
+discussions for my smaller projects.</p>
+<p>I&rsquo;ve just scratched the surface, and there&rsquo;s much more for you to discover. You
+could look at my <a href="https://git.sr.ht/~sircmpwn/scdoc">scdoc</a> project to get an
+idea of how the git browser looks and feels. You could <a href="https://todo.sr.ht/~sircmpwn">browse tickets on my
+todo.sr.ht profile</a> to get a feel for the bug
+tracking software. Or you could check out the <a href="https://man.sr.ht">detailed
+manual</a> on sr.ht&rsquo;s git-powered wiki service. You could also
+just <a href="https://sr.ht">sign up for an account</a>!</p>
+<p>sr.ht isn&rsquo;t complete, but it&rsquo;s maturing fast and I think you&rsquo;ll love it. Give it
+a try, and I&rsquo;m only <a href="mailto:sir@cmpwn.com">an email away</a> to receive your
+feedback.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Some components use the 3-clause BSD license. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>A model that many have replicated in their own GitHub alternatives. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

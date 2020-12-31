@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>fork is not my favorite syscall</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  fork is not my favorite syscall
+  <small>
+    <span class="date">January 2, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>This article has been on my to-write list for a while now. In my opinion, fork
+is one of the most questionable design choices of Unix. I don&rsquo;t understand the
+circumstances that led to its creation, and I grieve over the legacy rationale
+that keeps it alive to this day.</p>
+<p>Let&rsquo;s set the scene. It&rsquo;s 1971 and you&rsquo;re a fly on the wall in Bell Labs,
+watching the first edition of Unix being designed for the PDP-11/20. This
+machine has a 16-bit address space with no more than 248 kilobytes of memory.
+They&rsquo;re discussing how they&rsquo;re going to support programs that spawn new
+programs, and someone has a brilliant idea. &ldquo;What if we copied the entire
+address space of the program into a new process running from the same spot, then
+let them overwrite themselves with the new program?&rdquo; This got a rousing laugh
+out of everyone present, then they moved on to a better design which would
+become immortalized in the most popular and influential operating system of all
+time.</p>
+<p>At least, that&rsquo;s the story I&rsquo;d like to have been told. In actual fact, the
+laughter becomes consensus. There&rsquo;s an obvious problem with this approach: every
+time you want to execute a new program, the entire process space is copied and
+promptly discarded when the new program begins.  Usually when I complain about
+fork, this the point when its supporters play the virtual memory card, pointing
+out that modern operating systems don&rsquo;t actually have to copy the whole address
+space. We&rsquo;ll get to that, but first — First Edition Unix <em>does</em> copy the
+whole process space, so this excuse wouldn&rsquo;t have held up at the time. By Fourth
+Edition Unix (the next one for which kernel sources survived), they had wisened
+up a bit, and started only copying segments when they faulted.</p>
+<p>This model leads to a number of problems. One is that the new process inherits
+<em>all</em> of the parent&rsquo;s process descriptors, so you have to close them all before
+you exec another process. However, unless you&rsquo;re manually keeping tabs on your
+open file descriptors, there is no way to know what file handles you must close!
+The hack that solves this is <code>CLOEXEC</code>, the first of many hacks that deal with
+fork&rsquo;s poor design choices. This file descriptors problem balloons a bit -
+consider for example if you want to set up a pipe. You have to establish a piped
+pair of file descriptors in the parent, then close every fd <em>but</em> the pipe in
+the child, then <code>dup2</code> the pipe file descriptor over the (now recently closed)
+file descriptor 1. By this point you&rsquo;ve probably had to do several non-trivial
+operations and utilize a handful of variables from the parent process space,
+which <em>hopefully</em> were on the stack so that we don&rsquo;t end up copying segments
+into the new process space anyway.</p>
+<p>These problems, however, pale in comparison to my number one complaint with the
+fork model. Fork is the direct cause of the <em>stupidest</em> component I&rsquo;ve <em>ever</em>
+heard of in an operating system: the out-of-memory (aka OOM) killer. Say you
+have a process which is using half of the physical memory on your system, and
+wants to spawn a tiny program. Since fork &ldquo;copies&rdquo; the entire process, you might
+be inclined to think that this would make fork fail. But, on Linux and many
+other operating systems since, it does not fail! They agree that it&rsquo;s stupid to
+copy the entire process just to exec something else, but because fork is
+Important for Backwards Compatibility, they just fake it and reuse the same
+memory map (except read-only), then trap the faults and actually copy later.
+The hope is that the child will get on with it and exec before this happens.</p>
+<p>However, nothing prevents the child from doing something other than exec -
+it&rsquo;s free to use the memory space however it desires! This approach now leads to
+<em>memory overcommittment</em> - Linux has promised memory it does not have. As a
+result, when it really does run out of physical memory, Linux will just kill off
+processes until it has some memory back. Linux makes an awfully big fuss about
+&ldquo;never breaking userspace&rdquo; for a kernel that will lie about memory it doesn&rsquo;t
+have, then kill programs that try to use the back-alley memory they were given.
+That this nearly 50 year old crappy design choice has come to this astonishes
+me.</p>
+<p>Alas, I cannot rant forever without discussing the alternatives. There <strong>are</strong>
+better process models that have been developed since Unix!</p>
+<p>The first attempt I know of is BSD&rsquo;s <code>vfork</code> syscall, which is, in a nutshell,
+the same as fork but with severe limitations on what you do in the child process
+(i.e. nothing other than calling exec straight away). There are <em>loads</em> of
+problems with <code>vfork</code>. It only handles the most basic of use cases: you cannot
+set up a pipe, cannot set up a pty, and can&rsquo;t even close open file descriptors
+you inherited from the parent. Also, you couldn&rsquo;t really be sure of what
+variables you were and weren&rsquo;t editing or allowed to edit, considering the
+limitations of the C specification. Overall this syscall ended up being pretty
+useless.</p>
+<p>Another model is <code>posix_spawn</code>, which is a hell of an interface. It&rsquo;s far too
+complicated for me to detail here, and in my opinion far too complicated to ever
+consider using in practice. Even if it could be understood by mortals, it&rsquo;s a
+really bad implementation of the spawn paradigm — it basically operates
+like fork backwards, and inherits many of the same flaws. You still have to deal
+with children inheriting your file descriptors, for example, only now you do it
+in the parent process. It&rsquo;s also straight-up impossible to make a genuine pipe
+with <code>posix_spawn</code>. (<em>Note: a reader corrected me - this is indeed possible via
+posix_spawn_file_actions_adddup2</em>.)</p>
+<p>Let&rsquo;s talk about the good models - <code>rfork</code> and spawn (at least, if spawn is done
+right). <code>rfork</code> originated from plan9 and is a beautiful little coconut of a
+syscall, much like the rest of plan9. They also implement fork, but it&rsquo;s a
+special case of <code>rfork</code>. plan9 does not distinguish between processes and
+threads - all threads are processes and vice versa. However, new processes in
+plan9 are not the everything-must-go fuckfest of your typical fork call.
+Instead, you specify exactly what the child should get from you. You can choose
+to include (or not include) your memory space, file descriptors, environment, or
+a number of other things specific to plan9. There&rsquo;s a cool flag that makes it so
+you don&rsquo;t have to reap the process, too, which is nice because reaping children
+is another really stupid idea. It still has some problems, mainly around
+creating pipes without tremendous file descriptor fuckery, but it&rsquo;s basically as
+good as the fork model gets. Note: Linux offers this via the <code>clone</code> syscall
+now, but everyone just fork+execs anyway.</p>
+<p>The other model is the spawn model, which I prefer. This is the approach I took
+in my own kernel for KnightOS, and I think it&rsquo;s also used in NT (Microsoft&rsquo;s
+kernel). I don&rsquo;t really know much about NT, but I can tell you how it works in
+KnightOS. Basically, when you create a new process, it is kept in limbo until
+the parent consents to begin. You are given a handle with which you can
+configure the process - you can change its environment, load it up with file
+descriptors to your liking, and so on. When you&rsquo;re ready for it to begin, you
+give the go-ahead and it&rsquo;s off to the races. The spawn model has none of the
+flaws of fork.</p>
+<p>Both fork and exec can be useful at times, but spawning is much better for 90%
+of their use-cases. If I were to write a new kernel today, I&rsquo;d probably take a
+leaf from plan9&rsquo;s book and find a happy medium between <code>rfork</code> and spawn, so you
+could use spawn to start new threads in your process space as well. To the
+brave OS designers of the future, ready to shrug off the weight of legacy:
+please reconsider fork.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

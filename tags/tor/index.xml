@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>tor on Drew DeVault&#39;s blog</title>
+    <link>./tags/tor.html</link>
+    <description>Recent content in tor on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 11 Nov 2015 00:00:00 +0000</lastBuildDate><atom:link href="./tags/tor/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Bring more Tor into your life</title>
+      <link>./2015/11/11/Bring-more-tor-into-your-life.html</link>
+      <pubDate>Wed, 11 Nov 2015 00:00:00 +0000</pubDate>
+      
+      <guid>./2015/11/11/Bring-more-tor-into-your-life.html</guid>
+      <description>Tor is a project that improves your privacy online by encrypting and bouncing your connection through several nodes before leaving for the outside world. It makes it much more difficult for someone spying on you to know who you&amp;rsquo;re talking to online and what you&amp;rsquo;re saying to them. Many people use it with the Tor Browser (a fork of Firefox) and only use it with HTTP.
+What some people do not know is that Tor works at the TCP level, and can be used for any kind of traffic.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>C on Drew DeVault&#39;s blog</title>
+    <link>./tags/C.html</link>
+    <description>Recent content in C on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 25 Mar 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/C/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Rust is not a good C replacement</title>
+      <link>./2019/03/25/Rust-is-not-a-good-C-replacement.html</link>
+      <pubDate>Mon, 25 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/03/25/Rust-is-not-a-good-C-replacement.html</guid>
+      <description>I have a saying that summarizes my opinion of Rust compared to Go: &amp;ldquo;Go is the result of C programmers designing a new programming language, and Rust is the result of C++ programmers designing a new programming language&amp;rdquo;. This isn&amp;rsquo;t just a metaphor - Go was designed by plan9 alumni, an operating system written in C and the source of inspiration for many of Go&amp;rsquo;s features, and Rust was designed by the folks at Mozilla - whose flagship product is one of the largest C++ codebases in the world.</description>
+    </item>
+    
+    <item>
+      <title>Embedding files in C programs with koio</title>
+      <link>./2018/05/29/Embedding-files-in-C.html</link>
+      <pubDate>Tue, 29 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/05/29/Embedding-files-in-C.html</guid>
+      <description>Quick blog post today to introduce a new tool I wrote: koio. This is a small tool which takes a list of files and embeds them in a C file. A library provides an fopen shim which checks the list of embedded files before resorting to the real filesystem.
+I made this tool for chopsui, where I eventually want to be able to bundle up sui markup, stylesheets, images, and so on in a statically linked chopsui program.</description>
+    </item>
+    
+    <item>
+      <title>Limited &#34;generics&#34; in C without macros or UB</title>
+      <link>./2017/06/05/Limited-generics-in-C.html</link>
+      <pubDate>Mon, 05 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/06/05/Limited-generics-in-C.html</guid>
+      <description>I should start this post off by clarifying that what I have to show you today is not, in fact, generics. However, it&amp;rsquo;s useful in some situations to solve the same problems that generics might. This is a pattern I&amp;rsquo;ve started using to reduce the number of void* pointers floating around in my code: multiple definitions of a struct.
+Errata: we rolled this approach back in wlroots because it causes problems with LTO.</description>
+    </item>
+    
+    <item>
+      <title>Principles for C programming</title>
+      <link>./2017/03/15/How-I-learned-to-stop-worrying-and-love-C.html</link>
+      <pubDate>Wed, 15 Mar 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/03/15/How-I-learned-to-stop-worrying-and-love-C.html</guid>
+      <description>In the words of Doug Gwyn, &amp;ldquo;Unix was not designed to stop you from doing stupid things, because that would also stop you from doing clever things&amp;rdquo;. C is a very powerful tool, but it is to be used with care and discipline. Learning this discipline is well worth the effort, because C is one of the best programming languages ever made. A disciplined C programmer will&amp;hellip;
+Prefer maintainability. Do not be clever where cleverness is not required.</description>
+    </item>
+    
+    <item>
+      <title>Compiler devnotes: Machine specs</title>
+      <link>./2017/02/22/cozy-devnotes-machine-specs.html</link>
+      <pubDate>Wed, 22 Feb 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/02/22/cozy-devnotes-machine-specs.html</guid>
+      <description>I have a number of long-term projects that I plan for on long timelines, on the order of decades or more. One of these projects is cozy, a C toolchain. I haven&amp;rsquo;t talked about this project in public before, so I&amp;rsquo;ll start by introducing you to the project. The main C toolchains in the &amp;ldquo;actually usable&amp;rdquo; category are GNU and LLVM, but I&amp;rsquo;m satisfied with neither and I want to build my own toolchain.</description>
+    </item>
+    
+    <item>
+      <title>Lessons to learn from C</title>
+      <link>./2017/01/30/Lessons-to-learn-from-C.html</link>
+      <pubDate>Mon, 30 Jan 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/01/30/Lessons-to-learn-from-C.html</guid>
+      <description>C is my favorite language, though I acknowledge that it has its warts. I&amp;rsquo;ve tried looking at languages people hope will replace C (Rust, Go, etc), and though they&amp;rsquo;ve improved on some things they won&amp;rsquo;t be supplanting C in my life any time soon. I&amp;rsquo;ll share with you what makes C a great language to me. Take some of these things as inspiration for the next C replacement you write.</description>
+    </item>
+    
+    <item>
+      <title>Using -Wl,--wrap for mocking in C</title>
+      <link>./2016/07/19/Using-Wl-wrap-for-mocking-in-C.html</link>
+      <pubDate>Tue, 19 Jul 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/07/19/Using-Wl-wrap-for-mocking-in-C.html</guid>
+      <description>One of the comforts I&amp;rsquo;ve grown used to in higher level languages when testing my code is mocking. The idea is that in order to test some code in isolation, you should &amp;ldquo;mock&amp;rdquo; the behavior of things it depends on. Let&amp;rsquo;s see a (contrived) example:
+int read_to_end(FILE *f, char *buf) { int r = 0, l; while (!feof(f)) { l = fread(buf, 1, 256, f); r += l; buf += l; } return r; } If we want to test this function without mocking, we would need to actually open a specially crafted file and provide a FILE* to the function.</description>
+    </item>
+    
+    <item>
+      <title>Understanding pointers</title>
+      <link>./2016/05/28/Understanding-pointers.html</link>
+      <pubDate>Sat, 28 May 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/05/28/Understanding-pointers.html</guid>
+      <description>I was recently chatting with a new contributor to Sway who is using the project as a means of learning C, and he had some questions about what void** meant when he found some in the code. It became apparent that this guy only has a basic grasp on pointers at this point in his learning curve, and I figured it was time for another blog post - so today, I&amp;rsquo;ll explain pointers.</description>
+    </item>
+    
+    <item>
+      <title>How to write a better bloom filter in C</title>
+      <link>./2016/04/12/How-to-write-a-better-bloom-filter-in-C.html</link>
+      <pubDate>Tue, 12 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/04/12/How-to-write-a-better-bloom-filter-in-C.html</guid>
+      <description>This is in response to How to write a bloom filter in C++, which has good intentions, but is ultimately a less than ideal bloom filter implementation. I put together a better one in C in a few minutes, and I&amp;rsquo;ll explain the advantages of it.
+The important differences are:
+ You bring your own hashing functions You can add arbitrary data types, not just bytes It uses bits directly instead of relying on the std::vector&amp;lt;bool&amp;gt; being space effecient  I chose C because (1) I prefer it over C++ and (2) I just think it&amp;rsquo;s a better choice for implementing low level data types, and C++ is better used in high level code.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Firefox is on a slippery slope</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Firefox is on a slippery slope
+  <small>
+    <span class="date">December 16, 2017</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>For a long time, it was just setting the default search provider to Google in
+exchange for a beefy stipend. Later, paid links in your new tab page were added.
+Then, a proprietary service, Pocket, was bundled into the browser - not as an
+addon, but a hardcoded feature. In the past few days, we&rsquo;ve discovered an
+advertisement in the form of browser extension was sideloaded into user
+browsers. Whoever is leading these decisions at Mozilla needs to be stopped.</p>
+<p>Here&rsquo;s a breakdown of what happened a few days ago. Mozilla and NBC
+Universal did a &ldquo;collaboration&rdquo; (read: promotion) for the TV show Mr. Robot.
+It involved sideloading a sketchy browser extension which will <strong
+style="display: inline-block; transform: scaleY(-1)">invert</strong> text that
+matches a list of Mr. Robot-related keywords like &ldquo;fsociety&rdquo;, &ldquo;robot&rdquo;, &ldquo;undo&rdquo;,
+and &ldquo;fuck&rdquo;, and does a number of other things like adding an HTTP header to
+certain sites you visit.</p>
+<p>This extension was sideloaded into browsers via the &ldquo;experiments&rdquo; feature.
+Not only are these experiments enabled by default, but updates <a href="https://redd.it/7i4puf">have been
+known</a> to re-enable it if you turn it off. The
+advertisement addon shows up <a href="http://www.bolcer.org/looking-glass2.png">like
+this</a> on your addon page, and was
+added to Firefox stable. If I saw this before I knew what was going on, I would
+think my browser was compromised!  Apparently it was a mistake that this showed
+up on the addon page, though - it was supposed to be <em>silently</em> sideloaded into
+your browser!</p>
+<p>There&rsquo;s <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1423003">a ticket</a> on
+Bugzilla (Firefox&rsquo;s bug tracker) for discussing this experiment, but it&rsquo;s locked
+down and no one outside of Mozilla can see it. There&rsquo;s <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1424977">another
+ticket</a>, filed by
+concerned users, which has since been disabled and had many comments removed,
+particularly the angry (but respectful) ones.</p>
+<p>Mozilla, this is <strong>not okay</strong>. This is wrong on so many levels. Frankly, whoever
+was in charge should be fired over this - which is not something I call for
+lightly.</p>
+<p>First of all, web browsers are a <em>tool</em>. I don&rsquo;t want my browser to fool around,
+I just want it to display websites faithfully. This is the prime directive of
+web browsers, and you broke that. When I compile vim with gcc, I don&rsquo;t want
+gcc to make vim sporadically add &ldquo;fsociety&rdquo; into every document I write. I want
+it to compile vim and go away.</p>
+<p>More importantly, these advertising anti-features gravely - perhaps terminally -
+violate user trust. This event tells us that &ldquo;Firefox studies&rdquo; into a backdoor
+for advertisements, and I will <em>never</em> trust it again. But it doesn&rsquo;t matter -
+you&rsquo;re going to re-enable it on the next update. You know what that means? I
+will never trust <em>Firefox</em> again. I switched to
+<a href="http://qutebrowser.org/">qutebrowser</a> as my daily driver because this crap was
+starting to add up, but I still used Firefox from time to time and never
+resigned from it entirely or stopped recommending it to friends. Well, whatever
+goodwill was left is gone now, and I will only recommend other browsers
+henceforth.</p>
+<p>Mozilla, you fucked up <em>bad</em>, and you still haven&rsquo;t apologised. The study is
+still active and ongoing. There is no amount of money that you should have
+accepted for this. This is the last straw - and I took a lot of straws from you.
+Goodbye forever, Mozilla.</p>
+<p><strong>Update 2017-12-16 @ 22:33</strong></p>
+<p>It has been clarified that an about:config flag must be set for this addon&rsquo;s
+behavior to be visible. This improves the situation considerably, but I do not
+think it exenorates Mozilla and I stand firm behind most of my points. The study
+has also been rolled back by Mozilla, and Mozilla has issued
+<a href="https://gizmodo.com/mozilla-slipped-a-mr-robot-promo-plugin-into-firefox-1821332254">statements</a>
+to the
+<a href="https://gizmodo.com/after-blowback-firefox-will-move-mr-robot-extension-t-1821354314">media</a>
+justifying the study (no apology has been issued).</p>
+<p><strong>Update 2017-12-18</strong></p>
+<p>Mozilla has issued an apology:</p>
+<p><a href="https://blog.mozilla.org/firefox/update-looking-glass-add/">https://blog.mozilla.org/firefox/update-looking-glass-add/</a></p>
+<p><strong>Responses</strong>:</p>
+<p><a href="https://blog.jeaye.com/2017/12/16/firefox/">Mozilla, Firefox, Looking Glass, and you</a>
+via jeaye.com</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>followup on Drew DeVault&#39;s blog</title>
+    <link>./tags/followup.html</link>
+    <description>Recent content in followup on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 08 Jan 2020 00:00:00 +0000</lastBuildDate><atom:link href="./tags/followup/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Following up on &#34;Hello world&#34;</title>
+      <link>./2020/01/08/Re-Slow.html</link>
+      <pubDate>Wed, 08 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/01/08/Re-Slow.html</guid>
+      <description>This is a follow-up to my last article, Hello world, which is easily the most negatively received article I&amp;rsquo;ve written — a remarkable feat for someone who&amp;rsquo;s written as much flame bait as me. Naturally, the fault lies with the readers.
+
+All jokes aside, I&amp;rsquo;ll try to state my point better. The &amp;ldquo;Hello world&amp;rdquo; article was a lot of work to put together — frustrating work — by the time I had finished collecting numbers, I was exhausted and didn&amp;rsquo;t pay much mind to putting context to them.</description>
+    </item>
+    
+  </channel>
+</rss>

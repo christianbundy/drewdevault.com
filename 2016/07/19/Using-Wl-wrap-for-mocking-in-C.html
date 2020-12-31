@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Using -Wl,--wrap for mocking in C</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Using -Wl,--wrap for mocking in C
+  <small>
+    <span class="date">July 19, 2016</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>One of the comforts I&rsquo;ve grown used to in higher level languages when testing
+my code is mocking. The idea is that in order to test some code in isolation,
+you should &ldquo;mock&rdquo; the behavior of things it depends on. Let&rsquo;s see a (contrived)
+example:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">read_to_end</span><span class="p">(</span><span class="n">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">feof</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">fread</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="n">f</span><span class="p">);</span>
+        <span class="n">r</span> <span class="o">+=</span> <span class="n">l</span><span class="p">;</span>
+        <span class="n">buf</span> <span class="o">+=</span> <span class="n">l</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>If we want to test this function without mocking, we would need to actually open
+a specially crafted file and provide a <code>FILE*</code> to the function. However, with
+the linker <code>--wrap</code> flag, we can define a wrapper function. Using <code>-Wl,[flag]</code>
+in your C compiler command line will pass <code>[flag]</code> to the linker. Gold (GNU) and
+lld (LLVM) both support the wrap flag, which specifies a function to be
+&ldquo;wrapped&rdquo;. If I use <code>-Wl,--wrap=fread</code>, then the code above will be compiled
+like so:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">read_to_end</span><span class="p">(</span><span class="n">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">feof</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">__wrap_fread</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="n">f</span><span class="p">);</span>
+        <span class="n">r</span> <span class="o">+=</span> <span class="n">l</span><span class="p">;</span>
+        <span class="n">buf</span> <span class="o">+=</span> <span class="n">l</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>And if I add <code>-Wl,--wrap=feof</code> we&rsquo;ll get this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">read_to_end</span><span class="p">(</span><span class="n">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">__wrap_feof</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">__wrap_fread</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="n">f</span><span class="p">);</span>
+        <span class="n">r</span> <span class="o">+=</span> <span class="n">l</span><span class="p">;</span>
+        <span class="n">buf</span> <span class="o">+=</span> <span class="n">l</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>Now, we can define some functions that do the behavior we need to test instead
+of invoking fread directly:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="n">feof_return_value</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">__wrap_feof</span><span class="p">(</span><span class="n">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">f</span> <span class="o">==</span> <span class="p">(</span><span class="n">FILE</span> <span class="o">*</span><span class="p">)</span><span class="mh">0x1234</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">feof_return_value</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">test_read_to_end_eof</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// ...
+</span><span class="c1"></span>    <span class="n">feof_return_value</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">read_to_end</span><span class="p">((</span><span class="n">FILE</span> <span class="o">*</span><span class="p">)</span><span class="mh">0x1234</span><span class="p">,</span> <span class="n">buf</span><span class="p">);</span>
+    <span class="c1">// ...
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p>Using <code>--wrap</code> also conveniently defines <code>__real_feof</code> and <code>__real_fread</code> if we
+need them.</p>
+<p>Unfortunately, you can&rsquo;t have two different wrappers for the same function in
+an executable. This could lead to having to write several executables for each,
+or making your wrapper function smart enough to have several configurable
+outcomes.</p>
+<p>Eventually I intend to write my own test framework for C, which will use
+wrappers to support mocking. I want wrappers to be done automatically and have
+it behave something like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">int</span> <span class="nf">fake_fread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">,</span>
+        <span class="n">size_t</span> <span class="n">nmemb</span><span class="p">,</span> <span class="n">FILE</span> <span class="o">*</span><span class="n">stream</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">hello</span> <span class="o">=</span> <span class="s">&#34;Hello world!&#34;</span><span class="p">;</span>
+    <span class="n">memcpy</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">hello</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">hello</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">strlen</span><span class="p">(</span><span class="n">hello</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">test_read_to_end</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">FILE</span> <span class="o">*</span><span class="n">test</span> <span class="o">=</span> <span class="p">(</span><span class="n">FILE</span> <span class="o">*</span><span class="p">)</span><span class="mh">0x1234</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">buffer</span> <span class="o">=</span> <span class="kt">char</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>
+
+    <span class="n">mock_t</span> <span class="o">*</span><span class="n">mock_feof</span> <span class="o">=</span> <span class="n">configure_mock</span><span class="p">(</span><span class="n">feof</span><span class="p">,</span> <span class="s">&#34;p&#34;</span><span class="p">);</span>
+    <span class="n">mock_feof</span><span class="o">-&gt;</span><span class="n">call</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">returns</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="n">mock_feof</span><span class="o">-&gt;</span><span class="n">returns</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+    <span class="c1">// pzzp is pointer, size_t, size_t, pointer
+</span><span class="c1"></span>    <span class="c1">// Tells us what the fread arguments look like
+</span><span class="c1"></span>    <span class="n">mock_t</span> <span class="o">*</span><span class="n">mock_fread</span> <span class="o">=</span> <span class="n">configure_mock</span><span class="p">(</span><span class="n">fread</span><span class="p">,</span> <span class="s">&#34;pzzp&#34;</span><span class="p">);</span>
+    <span class="n">mock_fread</span><span class="o">-&gt;</span><span class="n">exec</span><span class="p">(</span><span class="n">fake_fread</span><span class="p">);</span>
+
+    <span class="n">read_to_end</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">buffer</span><span class="p">);</span>
+
+    <span class="n">assert</span><span class="p">(</span><span class="n">mock_feof</span><span class="o">-&gt;</span><span class="n">call_count</span> <span class="o">==</span> <span class="mi">2</span><span class="p">);</span>
+    <span class="n">assert</span><span class="p">((</span><span class="n">FILE</span><span class="o">*</span><span class="p">)</span><span class="n">mock_feof</span><span class="o">-&gt;</span><span class="n">call</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">test</span><span class="p">);</span>
+
+    <span class="n">assert</span><span class="p">(</span><span class="n">mock_fread</span><span class="o">-&gt;</span><span class="n">call_count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">assert</span><span class="p">((</span><span class="n">FILE</span><span class="o">*</span><span class="p">)</span><span class="n">mock_fread</span><span class="o">-&gt;</span><span class="n">call</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">buffer</span><span class="p">);</span>
+    <span class="n">assert</span><span class="p">((</span><span class="n">FILE</span><span class="o">*</span><span class="p">)</span><span class="n">mock_fread</span><span class="o">-&gt;</span><span class="n">call</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="n">test</span><span class="p">);</span>
+
+    <span class="n">assert</span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="s">&#34;Hello world!&#34;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

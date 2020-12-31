@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>javascript on Drew DeVault&#39;s blog</title>
+    <link>./tags/javascript.html</link>
+    <description>Recent content in javascript on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 24 Nov 2016 00:00:00 +0000</lastBuildDate><atom:link href="./tags/javascript/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Electron considered harmful</title>
+      <link>./2016/11/24/Electron-considered-harmful.html</link>
+      <pubDate>Thu, 24 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/11/24/Electron-considered-harmful.html</guid>
+      <description>Yeah, I know that &amp;ldquo;considered harmful&amp;rdquo; essays are allegedly considered harmful. If it surprises you that I&amp;rsquo;m writing one, though, you must be a new reader. Welcome! Let&amp;rsquo;s get started. If you&amp;rsquo;re unfamiliar with Electron, it&amp;rsquo;s some hot new tech that lets you make desktop applications with HTML+CSS+JavaScript. It&amp;rsquo;s basically a chromeless web browser with a Node.js backend and a Chromium-based frontend. What follows is the rant of a pissed off Unix hacker, you&amp;rsquo;ve been warned.</description>
+    </item>
+    
+    <item>
+      <title>A practical understanding of Flux</title>
+      <link>./2015/07/20/A-practical-understanding-of-Flux.html</link>
+      <pubDate>Mon, 20 Jul 2015 00:00:00 +0000</pubDate>
+      
+      <guid>./2015/07/20/A-practical-understanding-of-Flux.html</guid>
+      <description>React.js and the Flux are shaping up to be some of the most important tools for web development in the coming years. The MVC model was strong on the server when we decided to take the frontend seriously, and it was shoehorned into the frontend since we didn&amp;rsquo;t know any better. React and Flux challenge that and I like where it&amp;rsquo;s going very much. That being said, it was very difficult for me to get into.</description>
+    </item>
+    
+    <item>
+      <title>Porting an assembler, debugger, and more to WebAssembly</title>
+      <link>./2014/11/30/Porting-an-entire-toolchain-to-the-browser-with-emscripten.html</link>
+      <pubDate>Sun, 30 Nov 2014 00:00:00 +0000</pubDate>
+      
+      <guid>./2014/11/30/Porting-an-entire-toolchain-to-the-browser-with-emscripten.html</guid>
+      <description>WebAssembly is pretty cool! It lets you write portable C and cross-compile it to JavaScript so it&amp;rsquo;ll run in a web browser. As the maintainer of KnightOS, I looked to WASM as a potential means of reducing the cost of entry for new developers hoping to target the OS.
+ Note: this article uses JavaScript to run all of this stuff in your web browser. I don&#39;t use any third-party scripts, tracking, or anything else icky.</description>
+    </item>
+    
+    <item>
+      <title>You don&#39;t need jQuery</title>
+      <link>./2013/08/19/You-dont-need-jQuery.html</link>
+      <pubDate>Mon, 19 Aug 2013 00:00:00 +0000</pubDate>
+      
+      <guid>./2013/08/19/You-dont-need-jQuery.html</guid>
+      <description>It&amp;rsquo;s true. You really don&amp;rsquo;t need jQuery. Modern web browsers can do most of what you want from jQuery, without jQuery.
+For example, take MediaCrush. It&amp;rsquo;s a website I spent some time working on with a friend. It&amp;rsquo;s actually quite sophisticated - drag-and-drop uploading, uploading via a hidden form, events wired up to links and dynamically generated content, and ajax requests/file uploads, the whole she-bang. It does all of that without jQuery.</description>
+    </item>
+    
+  </channel>
+</rss>

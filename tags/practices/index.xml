@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>practices on Drew DeVault&#39;s blog</title>
+    <link>./tags/practices.html</link>
+    <description>Recent content in practices on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sat, 06 Jun 2020 00:00:00 +0000</lastBuildDate><atom:link href="./tags/practices/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Add a &#34;contrib&#34; directory to your projects</title>
+      <link>./2020/06/06/Add-a-contrib-directory.html</link>
+      <pubDate>Sat, 06 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/06/06/Add-a-contrib-directory.html</guid>
+      <description>There&amp;rsquo;s a common pattern among free- and open-source software projects to include a &amp;ldquo;contrib&amp;rdquo; directory at the top of their source code tree. I&amp;rsquo;ve seen this in many projects for many years, but I&amp;rsquo;ve seen it discussed only rarely — so here we are!
+The contrib directory is used as an unorganized (or, at best, lightly organized) bin of various useful things contributed by the community around the software, but which is not necessarily a good candidate for being a proper part of the software.</description>
+    </item>
+    
+    <item>
+      <title>Developers shouldn&#39;t distribute their own software</title>
+      <link>./2019/12/09/Developers-shouldnt-distribute.html</link>
+      <pubDate>Mon, 09 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/12/09/Developers-shouldnt-distribute.html</guid>
+      <description>An oft-heard complaint about Linux is that software distribution often takes several forms: a Windows version, a macOS version, and&amp;hellip; a Debian version, an Ubuntu version, a Fedora version, a CentOS version, an openSUSE version&amp;hellip; but these complaints miss the point. The true distributable form for Linux software, and rather for Unix software in general, is a .tar.gz file containing the source code.
+Note: This article presumes that proprietary/nonfree software is irrelevant, and so should you.</description>
+    </item>
+    
+    <item>
+      <title>How to fuck up software releases</title>
+      <link>./2019/10/12/how-to-fuck-up-releases.html</link>
+      <pubDate>Sat, 12 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/10/12/how-to-fuck-up-releases.html</guid>
+      <description>I manage releases for a bunch of free &amp;amp; open-source software. Just about every time I ship a release, I find a novel way to fuck it up. Enough of these fuck-ups have accumulated now that I wanted to share some of my mistakes and how I (try to) prevent them from happening twice.
+At first, I did everything manually. This is fine enough for stuff with simple release processes - stuff that basically amounts to tagging a commit, pushing it, and calling it a day.</description>
+    </item>
+    
+  </channel>
+</rss>

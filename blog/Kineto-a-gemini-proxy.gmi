@@ -1,0 +1,13 @@
+Just a quick new software announcement: Kineto, an HTTP to Gemini proxy, is now available.
+
+It's designed to service a single domain, so that you can, for example, make your Gemini site available over HTTP. It supports proxying to external domains, so that outgoing Gemini links work, but it serves the domain it's configured for by default.
+
+More info about Kineto is available here:
+
+=> /kineto.gmi Kineto: an HTTP to Gemini proxy
+
+And a live demo is available to access my Geminispace over HTTP:
+
+=> https://portal.drewdevault.com
+
+It's named after the Contraves-Goerz Kineto Tracking Mount, which is a device used by NASA to watch rockets as they ascend to orbit.

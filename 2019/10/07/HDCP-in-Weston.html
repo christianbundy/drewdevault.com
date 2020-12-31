@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Why Collabora really added Digital Restrictions Management to Weston</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Why Collabora really added Digital Restrictions Management to Weston
+  <small>
+    <span class="date">October 7, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>A recent article from Collabora, <a href="https://www.collabora.com/news-and-blog/blog/2019/10/03/why-hdcp-support-in-weston-is-a-good-thing/">Why HDCP support in Weston is a good
+thing</a>, proports to offer a lot of insight into why
+<a href="https://en.wikipedia.org/wiki/High-bandwidth_Digital_Content_Protection">HDCP</a> - a Digital Restrictions Management (DRM) related technology - was
+added to <a href="https://gitlab.freedesktop.org/wayland/weston">Weston</a> - a well known basic Wayland compositor which was once
+the reference compositor for Wayland. But this article is gaslighting you.
+There is one reason and one reason alone that explains why HDCP support landed
+in Weston.</p>
+<p>Q: Why was HDCP added to Weston?</p>
+<p>A: $$$$$</p>
+<p>Why does Collabora want you to <em>believe</em> that HDCP support in Weston is a good
+thing? Let&rsquo;s look into this in more detail. First: <em>is</em> HDCP a bad thing?</p>
+<p>DRM (Digital Restrictions Management) is the collective term for software which
+attempts to restrict the rights of users attempting to access digital media.
+It&rsquo;s mostly unrelated to Direct Rendering Manager, an important Linux subsystem
+for graphics which is closely related to Wayland. Digital Restrictions
+Management is software used by media owners to prevent you from enjoying their
+content except in specific, pre-prescribed ways.</p>
+<p>There is universal agreement among the software community that DRM is
+ineffective. Ultimately, these systems are defeated by the simple fact that no
+amount of DRM can stop you from pointing your camera at your screen and pushing
+record. But in practice, we don&rsquo;t even need to resort to that - these systems
+are far too weak to demand such measures. <a href="https://www.amazon.com/HSV321/dp/B07C6KCBYB">Here&rsquo;s a $100 device on Amazon which
+can break HDCP</a>. DRM is shown to be impossible even in <em>theory</em>, as the
+decryption keys have to live somewhere in your house in order to watch movies
+there. Exfiltrating them is just a matter of putting forth the effort.  For most
+users, it hardly requires any effort to bypass DRM - they can just punch &ldquo;watch
+[name of movie] for free&rdquo; into Google. It&rsquo;s well-understood and rather obvious
+that DRM systems completely and entirely fail at their stated goal.</p>
+<p>No reasonable engineer would knowingly agree to adding a broken system like that
+to their system, and trust me - the entire engineering community has been made
+well-aware of these faults. Any other system with these obvious flaws would be
+discarded immediately, and if the media industry hadn&rsquo;t had their hands firmly
+clapped over their ears, screaming &ldquo;la la la&rdquo;, and throwing money at the
+problem, it would have been. But, just adding a broken system isn&rsquo;t necessarily
+going to hurt much.  The problem is that, in its failure to achieve its stated
+goals, DRM brings with it some serious side-effects. DRM is closely tied to
+nonfree software - the RIAA mafia wants to keep their garbage a secret, after
+all. Moreover, DRM takes away the freedom to play your media when and where you
+want. Why should you have to have an internet connection? Why can&rsquo;t you watch it
+on your ancient iPod running Rockbox? DRM exists to restrict users from doing
+what they want. More sinisterly, it exists to further the industry&rsquo;s push to
+end consumer ownership of its products - preferring to steal from you monthly
+subscription fees and lease the media to you. Free software maintainers are
+responsible for protecting their users from this kind of abuse, and putting DRM
+into our software betrays them.</p>
+<p>The authors are of the opinion that HDCP support in Weston does not take away
+any rights from users. It doesn&rsquo;t <em>stop</em> you from doing anything. This is true,
+in the same way that killing environmental regulations doesn&rsquo;t harm the
+environment. Adding HDCP support is handing a bottle of whiskey to an abusive
+husband. And the resulting system - and DRM as a whole - is known to be
+inherently broken and ineffective, a fact that they even acknowledge in their
+article. This feature <em>enables</em> media companies to abuse <em>your</em> users. Enough
+cash might help some devs to doublethink their way out of it, but it&rsquo;s true all
+the same. They added these features to help abusive companies abuse their users,
+in the hopes that they&rsquo;ll send back more money or more patches. They say as much
+in the article, it&rsquo;s no secret.</p>
+<p>Or, let&rsquo;s give them the benefit of the doubt: perhaps their bosses forced them
+to add this<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. There have been other developers on this ledge, and I&rsquo;ve talked
+them down. Here&rsquo;s the thing: it worked. Their organizations didn&rsquo;t pursue DRM
+any further. You are not the lowly code monkey you may think you are. Engineers
+have real power in the organization. You can say &ldquo;no&rdquo; and it&rsquo;s your
+responsibility to say &ldquo;no&rdquo; when someone asks you to write unethical code.</p>
+<p>Some of the people I&rsquo;ve spoken to about HDCP for Wayland, particularly for
+Weston, are of the opinion that &ldquo;a protocol for it exists, therefore we will
+implement it&rdquo;. This is reckless and stupid. We already know what happens when
+you bend the knee to our DRM overlords: look at Firefox. In 2014, Mozilla
+added DRM to Firefox after a year of fighting against its standardization in the
+W3C (a <a href="https://en.wikipedia.org/wiki/Regulatory_capture">captured</a> organization which governs<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> web standards). They
+capitulated, and it did absolutely nothing to stop them from being steamrolled
+by Chrome&rsquo;s growing popularity. Their market-share freefall didn&rsquo;t even slow
+down in 2014, or in any year since<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>. Collabora went down without a fight in
+the first place.</p>
+<p>Anyone who doesn&rsquo;t recognize that self-interested organizations with a great
+deal of resources are working against <em>our</em> interests as a free software
+community is an idiot. We are at war with the bad actors pushing these systems,
+and they are to be <a href="https://en.wikipedia.org/wiki/No_quarter">given no quarter</a>.
+Anyone who realizes this and turns a blind eye to it is a coward. Anyone who
+doesn&rsquo;t stand up to their boss, sits down, implements it in our free software
+ecosystem, and cashes their check the next Friday - is not only a coward, but a
+traitor to their users, their peers, and to society as a whole.</p>
+<p>&ldquo;HDCP support in Weston is a good thing&rdquo;? It&rsquo;s a good thing for <em>you</em>, maybe.
+It&rsquo;s a good thing for media conglomerates which want our ecosystem crushed
+underfoot. It&rsquo;s a bad thing for your users, and you know it, Collabora. Shame on
+you for gaslighting us.</p>
+<p>However&hellip; the person who <em>reverts</em> these changes is a hero, even in the face of
+past mistakes. Weston, Collabora, you still have a chance to repent. Do what you
+know is right and stand by those principles in the future.</p>
+<hr>
+<p>P.S. To make sure I&rsquo;m not writing downers all the time, rest assured that the
+next article will bring good news - RaptorCS has been working hard to correct
+the issues I raised in my last article.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>This is just for the sake of argument. I&rsquo;ve spoken 1-on-1 with some of the developers responsible and they stand by their statements as their personal opinions. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Or at least attempts to govern. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://en.wikipedia.org/wiki/File:StatCounter-browser-ww-monthly-200901-201905.png">Source: StatCounter</a>. Measuring browser market-share is hard, collect your grain of salt <a href="https://en.wikipedia.org/wiki/Usage_share_of_web_browsers">here</a>. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

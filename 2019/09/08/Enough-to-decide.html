@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>How I decide between many programming languages</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  How I decide between many programming languages
+  <small>
+    <span class="date">September 8, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I have a few old standards in my toolbelt that I find myself calling upon most
+often, but I try to learn enough about many programming languages to reason
+about whether or not they&rsquo;re suitable to any use-case I&rsquo;m thinking about. The
+best way is to learn by doing, so getting a general impression of the utility of
+many languages helps equip you with the knowledge of whether or not they&rsquo;d be
+useful for a particular problem even if you don&rsquo;t know them yet.</p>
+<p>Only included are languages which I feel knowledgable enough about to comment
+on, there are many that aren&rsquo;t here and which I encourage you to research.</p>
+<h2 id="c">C</h2>
+<p>Pros: good performance, access to low-level tooling, useful in systems
+programming, statically typed, standardized and venerable, the lingua franca,
+universal support on all platforms.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+<p>Cons: string munging, extensible programming, poor availability of ergonomic
+libraries in certain domains, has footguns, some programmers in the wild think
+the footguns are useful.</p>
+<style>
+.bullshit {
+    color: white;
+    font-style: italic;
+    font-weight: bold;
+    text-shadow: -1px -1px 0 #000,
+           1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+</style>
+<h2 id="go">Go</h2>
+<p>Pros: fast, conservative, good package manager and a healthy ecosystem, standard
+library is well designed, best in class for many problems, has a spec and
+multiple useful implementations, easy interop with C.</p>
+<p>Cons: the runtime is too complicated, no distinction between green threads and
+real threads (meaning all programs deal with the problems of the latter).</p>
+<h2 id="rust">Rust</h2>
+<p>Pros: it&rsquo;s <em class="bullshit">SAFE</em>, useful for systems programming,
+better than C++, ecosystem which is diverse but just short of the npm disease,
+easy interop with C.</p>
+<p>Cons: far too big, non-standardized, only one meaningful implementation.</p>
+<h2 id="python">Python</h2>
+<p>Pros: easy and fast to get things done, diverse package ecosystem of reasonably
+well designed packages, deeply extensible, useful for server-side web software.</p>
+<p>Cons: bloated, poor performance, dynamically typed, cpython internals being
+available to programmers has led to an implementation monoculture.</p>
+<h2 id="javascript">JavaScript</h2>
+<p><em>* and all of its derivatives, which ultimately inherit its problems.</em></p>
+<p>Pros: functional but with an expressive and C-like syntax, ES6 improved on many
+fronts, async/await/promises are well designed, no threading.</p>
+<p>Cons: dynamic types, package ecosystem is a flaming pile, many JS programmers
+aren&rsquo;t very good at it and they make ecosystem-defining libraries anyway, born
+in web browsers and inherited their many flaws.</p>
+<h2 id="java">Java</h2>
+<p><em>* and all of its derivatives, which ultimately inherit its problems.</em></p>
+<p>Pros: has had enough long-term investment to be well understood and reasonably
+fast.</p>
+<p>Cons: hella boilerplate, missing lots of useful things, package management, XML
+is everywhere, not useful for low-level programming (this applies to all
+Java-family languages).</p>
+<h2 id="c-1">C#</h2>
+<p>Pros: less boilerplate than Java, reasonably healthy package ecosystem, good
+access to low level tools for interop with C, async/await started here.</p>
+<p>Cons: ecosystem is in turmoil because Microsoft cannot hold a singular vision,
+they became open-source too late and screwed over Mono.</p>
+<h2 id="haskell">Haskell</h2>
+<p><em>* and every other functional-oriented programming language in its class, such
+as elixir, erlang, most lisps, even if they resent being lumped together</em></p>
+<p>Pros: it&rsquo;s <em class="bullshit">FUNCTIONAL</em>, reasonably fast, useful
+when the answer to your problem is more important than the means by which you
+find it, good for research-grade<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> compilers.</p>
+<p>Cons: it&rsquo;s <em class="bullshit">FUNCTIONAL</em>, somewhat inscrutable, awful
+package management, does not fit well into its environment, written by people
+who wish the world could be described with a pure function and design software
+as if it could.</p>
+<h2 id="perl">Perl</h2>
+<p>Pros: <a href="https://github.com/Perl/perl5/blob/blead/Configure">entertaining</a>, best in class at regexes/string munging,
+useful for making hacky kludges when such solutions are appropriate.</p>
+<p>Cons: inscrutable, too extensible, too much junk/jank.</p>
+<h2 id="lua">Lua</h2>
+<p>Pros: embeddable &amp; easily plugged into its host, fairly simple, portable.</p>
+<p>Cons: 1-based indexing is objectively bad, the upstream maintainers are kind of
+doing their own thing and no one really likes it.</p>
+<h2 id="posix-shell-scripts">POSIX Shell scripts</h2>
+<p>Pros: nothing can string together commands better, if you learn 90% of it then
+you can make pretty nice and expressive programs with it for a certain class of
+problem, standardized (I do not use bash).</p>
+<p>Cons: most people learn only 10% of it and therefore make pretty bad and
+unintuitive programs with it, not useful for most complex tasks.</p>
+<hr>
+<p>Disclaimer: I don&rsquo;t like the rest of these programming languages and would not
+use them to solve any problem. If you don&rsquo;t want your sacred cow gored, leave
+here.</p>
+<h2 id="c-2">C++</h2>
+<p>Pros: none</p>
+<p>Cons: ill-defined, far too big, <em class="bullshit">
+Object Oriented Programming</em>, loads of baggage, ecosystem that buys into
+its crap, enjoyed by bad programmers.</p>
+<h2 id="php">PHP</h2>
+<p>Pros: none</p>
+<p>Cons: every PHP programmer is bad at programming, the language is designed to
+accommodate them with convenient footguns (or faceguns) at every step, and the
+ecosystem is accordingly bad. No, PHP7 doesn&rsquo;t fix this. Use a real programming
+language, jerk.</p>
+<h2 id="ruby">Ruby</h2>
+<p>Pros: It&rsquo;s both <em class="bullshit">ENTERPRISE</em> and <em
+class="bullshit">HIP</em> at the same time, and therefore effective at herding a
+group of junior to mid-level programmers in a certain direction, namely towards
+your startup&rsquo;s exit.</p>
+<p>Cons: bloated, awful performance, before Node.js took off this is what all of
+those programmers used.</p>
+<h2 id="scala">Scala</h2>
+<p>Pros: more expressive than Java, useful for <em class="bullshit">Big
+Data</em> problems.</p>
+<p>Cons: Java derivative, type system requires a PhD to comprehend, too siloed from
+Java, meaning it gets all of the disadvantages of being a Java ecosystem member
+but few of the advantages. The type system is so needlessly complicated that it
+basically cripples the language on its own merits alone.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Except one, and it can go suck an egg for all I care. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>but not production-grade. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>I don&#39;t trust Signal</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  I don&#39;t trust Signal
+  <small>
+    <span class="date">August 8, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Occasionally when Signal is in the press and getting a lot of favorable
+discussion, I feel the need to step into various forums, IRC channels, and so
+on, and explain why I don&rsquo;t trust Signal. Let&rsquo;s do a blog post instead.</p>
+<p>Off the bat, let me explain that I expect a tool which claims to be secure to
+actually be secure. I don&rsquo;t view &ldquo;but that makes it harder for the average
+person&rdquo; as an acceptable excuse. If Edward Snowden and Bruce Schneier are going
+to spout the virtues of the app, I expect it to <em>actually</em> be secure when it
+matters - when vulnerable people using it to encrypt sensitive communications
+are targeted by smart and powerful adversaries.</p>
+<p>Making promises about security without explaining the tradeoffs you made in
+order to appeal to the average user is unethical. Tradeoffs are necessary - but
+self-serving tradeoffs are not, and it&rsquo;s your responsibility to clearly explain
+the drawbacks and advantages of the tradeoffs you make. If you make broad and
+inaccurate statements about your communications product being &ldquo;secure&rdquo;, then
+when the political prisoners who believed you are being tortured and hanged,
+it&rsquo;s on you. The stakes are serious. Let me explain why I don&rsquo;t think Signal
+takes them seriously.</p>
+<h2 id="google-play">Google Play</h2>
+<p>Why do I make a big deal out of Google Play and Google Play Services? Well, some
+people might trust Google, the company. But up against nation states, it&rsquo;s no
+contest - Google has ties to the NSA, has been served secret subpoenas, and is
+literally the world&rsquo;s largest machine designed for harvesting and analyzing
+private information about their users. Here&rsquo;s what Google Play Services
+<em>actually</em> is: <strong>a rootkit</strong>. Google Play Services lets Google do silent
+background updates on apps on your phone and give them any permission they want.
+Having Google Play Services on your phone means your phone is not secure.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+<p>For the longest time, Signal wouldn&rsquo;t work without Google Play Services, but
+Moxie (the founder of Open Whisper Systems and maintainer of Signal) finally
+fixed this in 2017. There was also a long time when Signal was only available on
+the Google Play Store. Today, you can <a href="https://signal.org/android/apk/">download the APK directly from
+signal.org</a>, but&hellip; well, we&rsquo;ll
+get to that in a minute.</p>
+<h2 id="f-droid">F-Droid</h2>
+<p>There&rsquo;s an alternative to the Play Store for Android.
+<a href="https://f-droid.org">F-Droid</a> is an open source app &ldquo;store&rdquo; (repository would
+be a better term here) which only includes open source apps (which Signal
+thankfully is).  By no means does Signal have to <em>only</em> be distributed through
+F-Droid - it&rsquo;s certainly a compelling alternative. This has been proposed, and
+Moxie has <a href="https://github.com/signalapp/Signal-Android/issues/127">definitively shut the discussion
+down</a>. Admittedly this
+is from 2013, but his points and the arguments against them haven&rsquo;t changed. Let
+me quote some of his positions and my rebuttals:</p>
+<blockquote>
+<p>No upgrade channel. Timely and automatic updates are perhaps the most
+effective security feature we could ask for, and not having them would be a
+real blow for the project.</p>
+</blockquote>
+<p>F-Droid supports updates. If you&rsquo;re concerned about moving your updates quickly
+through the (minimal) bureaucracy of F-Droid, you can always run your own
+repository. Maybe this is a lot of work?<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> I wonder how the workload compares
+to <a href="https://signal.org/blog/signal-and-giphy-update/">animated gif search</a>, a very important feature for security
+concious users. I bet that <a href="https://signal.org/blog/signal-foundation/">50 million dollar donation</a> could help,
+given how many people operate F-Droid repositories on a budget of $0.</p>
+<blockquote>
+<p>No app scanning. The nice thing about market is the server-side APK scanning
+and signature validation they do. If you start distributing APKs around the
+internet, it&rsquo;s a reversion back to the PC security model and all of the
+malware problems that came with it.</p>
+</blockquote>
+<p>Try searching the Google Play Store for &ldquo;flashlight&rdquo; and look at the permissions
+of the top 5 apps that come up. All of them are harvesting and selling the
+personal information of their users to advertisers. Is this some kind of joke?
+F-Droid is a curated repository, like Linux distributions. Google Play is a
+malware distributor.  Packages on F-Droid are reviewed by a human being and are
+<a href="https://f-droid.org/en/docs/Signing_Process/">cryptographically signed</a>. If you
+run your own F-Droid repo this is even less of a concern.</p>
+<p>I&rsquo;m not going to address all of Moxie&rsquo;s points here, because there&rsquo;s a deeper
+problem to consider. I&rsquo;ll get into more detail shortly. You can read the
+6-year-old threads tearing Moxie&rsquo;s arguments apart over and over again until
+GitHub added the feature to lock threads, if you want to see a more in-depth
+rebuttal.</p>
+<h2 id="the-apk-direct-download">The APK direct download</h2>
+<p>Last year Moxie added an official APK download to signal.org. He said this was
+up for &ldquo;<a href="https://github.com/signalapp/Signal-Android/issues/127#issuecomment-286223680">harm reduction</a>&rdquo;, to avoid people using unofficial
+builds they find around the net. The download page is covered in warnings
+telling you that it&rsquo;s for advanced users only, it&rsquo;s insecure, would you please
+go to the Google Play store you stupid user. I wonder, has Moxie considered
+communicating to people the risks of using the Google Play version?<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></p>
+<p>The APK direct download doesn&rsquo;t even accomplish the stated goal of &ldquo;harm
+reduction&rdquo;. The user has to manually verify the checksum, and figure out how to
+do it on a phone, no less. A checksum isn&rsquo;t a signature, by the way - if your
+government- or workplace- or abusive-spouse-installed certificate authority gets
+in the way they can replace the APK <em>and</em> its checksum with whatever they want.
+The app has to update itself, using a similarly insecure mechanism. F-Droid
+handles updates and actually signs their packages. This is a no brainer, Moxie,
+why haven&rsquo;t you put Signal on F-Droid yet?</p>
+<h2 id="why-is-signal-like-this">Why is Signal like this?</h2>
+<p>So if you don&rsquo;t like all of this, if you don&rsquo;t like how Moxie approaches these
+issues, if you want to use something else, what do you do?</p>
+<p>Moxie knows about everything I&rsquo;ve said in this article. He&rsquo;s a very smart guy
+and I am under no illusions that he doesn&rsquo;t understand everything I&rsquo;ve put
+forth. I don&rsquo;t think that Moxie makes these choices because he thinks they&rsquo;re
+the right thing to do. He makes arguments which don&rsquo;t hold up, derails threads,
+leans on logical fallacies, and loops back around to long-debunked positions
+when he runs out of ideas. I think this is deliberate. An open source software
+team reads this article as a list of things they can improve on and gets
+started. Moxie reads this and prepares for war. Moxie can&rsquo;t come out and
+say it openly, but he&rsquo;s made the decisions he has made because they serve his
+own interests.</p>
+<p>Lots of organizations which are pretending they don&rsquo;t make self-serving decisions at
+their customer&rsquo;s expense rely on argumentative strategies like Moxie does. If
+you can put together an argument which on the surface appears reasonable, but
+requires in-depth discussion to debunk, passerby will be reassured that your
+position is correct, and that the dissenters are just trolls. They won&rsquo;t have
+time to read the lengthy discussion which demonstrates that your conclusions
+are wrong, especially if you draw the discussion out like Moxie does. It can be
+hard to distinguish these from genuine positions held by the person you&rsquo;re
+talking to, but when it conveniently allows them to make self-serving plays,
+it&rsquo;s a big red flag.</p>
+<p>This is a strong accusation, I know. The thing which convinced me of its truth
+is Signal&rsquo;s centralized design and hostile attitude towards forks. In open
+source, when a project is making decisions and running things in a way you don&rsquo;t
+like, you can always fork the project. This is one of the fundamental rights
+granted to you by open source. It has a side effect Moxie doesn&rsquo;t want, however.
+It reduces his power over the project. Moxie has a clever solution to this:
+centralized servers and trademarks.</p>
+<h2 id="trust-federation-and-peer-to-peer-chat">Trust, federation, and peer-to-peer chat</h2>
+<p>Truly secure systems do not require you to trust the service provider. This is
+the point of end-to-end encryption. But we have to trust that Moxie is running
+the server software he says he is. We have to trust that he isn&rsquo;t writing down a
+list of people we&rsquo;ve talked to, when, and how often. We have to trust not only
+that Moxie is trustworthy, but given that Open Whisper Systems is based in San
+Francisco we have to trust that he hasn&rsquo;t received a national security letter,
+too (by the way, Signal doesn&rsquo;t have a warrant canary). Moxie can <em>tell</em> us he
+doesn&rsquo;t store these things, but he could. <strong>Truly secure systems don&rsquo;t require
+trust</strong>.</p>
+<p>There are a couple of ways to solve this problem, which can be used in tandem.
+We can stop Signal from knowing when we&rsquo;re talking to each other by using
+peer-to-peer chats. This has some significant drawbacks, namely that both users
+have to be online at the same time for their messages to be delivered to each
+other. You can still fall back to peer-to-server-to-peer when one peer is
+offline, however. But this isn&rsquo;t the most important of the two solutions.</p>
+<p>The most important change is federation. Federated services are like email, in
+that Alice can send an email from gmail.com to Bob&rsquo;s yahoo.com address. I should
+be able to stand up a Signal server, on my own hardware where I am in control of
+the logs, and communicate freely with other Signal servers, including Open
+Whisper&rsquo;s servers. This distributes the security risks across hundreds of
+operators in many countries with various data extradition laws. This turns what
+would today be easy for the United States government to break and makes it much,
+much more difficult. Federation would also open the possibility for bridging the
+gap with several other open source secure chat platforms to all talk on the same
+federated network - which would spurn competition and be a great move for users
+of all chat platforms.</p>
+<p>Moxie forbids you from distributing branded builds of the Signal app, and if you
+rebrand he forbids you from using the official Open Whisper servers. Because his
+servers don&rsquo;t federate, that means that users of Signal forks <em>cannot talk to
+Signal users</em>. This is a truly genius move. No fork of Signal<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> to date has
+ever gained any traction, and never will, because you can&rsquo;t talk to any Signal
+users with them. In fact, there are no third-party applications which can
+interact with Signal users in any way. Moxie can write as many blog posts which
+appeal to wispy ideals and &ldquo;moving ecosystems&rdquo; as he wants<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>, but those are
+all <em>really</em> convenient excuses for an argument which allows him to design
+systems which serve his own interests.</p>
+<p>No doubt these are non-trivial problems to solve. But I have <em>personally</em> been
+involved in open source projects which have collectively solved similarly
+difficult problems a thousand times over with a combined budget on the order of
+tens of thousands of dollars.</p>
+<p>What were you going to do with that 50 million dollars again?</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>&ldquo;But how is AOSP any better?&rdquo; This is a common strawman counter-argument. Fact: There is empirical evidence which shows that Google Play Services does silent updates and can obtain any permission on your phone: a rootkit. There is no empirical evidence to suggest AOSP has similar functionality. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>No, it&rsquo;s not. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>Probably not, because that wouldn&rsquo;t be self-serving. But I&rsquo;m getting ahead of myself. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p>See <a href="https://github.com/LibreSignal/LibreSignal">LibreSignal</a> and <a href="https://github.com/SilenceIM/Silence#silence-">Silence</a>, particularly <a href="https://github.com/LibreSignal/LibreSignal/issues/37#issuecomment-217211165">this thread</a>. <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p>See <a href="https://signal.org/blog/the-ecosystem-is-moving/">Reflections: The ecosystem is moving</a>. Yes, that&rsquo;s the unedited title. <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>vpn on Drew DeVault&#39;s blog</title>
+    <link>./tags/vpn.html</link>
+    <description>Recent content in vpn on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 19 Apr 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/vpn/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Choosing a VPN service is a serious decision</title>
+      <link>./2019/04/19/Your-VPN-is-a-serious-choice.html</link>
+      <pubDate>Fri, 19 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/04/19/Your-VPN-is-a-serious-choice.html</guid>
+      <description>There&amp;rsquo;s a disturbing trend in the past year or so of various VPN companies advertising to the general, non-technical public. It&amp;rsquo;s great that the general public is starting to become more aware of their privacy online, but I&amp;rsquo;m not a fan of these companies exploiting public paranoia to peddle their wares. Using a VPN in the first place has potentially grave consequences for your privacy - and can often be worse than not using one in the first place.</description>
+    </item>
+    
+  </channel>
+</rss>

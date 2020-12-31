@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>How to make a self-hosted video livestream</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  How to make a self-hosted video livestream
+  <small>
+    <span class="date">August 26, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I have seen some articles in the past which explain how to build the ecosystem
+<em>around</em> your video streaming, such as live chat and forums, but which leave the
+actual video streaming to Twitch.tv. I made a note the last time I saw one of
+these articles to write one of my own explaining the video bit. As is often the
+case with video, we&rsquo;ll be using the excellent <a href="http://ffmpeg.org/">ffmpeg</a> tool
+for this. If it&rsquo;s A/V-related, ffmpeg can probably do it.</p>
+<p><em>Note: a demonstration video was previously shown here, but as traffic on this
+article died down I took it offline to reduce unnecessary load.</em></p>
+<p>ffmpeg has a built-in <a href="https://dashif.org/">DASH</a> output format, which is the
+current industry standard for live streaming video to web browsers. It works by
+splitting the output up into discrete files and using an <a href="/dash/live.mpd">XML
+file</a> (an MPD playlist) to tell the player where they are. Few
+browsers support DASH natively, but
+<a href="https://github.com/Dash-Industry-Forum/dash.js/wiki">dash.js</a> can polyfill it
+by periodically downloading the latest manifest and driving the video element
+itself.</p>
+<p>Getting the source video into ffmpeg is a little bit beyond the scope of this
+article, but I know some readers won&rsquo;t be familiar with ffmpeg so I&rsquo;ll have
+mercy. Let&rsquo;s say you want to play some static video files like I&rsquo;m doing above:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">ffmpeg <span class="se">\
+</span><span class="se"></span>	-re <span class="se">\
+</span><span class="se"></span>	-stream_loop -1 <span class="se">\
+</span><span class="se"></span>	-i my-video.mkv <span class="se">\
+</span></code></pre></div><p>This will tell ffmpeg to read the input (-i) in real time (-re), and loop it
+indefinitely. If instead you want to, for example, use x11grab instead to
+capture your screen and pulse to capture desktop audio, try this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">    -f x11grab <span class="se">\
+</span><span class="se"></span>    -r <span class="m">30</span> <span class="se">\
+</span><span class="se"></span>    -video_size 1920x1080 <span class="se">\
+</span><span class="se"></span>    -i <span class="nv">$DISPLAY</span> <span class="se">\
+</span><span class="se"></span>    -f pulse <span class="se">\
+</span><span class="se"></span>    -i alsa_input.usb-Blue_Microphones_Yeti_Stereo_Microphone_REV8-00.analog-stereo
+</code></pre></div><p>This sets the framerate to 30 FPS and the video resolution to 1080p, then reads
+from the X11 display <code>$DISPLAY</code> (usually :0). Then we add pulseaudio and use my
+microphone source name, which I obtained with <code>pactl list sources</code>.</p>
+<p>Let&rsquo;s add some arguments describing the output format. Your typical web browser
+is a finicky bitch and has some very specific demands from your output format if
+you want maximum compatability:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">    -codec:v libx264 <span class="se">\
+</span><span class="se"></span>    -profile:v baseline <span class="se">\
+</span><span class="se"></span>    -level <span class="m">4</span> <span class="se">\
+</span><span class="se"></span>    -pix_fmt yuv420p <span class="se">\
+</span><span class="se"></span>    -preset veryfast <span class="se">\
+</span><span class="se"></span>    -codec:a aac <span class="se">\
+</span></code></pre></div><p>This specifices the libx264 video encoder with the baseline level 4 profile, the
+most broadly compatible x264 profile, with the yuv420p pixel format, the most
+broadly compatible pixel format, the veryfast preset to make sure we can encode
+it in realtime, the aac audio codec. Now that we&rsquo;ve specified the parameters for
+the output, let&rsquo;s configure the output format: DASH.</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">	-f dash <span class="se">\
+</span><span class="se"></span>	-window_size <span class="m">5</span> <span class="se">\
+</span><span class="se"></span>	-remove_at_exit <span class="m">1</span> <span class="se">\
+</span><span class="se"></span>	/tmp/dash/live.mpd
+</code></pre></div><p>The window_size specifies the maximum number of A/V segments to keep in the
+manifest at any time, and remove_at_exit will clean up all of the files when
+ffmpeg exits. The output file is the path to the playlist to write to disk, and
+the segments will be written next to it. The last step is to serve this with
+nginx:</p>
+<div class="highlight"><pre class="chroma"><code class="language-nginx" data-lang="nginx"><span class="k">location</span> <span class="s">/dash</span> <span class="p">{</span>
+        <span class="kn">types</span> <span class="p">{</span>
+                <span class="kn">application/dash+xml</span> <span class="s">mpd</span><span class="p">;</span>
+                <span class="kn">video/mp4</span> <span class="s">m4v</span><span class="p">;</span>
+                <span class="kn">audio/mp4</span> <span class="s">m4a</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="kn">add_header</span> <span class="s">Access-Control-Allow-Origin</span> <span class="s">*</span><span class="p">;</span>
+        <span class="kn">root</span> <span class="s">/tmp</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>You can now point the <a href="http://reference.dashif.org/dash.js/nightly/samples/dash-if-reference-player/index.html">DASH reference
+player</a>
+at <code>http://your-server.org/dash/live.mpd</code> and see your video streaming there.
+Neato! You can add dash.js to your website and you know have a fully self-hosted
+video live streaming setup ready to rock.</p>
+<p>Perhaps the ffmpeg swiss army knife isn&rsquo;t your cup of tea. If you want to, for
+example, use <a href="https://obsproject.com/">OBS Studio</a>, you might want to take a
+somewhat different approach. The
+<a href="https://github.com/arut/nginx-rtmp-module">nginx-rtmp-module</a> provides an RTMP
+(real-time media protocol) server that integrates with nginx. After adding
+the DASH output, you&rsquo;ll end up with something like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">rtmp <span class="o">{</span>
+    server <span class="o">{</span>
+        listen 1935<span class="p">;</span>
+
+        application live <span class="o">{</span>
+            dash on<span class="p">;</span>
+            dash_path /tmp/dash<span class="p">;</span>
+            dash_fragment 15s<span class="p">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>Then you can stream to <code>rtmp://your-server.org/live</code> and your dash segments
+will show up in <code>/tmp/dash</code>. There&rsquo;s no password protection here, so put it in
+the stream URL (e.g. <code>application R9AyTRfguLK8</code>) or use an IP whitelist:</p>
+<pre><code>application live {
+    allow publish your-ip;
+    deny publish all;
+}
+</code></pre><p>If you want to get creative with it you can use
+<a href="https://github.com/arut/nginx-rtmp-module/wiki/Directives#on_publish"><code>on_publish</code></a>
+to hit an web service with some details and return a non-2xx code to forbid
+streaming. Have fun!</p>
+<p>I learned all of this stuff by making a bot which livestreamed Google hangouts
+over the LAN to get around the participant limit at work. I&rsquo;ll do a full writeup
+about that one later!</p>
+<hr>
+<p>Here&rsquo;s the full script I&rsquo;m using to generate the live stream on this
+page:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/sh
+</span><span class="cp"></span>rm -f /tmp/playlist
+mkdir -p /tmp/dash
+<span class="k">for</span> file in /var/www/mirror.sr.ht/hacksway-2018/*
+<span class="k">do</span>
+	<span class="nb">echo</span> <span class="s2">&#34;file &#39;</span><span class="nv">$file</span><span class="s2">&#39;&#34;</span> &gt;&gt; /tmp/playlist
+<span class="k">done</span>
+
+ffmpeg <span class="se">\
+</span><span class="se"></span>	-re <span class="se">\
+</span><span class="se"></span>	-loglevel error <span class="se">\
+</span><span class="se"></span>	-stream_loop -1 <span class="se">\
+</span><span class="se"></span>	-f concat <span class="se">\
+</span><span class="se"></span>	-safe <span class="m">0</span> <span class="se">\
+</span><span class="se"></span>	-i /tmp/playlist <span class="se">\
+</span><span class="se"></span>	-vf <span class="s2">&#34;drawtext=\
+</span><span class="s2">			fontfile=/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf:\
+</span><span class="s2">			text=&#39;%{gmtime\:%Y-%m-%d %T} UTC&#39;:\
+</span><span class="s2">			fontcolor=white:\
+</span><span class="s2">			x=(w-text_w)/2:y=128:\
+</span><span class="s2">			box=1:boxcolor=black:\
+</span><span class="s2">			fontsize=72,
+</span><span class="s2">		drawtext=\
+</span><span class="s2">			fontfile=/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf:\
+</span><span class="s2">			text=&#39;REBROADCAST&#39;:\
+</span><span class="s2">			fontcolor=white:\
+</span><span class="s2">			x=(w-text_w)/2:y=16:\
+</span><span class="s2">			box=1:boxcolor=black:\
+</span><span class="s2">			fontsize=48&#34;</span> <span class="se">\
+</span><span class="se"></span>	-codec:v libx264 <span class="se">\
+</span><span class="se"></span>	-profile:v baseline <span class="se">\
+</span><span class="se"></span>	-pix_fmt yuv420p <span class="se">\
+</span><span class="se"></span>	-level <span class="m">4</span> <span class="se">\
+</span><span class="se"></span>	-preset veryfast <span class="se">\
+</span><span class="se"></span>	-codec:a aac <span class="se">\
+</span><span class="se"></span>	-f dash <span class="se">\
+</span><span class="se"></span>	-window_size <span class="m">5</span> <span class="se">\
+</span><span class="se"></span>	-remove_at_exit <span class="m">1</span> <span class="se">\
+</span><span class="se"></span>	/tmp/dash/live.mpd
+</code></pre></div>
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

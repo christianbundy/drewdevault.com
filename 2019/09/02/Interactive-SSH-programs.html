@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Building interactive SSH applications</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Building interactive SSH applications
+  <small>
+    <span class="date">September 2, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>After the announcement of [shell access for builds.sr.ht jobs]<a href="https://drewdevault.com/2019/08/19/Introducing-shell-access-for-builds.html">builds
+announcement</a>, a few people sent me some questions, wondering how this sort of
+thing is done. Writing interactive SSH applications is actually pretty easy, but
+it does require some knowledge of the pieces involved and a little bit of
+general Unix literacy.</p>
+<p>On the server, there are three steps which you can meddle with using OpenSSH:
+authentication, the shell session, and the command. The shell is pretty easily
+manipulated. For example, if you set the user&rsquo;s login shell to
+<code>/usr/bin/nethack</code>, then <a href="https://www.nethack.org/">nethack</a> will run when they log in. Editing
+this is pretty straightforward, just pop open <code>/etc/passwd</code> as root and set
+their shell to your desired binary. If the user SSHes into your server with a
+TTY allocated (which is done by default), then you&rsquo;ll be able to run a curses
+application or something interactive.</p>
+<script
+  id="asciicast-CQ5iaFl8kMnOGV3x0TeI7vfjV"
+  src="https://asciinema.org/a/pafXXANiWHY9MOH2yXdVHHJRd.js" async
+></script>
+<p><noscript><i>This article includes third-party JavaScript content from
+asciinema.org, a free- and open-source platform that I trust.</i></noscript></p>
+<p>However, a downside to this is that, if you choose a &ldquo;shell&rdquo; which does not
+behave like a shell, it will break when the user passes additional command line
+arguments, such as <code>ssh user@host ls -a</code>. To address this, instead of overriding
+the shell, we can override the <em>command</em> which is run. The best place to do this
+is in the user&rsquo;s <code>authorized_keys</code> file. Before each line, you can add options
+which apply to users who log in with that key. One of these options is the
+&ldquo;command&rdquo; option. If you add this to <code>/home/user/.ssh/authorized_keys</code> instead:</p>
+<pre><code>command=&quot;/usr/bin/nethack&quot; ssh-rsa ... user
+</code></pre><p>Then it&rsquo;ll use the user&rsquo;s shell (which should probably be <code>/bin/sh</code>) to run
+<code>nethack</code>, which will work regardless of the command supplied by the user (which
+is stored into <code>SSH_ORIGINAL_COMMAND</code> in the environment, should you need it).
+There are probably some other options you want to set here, as well, for
+security reasons:</p>
+<pre><code>restrict,pty,command=&quot;...&quot; ssh-rsa ... user
+</code></pre><p>The full list of options you can set here is available in the <code>sshd(8)</code> man
+page. <code>restrict</code> just turns off most stuff by default, and <code>pty</code> explicitly
+re-enables TTY allocation, so that we can do things like curses. This will work
+if you want to explicitly authorize specific people, one at a time, in your
+<code>authorized_keys</code> file, to use your SSH-driven application.  However, there&rsquo;s
+one more place where we can meddle: the <code>AuthorizedKeysCommand</code> in
+<code>/etc/ssh/sshd_config</code>. Instead of having OpenSSH read from the
+<code>authorized_keys</code> file in the user&rsquo;s home directory, it can execute an arbitrary
+program and read the <code>authorized_keys</code> file from its stdout. For example, on
+Sourcehut we use something like this:</p>
+<pre><code>AuthorizedKeysCommand /usr/bin/gitsrht-dispatch &quot;%u&quot; &quot;%h&quot; &quot;%t&quot; &quot;%k&quot;
+AuthorizedKeysUser root
+</code></pre><p>Respectively, these format strings will supply the command with the username
+attempting login, the user&rsquo;s home directory, the type of key in use (e.g.
+<code>ssh-rsa</code>), and the base64-encoded key itself. More options are available - see
+<code>TOKENS</code>, in the <code>sshd_config(8)</code> man page. The key supplied here can be used to
+identify the user - on Sourcehut we look up their SSH key in the database. Then
+you can choose whether or not to admit the user based on any logic of your
+choosing, and print an appropriate <code>authorized_keys</code> to stdout. You can also
+take this opportunity to forward this information along to the command that gets
+executed, by appending them to the command option or by using the environment
+options.</p>
+<h2 id="how-this-works-on-buildssrht">How this works on builds.sr.ht</h2>
+<p>We use a somewhat complex system for incoming SSH connections, which I won&rsquo;t go
+into here - it&rsquo;s only necessary to support multiple SSH applications on the same
+server, like git.sr.ht and builds.sr.ht. For builds.sr.ht, we accept all
+connections and authenticate later on. This means our AuthorizedKeysCommand is
+quite simple:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># We just let everyone in at this stage, authentication is done later on.</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">key_type</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">b64key</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+
+<span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span><span class="s2">&#34;command=</span><span class="se">\&#34;</span><span class="s2">buildsrht-shell &#39;{b64key}&#39;</span><span class="se">\&#34;</span><span class="s2">,restrict,pty &#34;</span> <span class="o">+</span>
+    <span class="n">f</span><span class="s2">&#34;{key_type} {b64key} somebody</span><span class="se">\n</span><span class="s2">&#34;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></div><p>The command, <code>buildsrht-shell</code>, does some more interesting stuff. First, the
+user is told to connect with a command like <code>ssh builds@buildhost connect &lt;job ID&gt;</code>, so we use the <code>SSH_ORIGINAL_COMMAND</code> variable to grab the command line
+they included:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">cmd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;SSH_ORIGINAL_COMMAND&#34;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&#34;&#34;</span>
+<span class="n">cmd</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="n">fail</span><span class="p">(</span><span class="s2">&#34;Usage: ssh ... connect &lt;job ID&gt;&#34;</span><span class="p">)</span>
+<span class="n">op</span> <span class="o">=</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">if</span> <span class="n">op</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&#34;connect&#34;</span><span class="p">,</span> <span class="s2">&#34;tail&#34;</span><span class="p">]:</span>
+    <span class="n">fail</span><span class="p">(</span><span class="s2">&#34;Usage: ssh ... connect &lt;job ID&gt;&#34;</span><span class="p">)</span>
+<span class="n">job_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cmd</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</code></pre></div><p>Then we do some authentication, fetching the job info from the local job runner
+and checking their key against meta.sr.ht (the authentication service).</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">b64key</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">get_info</span><span class="p">(</span><span class="n">job_id</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">f</span><span class="s2">&#34;http://localhost:8080/job/{job_id}/info&#34;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+<span class="n">info</span> <span class="o">=</span> <span class="n">get_info</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">info</span><span class="p">:</span>
+    <span class="n">fail</span><span class="p">(</span><span class="s2">&#34;No such job found.&#34;</span><span class="p">)</span>
+
+<span class="n">meta_origin</span> <span class="o">=</span> <span class="n">get_origin</span><span class="p">(</span><span class="s2">&#34;meta.sr.ht&#34;</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">f</span><span class="s2">&#34;{meta_origin}/api/ssh-key/{b64key}&#34;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&#34;owner&#34;</span><span class="p">][</span><span class="s2">&#34;name&#34;</span><span class="p">]</span>
+<span class="k">elif</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
+    <span class="n">fail</span><span class="p">(</span><span class="s2">&#34;We don&#39;t recognize your SSH key. Make sure you&#39;ve added it to &#34;</span> <span class="o">+</span>
+        <span class="n">f</span><span class="s2">&#34;your account.</span><span class="se">\n</span><span class="s2">{get_origin(&#39;meta.sr.ht&#39;, external=True)}/keys&#34;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">fail</span><span class="p">(</span><span class="s2">&#34;Temporary authentication failure. Try again later.&#34;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">username</span> <span class="o">!=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&#34;username&#34;</span><span class="p">]:</span>
+    <span class="n">fail</span><span class="p">(</span><span class="s2">&#34;You are not permitted to connect to this job.&#34;</span><span class="p">)</span>
+</code></pre></div><p>There are two modes from here on out: connecting and tailing. The former logs
+into the local build VM, and the latter prints the logs to the terminal.
+Connecting looks like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+    <span class="s2">&#34;&#34;&#34;Opens a shell on the build VM&#34;&#34;&#34;</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="n">naturaltime</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="o">-</span> <span class="n">deadline</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&#34;Your VM will be terminated {limit}, or when you log out.&#34;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">()</span>
+    <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">f</span><span class="s2">&#34;http://localhost:8080/job/{job_id}/claim&#34;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="n">tty</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&#34;/dev/tty&#34;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">O_RDWR</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">dup2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tty</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span>
+        <span class="s2">&#34;ssh&#34;</span><span class="p">,</span> <span class="s2">&#34;-qt&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;-p&#34;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s2">&#34;port&#34;</span><span class="p">]),</span>
+        <span class="s2">&#34;-o&#34;</span><span class="p">,</span> <span class="s2">&#34;UserKnownHostsFile=/dev/null&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;-o&#34;</span><span class="p">,</span> <span class="s2">&#34;StrictHostKeyChecking=no&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;-o&#34;</span><span class="p">,</span> <span class="s2">&#34;LogLevel=quiet&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;build@localhost&#34;</span><span class="p">,</span> <span class="s2">&#34;bash&#34;</span>
+    <span class="p">])</span>
+    <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">f</span><span class="s2">&#34;http://localhost:8080/job/{job_id}/terminate&#34;</span><span class="p">)</span>
+</code></pre></div><p>This is pretty self explanatory, except perhaps for the dup2 - we just open
+<code>/dev/tty</code> and make <code>stdin</code> a copy of it. Some interactive applications
+misbehave if stdin is not a tty, and this mimics the normal behavior of SSH.
+Then we log into the build VM over SSH, which with stdin/stdout/stderr rigged up
+like so will allow the user to interact with the build VM. After that completes,
+we terminate the VM.</p>
+<p>This is mostly plumbing work that just serves to get the user from point A to
+point B. The tail functionality is more application-like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">tail</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+    <span class="s2">&#34;&#34;&#34;Tails the build logs to stdout&#34;&#34;&#34;</span>
+    <span class="n">logs</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cfg</span><span class="p">(</span><span class="s2">&#34;builds.sr.ht::worker&#34;</span><span class="p">,</span> <span class="s2">&#34;buildlogs&#34;</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">job_id</span><span class="p">))</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s2">&#34;tail&#34;</span><span class="p">,</span> <span class="s2">&#34;-f&#34;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">logs</span><span class="p">,</span> <span class="s2">&#34;log&#34;</span><span class="p">)])</span>
+    <span class="n">tasks</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">procs</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="p">]</span>
+    <span class="c1"># holy bejeezus this is hacky</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">manifest</span><span class="o">.</span><span class="n">tasks</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">logs</span><span class="p">,</span> <span class="n">task</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&#34;log&#34;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                <span class="n">procs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+                    <span class="n">f</span><span class="s2">&#34;tail -f {shlex.quote(path)} | &#34;</span> <span class="o">+</span>
+                    <span class="s2">&#34;awk &#39;{ print </span><span class="se">\&#34;</span><span class="s2">[&#34;</span> <span class="o">+</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&#34;] </span><span class="se">\&#34;</span><span class="s2"> $0 }&#39;&#34;</span><span class="p">,</span>
+                    <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+                <span class="n">tasks</span><span class="o">.</span><span class="n">update</span><span class="p">({</span> <span class="n">task</span><span class="o">.</span><span class="n">name</span> <span class="p">})</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">get_info</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">info</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s2">&#34;task&#34;</span><span class="p">]</span> <span class="o">==</span> <span class="n">info</span><span class="p">[</span><span class="s2">&#34;tasks&#34;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">procs</span><span class="p">:</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+            <span class="k">break</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&#34;connect&#34;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s2">&#34;task&#34;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&#34;tasks&#34;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">info</span><span class="p">[</span><span class="s2">&#34;status&#34;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&#34;running&#34;</span><span class="p">:</span>
+        <span class="n">tail</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+    <span class="n">connect</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&#34;tail&#34;</span><span class="p">:</span>
+    <span class="n">tail</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+</code></pre></div><p>This&hellip; I&hellip; let&rsquo;s just pretend you never saw this. And that&rsquo;s how SSH access to
+builds.sr.ht works!</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

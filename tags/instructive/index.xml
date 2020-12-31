@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>instructive on Drew DeVault&#39;s blog</title>
+    <link>./tags/instructive.html</link>
+    <description>Recent content in instructive on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 26 Aug 2018 00:00:00 +0000</lastBuildDate><atom:link href="./tags/instructive/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to make a self-hosted video livestream</title>
+      <link>./2018/08/26/Self-hosted-livestreaming.html</link>
+      <pubDate>Sun, 26 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/08/26/Self-hosted-livestreaming.html</guid>
+      <description>I have seen some articles in the past which explain how to build the ecosystem around your video streaming, such as live chat and forums, but which leave the actual video streaming to Twitch.tv. I made a note the last time I saw one of these articles to write one of my own explaining the video bit. As is often the case with video, we&amp;rsquo;ll be using the excellent ffmpeg tool for this.</description>
+    </item>
+    
+    <item>
+      <title>Understanding pointers</title>
+      <link>./2016/05/28/Understanding-pointers.html</link>
+      <pubDate>Sat, 28 May 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/05/28/Understanding-pointers.html</guid>
+      <description>I was recently chatting with a new contributor to Sway who is using the project as a means of learning C, and he had some questions about what void** meant when he found some in the code. It became apparent that this guy only has a basic grasp on pointers at this point in his learning curve, and I figured it was time for another blog post - so today, I&amp;rsquo;ll explain pointers.</description>
+    </item>
+    
+    <item>
+      <title>How to write a better bloom filter in C</title>
+      <link>./2016/04/12/How-to-write-a-better-bloom-filter-in-C.html</link>
+      <pubDate>Tue, 12 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/04/12/How-to-write-a-better-bloom-filter-in-C.html</guid>
+      <description>This is in response to How to write a bloom filter in C++, which has good intentions, but is ultimately a less than ideal bloom filter implementation. I put together a better one in C in a few minutes, and I&amp;rsquo;ll explain the advantages of it.
+The important differences are:
+ You bring your own hashing functions You can add arbitrary data types, not just bytes It uses bits directly instead of relying on the std::vector&amp;lt;bool&amp;gt; being space effecient  I chose C because (1) I prefer it over C++ and (2) I just think it&amp;rsquo;s a better choice for implementing low level data types, and C++ is better used in high level code.</description>
+    </item>
+    
+  </channel>
+</rss>

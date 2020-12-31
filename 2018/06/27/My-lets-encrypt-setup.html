@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>A quick review of my Let&#39;s Encrypt setup</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  A quick review of my Let&#39;s Encrypt setup
+  <small>
+    <span class="date">June 27, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Let&rsquo;s Encrypt makes TLS much easier for pretty much everyone, but can still
+be annoying to use. It took me a while to smooth over the cracks in my Let&rsquo;s
+Encrypt configuration across my (large) fleet of different TLS-enabled services.
+I wanted to take a quick moment to share setup with you.</p>
+<p>2020-01-02 update: acme-client is unmaintained and caught the BSD disease
+anyway. I use <a href="https://github.com/ndilieto/uacme">uacme</a> and my current
+procedure is documented on my <a href="/new-server.html">new server checklist</a>. It might
+not be exactly applicable to your circumstances, YMMV.</p>
+<p>The main components are:</p>
+<ul>
+<li><a href="https://kristaps.bsd.lv/acme-client/">acme-client</a></li>
+<li>nginx</li>
+<li>cron</li>
+</ul>
+<p>nginx and cron need no introduction, but acme-client deserves a closer look. The
+acme client blessed by Let&rsquo;s Encrypt is <a href="https://certbot.eff.org/">certbot</a>, but
+BOY is it complicated. It&rsquo;s a big ol' pile of Python and I&rsquo;ve found it fragile,
+complicated, and annoying. The goal of maintaining your nginx and apache configs
+for you is well intentioned but ultimately useless for advanced users. The
+complexity of certbot is through the roof, and complicated software breaks.</p>
+<p>I bounced between alternatives for a while but when I found acme-client, it
+totally clicked. This one is written in C with minimal dependencies (LibreSSL
+and libcurl, no brainers IMO). I bring a statically linked acme-client binary
+with me to new servers and setup time approaches zero as a result.</p>
+<p>I use nginx to answer challenges (and for some services, to use the final
+certificates for HTTPS - did you know you can use Let&rsquo;s Encrypt for more
+protocols than just HTTPS?). I quickly <code>mkdir -p /var/www/acme/.well-known/acme-challenge</code>, make sure nginx can read it, and add
+the following rules to nginx to handle challenges:</p>
+<div class="highlight"><pre class="chroma"><code class="language-nginx" data-lang="nginx"><span class="k">server</span> <span class="p">{</span>
+    <span class="kn">listen</span> <span class="mi">80</span><span class="p">;</span>
+    <span class="kn">listen</span> <span class="s">[::]:80</span><span class="p">;</span>
+    <span class="kn">server_name</span> <span class="s">example.org</span><span class="p">;</span>
+
+    <span class="kn">location</span> <span class="s">^~</span> <span class="s">/.well-known/acme-challenge</span> <span class="p">{</span>
+        <span class="kn">alias</span> <span class="s">/var/www/acme</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>If I&rsquo;m not using the certificates for HTTPS, this is all I need. But assuming I
+have some kind of website going, the full configuration usually looks more like
+this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-nginx" data-lang="nginx"><span class="k">server</span> <span class="p">{</span>
+    <span class="kn">listen</span> <span class="mi">80</span><span class="p">;</span>
+    <span class="kn">listen</span> <span class="s">[::]:80</span><span class="p">;</span>
+    <span class="kn">server_name</span> <span class="s">example.org</span><span class="p">;</span>
+
+    <span class="kn">location</span> <span class="s">/</span> <span class="p">{</span>
+        <span class="kn">return</span> <span class="mi">302</span> <span class="s">https://</span><span class="nv">$server_name$request_uri</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kn">location</span> <span class="s">^~</span> <span class="s">/.well-known/acme-challenge</span> <span class="p">{</span>
+        <span class="kn">alias</span> <span class="s">/var/www/acme</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">server</span> <span class="p">{</span>
+    <span class="kn">listen</span> <span class="mi">443</span> <span class="s">ssl</span><span class="p">;</span>
+    <span class="kn">listen</span> <span class="s">[::]:443</span> <span class="s">ssl</span><span class="p">;</span>
+    <span class="kn">server_name</span> <span class="s">example.org</span><span class="p">;</span>
+
+    <span class="kn">ssl_certificate</span> <span class="s">/etc/ssl/acme/</span><span class="nv">$server_name/fullchain.pem</span><span class="p">;</span>
+    <span class="kn">ssl_certificate_key</span> <span class="s">/etc/ssl/acme/</span><span class="nv">$server_name/privkey.pem</span><span class="p">;</span>
+
+    <span class="kn">location</span> <span class="s">^~</span> <span class="s">/.well-known/acme-challenge</span> <span class="p">{</span>
+        <span class="kn">alias</span> <span class="s">/var/www/acme</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1"># ...application specific rules...
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p>This covers the nginx side of things. To actually do certificate negotiation, I
+have a simple script I carry around:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="nb">exec</span> &gt;&gt;/var/log/acme 2&gt;<span class="p">&amp;</span><span class="m">1</span>
+date
+
+acme<span class="o">()</span> <span class="o">{</span>
+    <span class="nv">site</span><span class="o">=</span><span class="nv">$1</span>
+    <span class="nb">shift</span>
+    acme-client -vNn <span class="se">\
+</span><span class="se"></span>        -c /etc/ssl/acme/<span class="nv">$site</span>/ <span class="se">\
+</span><span class="se"></span>        -k /etc/ssl/acme/<span class="nv">$site</span>/privkey.pem <span class="se">\
+</span><span class="se"></span>        <span class="nv">$site</span> <span class="nv">$*</span>
+<span class="o">}</span>
+
+acme example.org subd1.example.org subd2.example.org
+
+nginx -s reload
+</code></pre></div><p>The first two lines set up a log file in <code>/var/log/acme</code> I can use to debug any
+issues that arise. Then I have a little helper function that wires up
+acme-client the way I like it, and I can call it for each domain I need certs
+for on this server. The last line changes if I&rsquo;m doing something other than
+HTTPS with the certs (for example, <code>postfix reload</code>).</p>
+<p>One gotcha is that acme-client will bail out if the directories don&rsquo;t exist when
+you run it, so a quick <code>mkdir -p /etc/ssl/acme/example.org</code> when adding new
+sites is necessary</p>
+<p>The final step is a simple cron entry that runs the script daily:</p>
+<pre><code class="language-cron" data-lang="cron">0 0 * * * /usr/local/bin/acme-update-certs
+</code></pre><p>It&rsquo;s that easy. It took me a while to get a Let&rsquo;s Encrypt setup that was simple
+and satisfactory, but I believe I&rsquo;ve settled on this one. I hope you find it
+useful!</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

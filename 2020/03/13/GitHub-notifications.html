@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>GitHub&#39;s new notifications: a case of regressive design</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  GitHub&#39;s new notifications: a case of regressive design
+  <small>
+    <span class="date">March 13, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p><em>Disclaimer: I am the founder of a company which competes with GitHub. However,
+I still use tools like GitHub, GitLab, and so on, as part of regular
+contributions to projects all over the FOSS ecosystem. I don&rsquo;t dislike GitHub,
+and I use it frequently in my daily workflow.</em></p>
+<p>GitHub is rolling out a new notifications UI. A few weeks ago, I started seeing
+the option to try it. Yesterday, I received a warning that the old UI will soon
+be deprecated. At this pace, I would not be surprised to see the new UI become
+mandatory in a week or two. I&rsquo;m usually optimistic about trying out new
+features, but this change worried me right away. I still maintain a few projects
+on GitHub, and I frequently contribute to many projects there. Using the
+notification page to review these projects is a ritual I usually conduct several
+times throughout the workday. So, I held my breath and tried it out.</p>
+<p>The new UI looks a lot more powerful initially. The whole page is used to
+present your notifications, and there are a lot more buttons to click, many of
+them with cute emojis to quickly convey meaning. The page is updated in
+real-time, so as you interact with the rest of the website your notifications
+page in the other tab will be updated accordingly.</p>
+<p>Let&rsquo;s stop and review my workflow using the <em>old</em> UI. I drew this beautiful
+graphic up in GIMP to demonstrate:</p>
+<p><img src="https://cmpwn.com/system/media_attachments/files/000/659/354/original/d9abc4befe1a074c.png" alt=""></p>
+<p>I open the page, then fix my eyes on the notification titles. I move my mouse to
+the right, and while reading titles I move the mouse down, clicking to mark any
+notifications as read that I don&rsquo;t need to look at, and watching in my
+peripheral vision to see that the mouse hits its mark over the next button. The
+notifications are grouped by repository, so I can read the name of the repo then
+review all of its notifications in one go. The page is fairly narrow, so reading
+the titles usually leads my eyes naturally into reading any other information I
+might need, like the avatars of participants or age of the notification.</p>
+<p>I made an equally beautiful picture for the new UI<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>:</p>
+<p><img src="https://cmpwn.com/system/media_attachments/files/000/659/353/original/b15f20de0ae35cd3.png" alt=""></p>
+<p>This one is a lot harder to scan quickly or get into your muscle memory. The
+title of the notification no longer stands out, as it&rsquo;s the same size as the
+name of the repo that was affected. They&rsquo;re no longer grouped by repo, either,
+so I have to read both every time to get the full context. I then have to move
+my eyes <em>all the way</em> across the page to review any of those other details,
+through vast fields of whitespace, where I can easily lose my place and end up
+on a different row.</p>
+<p>Once I&rsquo;ve decided what to do with it, I have to move my mouse over the row, and
+wait for the action buttons to appear. They were invisible a second ago, so I
+have to move my mouse again to get closer to the target. Clicking it will mark
+it as read. Then, because I have it filtered to unread (because &ldquo;all&rdquo;
+notifications is really <em>all</em> notifications, and there&rsquo;s no &ldquo;new&rdquo; notifications
+like the old UI had), the row disappears, making it difficult to undo if it was
+a mistake. Then I heave my eyes to the left again to read the next one.</p>
+<p>This page is updated in real-time. In the old UI, after I had marked everything
+as read that I didn&rsquo;t need to look at, I would middle click on each remaining
+notification to open it in a new tab. On the new real-time page, as soon as the
+other tab loads, the notification I clicked disappears (again, because I have it
+filtered to &ldquo;unread&rdquo;). This isn&rsquo;t immediate, though — it takes at least as
+long as it takes for the new tab to load. Scanning the list and middle-clicking
+every other message becomes a Sisyphean task.</p>
+<p>And the giant sticky header that follows you around! A whole 160 pixels, 14% of
+my vertical space, is devoted to a new header which shows up on the next page
+when I follow through a notification. And it&rsquo;s implemented with JavaScript and
+done in a bizzare way, so writing a user style to get rid of it was rather
+difficult.</p>
+<p>Aside: I tried adding a custom filter to show only pull requests, but it seems
+to silently fail, and I just see all of my notifications when I use it.</p>
+<hr>
+<p>Anyway, we&rsquo;re probably stuck with this. Now that they&rsquo;ve announced the imminent
+removal of the old UI, we can probably assume that this feature is on the
+non-stop release train. Negative feedback almost never leads to cancelling the
+roll-out of a change, because the team&rsquo;s pride is on the line.</p>
+<p>I haven&rsquo;t spoken to anyone who likes the new UI. Do you?</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Both of these pictures were sent to GitHub as feedback on the feature, three weeks ago. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

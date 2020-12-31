@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Absence of certain features in IRC considered a feature</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Absence of certain features in IRC considered a feature
+  <small>
+    <span class="date">July 1, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>The other day a friend of mine (an oper on Freenode) wanted to talk about IRC
+compared to its peers, such as Matrix, Slack, Discord, etc. The ensuing
+discussion deserves summarization here. In short: I&rsquo;m glad that IRC doesn&rsquo;t have
+the features that are &ldquo;showstoppers&rdquo; for people choosing other platforms, and
+I&rsquo;m worried that attempts to bring these showstopping &ldquo;features&rdquo; to IRC will
+worsen the platform for the people who use it now.</p>
+<p>On IRC, features like embedded images, a nice UX for messages longer than a few
+lines (e.g. pasted code), threaded messages, etc; are absent. Some sort of
+&ldquo;graceful degradation&rdquo; to support mixed channels with clients which support
+these features and clients which don&rsquo;t may be possible, but it still <em>degrades</em>
+the experience for many people. By instead making everyone work within the
+limitations of IRC, we establish a shared baseline, and expressing yourself
+within these limitations is not only possible but makes a better experience for
+everyone.</p>
+<p>Remember that [not everyone is like you][old hardware]. I regularly chat with
+people on ancient hardware that slows to a crawl when a web browser is
+running<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, or people working from a niche operating system for which porting a
+graphical client is a herculean task, or people with accessibility concerns for
+whom the &ldquo;one line of text per statement&rdquo; fits nicely into their TTS<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> system
+and screenreading Slack is a nightmare.</p>
+<p>Let&rsquo;s consider what happens when these features are added but non-uniformly
+available. Let&rsquo;s use rich text as an example and examine the fallback
+implementation. Which of these is better?</p>
+<p><span>(A) &lt;user&gt; check out [this website](<a href="https://example.org"><a href="https://example.org">https://example.org</a></a>)</span></p>
+<p><span>(B) &lt;user&gt; check out this website: <a href="https://example.org"><a href="https://example.org">https://example.org</a></a></span></p>
+<p>Example B is what people naturally do when rich text is unavailable, and most
+clients will recognize it as a link and make it clickable anyway. But many
+clients cannot and will not display example A as a link, which makes it harder
+to read. Example A also makes phishing <em>much</em> easier.</p>
+<p>Here&rsquo;s another example: how about a nice UI for long messages, such as pasted
+code snippets? Let&rsquo;s examine how three different clients would implement this:
+(1) a GUI client, (2) a TUI<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> client, and (3) a client which refuses to
+implement it or is unmaintained<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</p>
+<p>The first case is the happy path, we probably get a little scrollbox that the
+user can interact with their mouse. Let&rsquo;s say <a href="https://weechat.org/">Weechat</a>
+takes up option 2, but how do they do that? Some terminal emulators have mouse
+support, so they could have a similar box, but since Weechat is primarily
+keyboard-driven (and some terminal emulators do not support mice!), a
+keyboard-based alternative will be necessary. Now we have to have some kind of
+command or keybinding for scrolling through the message, and picking which of
+the last few long messages we want to scroll through. This will have to be
+separate from scrolling through the backlog normally, of course. The third
+option is the worst: they just see a hundred lines pasted into their backlog,
+which is already highly scorned behavior on most IRC channels. Only the GUI
+users come away from this happy, and on IRC they&rsquo;re in the minority.</p>
+<p>Some IRC clients (Matrix) have this feature today, but most Matrix users don&rsquo;t
+realize what a nuisance they&rsquo;re being on the chat. Here&rsquo;s what they see:</p>
+<p><img src="https://sr.ht/VOeY.png" alt=""></p>
+<p>And here&rsquo;s what I see:</p>
+<p><img src="https://sr.ht/HZ7Z.png" alt=""></p>
+<p>Conservative improvements built on top of existing IRC norms, such as <a href="https://thelounge.chat/">The
+Lounge</a>, are much better. Most people post images on
+IRC as URLs, which clients can do a quick HEAD request against and embed if the
+mimetype is appropriate:</p>
+<p><img src="https://sr.ht/9RsR.png" alt=""></p>
+<p>For most of these features, I think that people who have and think they need
+them are in fact unhappier for having them. What are some of the most common
+complaints from Slack users et al? &ldquo;It&rsquo;s distracting.&rdquo; &ldquo;It&rsquo;s hard to keep up
+with what people said while I was away.&rdquo; &ldquo;Threads get too long and hard to
+understand.&rdquo; Does any of this sound familiar? Most of these problems are caused
+by or exacerbated by features which are missing from IRC.  It&rsquo;s distracting
+because your colleagues are posting gifs all day. It&rsquo;s hard to keep up with
+because the infinite backlog encourages a culture of catching up rather than
+setting the expectation that conversations are ephemeral<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>. Long conversations
+shouldn&rsquo;t be organized into threads, but moved into email or another medium more
+suitable for that purpose.</p>
+<p>None of this even considers what <em>is</em> good about IRC. It&rsquo;s a series of
+decentralized networks built on the shoulders of volunteers. It&rsquo;s venerable and
+well-supported with hundreds of client and server implementations. You can
+connect to IRC manually using telnet and have a pretty good user experience!
+Accordingly, <a href="https://drewdevault.com/2018/03/10/How-to-write-an-IRC-bot.html">a working IRC bot can be written in about 2
+minutes</a>. No one is trying to monetize you on IRC.
+It&rsquo;s free, in both meanings, and nothing which has come since has presented a
+compelling alternative. I&rsquo;ve used IRC all day, every day for over ten years, and
+that&rsquo;s not even half of IRC&rsquo;s lifetime. It&rsquo;s outlived everything else by years
+and years, and it&rsquo;s not going anywhere soon.</p>
+<p>In summary, I like IRC the way it is. It has problems which we ought to address,
+but many people focus on the wrong problems. The culture that it fosters is good
+and worth preserving, even at the expense of the features users of other
+platforms demand - or those users themselves.</p>
+<hr>
+<p>P.S. A friend pointed out that the migration of non-hackers away from IRC is
+like a reverse <a href="https://en.wikipedia.org/wiki/Eternal_September">Eternal September</a>, which sounds <em>great</em> 😉</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Often, I <em>am</em> this person. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Text to speech.
+[old hardware]: <a href="https://drewdevault.com/2019/01/23/Why-I-use-old-hardware.html">https://drewdevault.com/2019/01/23/Why-I-use-old-hardware.html</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>Text user interface <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p>IRC is over 30 years old and has barely changed since - so using unmaintained or barely-maintained clients is not entirely uncommon nor wrong. <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p>Many people have bouncers which allow them to catch up the last few lines, and keep logs which they can reference later if necessary. This is nice to have but adds enough friction to keep the expectation that discussions are ephemeral, which has a positive effect on IRC culture. <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

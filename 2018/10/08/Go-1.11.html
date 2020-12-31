@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Go 1.11 got me to stop ignoring Go</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Go 1.11 got me to stop ignoring Go
+  <small>
+    <span class="date">October 8, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I took a few looks at Go over the years, starting who knows when. My first
+serious attempt to sit down and learn some damn Go was in 2014, when I set a new
+personal best at almost 200 lines of code before I got sick of it. I kept
+returning to Go because I could see how much potential it had, but every time I
+was turned off for the same reason: <code>GOPATH</code>.</p>
+<p>You see, <code>GOPATH</code> crossed a line. Go is opinionated, which is fine, but with
+<code>GOPATH</code> its opinions extended beyond my Go work and into the rest of my system.
+As a naive new Go user, I was prepared to accept their opinions on faith - but
+only within their domain. I already have opinions about how to use my computer.
+I knew Go was cool, but it could be the second coming of Christ, and so long as
+it was annoying to use and didn&rsquo;t integrate with my workflow, I (rightfully)
+wouldn&rsquo;t care.</p>
+<p>Thankfully Go 1.11 solves this problem, and solves it delightfully well. I can
+now keep Go&rsquo;s influence contained to the Go projects I work with, and in that
+environment I&rsquo;m much more forgiving of anything it wants to do. And when
+considered in the vacuum of Go, what it wants to do is really compelling. Go
+modules are <em>great</em>, and probably the single best module system I&rsquo;ve used in any
+programming language. Go 1.11 took my biggest complaint and turned it into one
+of my biggest compliments. Now that the One Big Problem is gone, I&rsquo;ve really
+started to appreciate Go. Let me tell you about it.</p>
+<p>The most important feature of Go is its simplicity. The language is small and
+it grows a small number of features in each release, which rarely touch the
+language itself. Some people see this as stagnation, but I see it as stability
+and I know that very little Go code in the wild, no matter how old, is going to
+be unidiomatic or fail to compile. Even setting aside stability, the
+conservative design of the language makes Go code in the wild remarkably
+consistent. Almost all third-party Go libraries are high quality stuff. Gofmt
+helps with this as well<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. The limitations of the language and the way the
+stdlib gently nudges you into good patterns make it easy to write good Go code.
+Most of the &ldquo;bad&rdquo; Go libraries I&rsquo;ve found are trying to work around Go&rsquo;s
+limitations instead of embracing them.</p>
+<p>There&rsquo;s more. The concurrency model is superb. It should come as no surprise
+that a language built by the alumni of Plan 9 would earn high marks in this
+regard, and consequently you can scale your Go program up to be as concurrent as
+you want without even thinking about it. The standard library is also excellent -
+designed consistently and designed well, and I can count on one hand (or even
+one finger) the number of stdlib modules I&rsquo;ve encountered that feel crusty. The
+type system is great, too. It&rsquo;s the perfect balance of complexity and simplicity
+that often effortlessly grants these traits to the abstractions you make with
+it.</p>
+<p>I&rsquo;m not even slightly bothered by the lack of generics - years as a C programmer
+taught me not to need them, and I think most of the cases where they&rsquo;re useful
+are to serve designs which are too complicated to use anyway. I do have some
+complaints, though. The concurrency model is great, but a bit too magical and
+implicit.  Error handling is annoying, especially because finding the origin of
+the error is unforgivably difficult, but I don&rsquo;t know how to improve it. The log
+module leaves a lot to be desired and can&rsquo;t be changed because of legacy
+support.  <code>interface{}</code> is annoying when you have to deal with it, like when
+dealing with JSON you can&rsquo;t unmarshall into a struct.</p>
+<p>My hope for the future of Go is that it will continue to embrace simplicity in
+the face of cries for complexity. I consider Go modules a runaway success
+compared to dep, and I hope to see this story repeated<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> before hastily adding
+generics, better error handling, etc. Go doesn&rsquo;t need to compete with anyone
+like Rust, and trying to will probably ruin what makes Go great. My one request
+of the Go team: don&rsquo;t make changes in Go 2.0 which make the APIs of existing
+libraries unidiomatic.</p>
+<p>Though I am growing very fond of it, by no means am I turning into a Go zealot.
+I still use C, Python, and more all the time and have no intention of stopping.
+A programming language which tries to fill all niches is a failed programming
+language. But, to those who were once like me: Go is good now! In fact, it&rsquo;s
+great! Try it!</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>I have <em>minor</em> gripes with gofmt, but the benefits make up for it beautifully. On the other hand, I have <em>major</em> gripes with PEP-8, and if you ever see me using it I want you to shoot me in the face. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Though hopefully with less drama. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

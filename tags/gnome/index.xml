@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>gnome on Drew DeVault&#39;s blog</title>
+    <link>./tags/gnome.html</link>
+    <description>Recent content in gnome on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sat, 27 Jan 2018 00:00:00 +0000</lastBuildDate><atom:link href="./tags/gnome/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Sway and client side decorations</title>
+      <link>./2018/01/27/Sway-and-client-side-decorations.html</link>
+      <pubDate>Sat, 27 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/01/27/Sway-and-client-side-decorations.html</guid>
+      <description>You may have recently seen an article from GNOME on the subject of client side decorations (CSD) titled Introducing the CSD Initiative. It states some invalid assumptions which I want to clarify, and I want to tell you Sway&amp;rsquo;s stance on the subject. I also speak for the rest of the projects involved in wlroots on this matter, including Way Cooler, waymonad, and bspwc.
+The subject of which party is responsible for window decorations on Wayland (the client or the server) has been a subject of much debate.</description>
+    </item>
+    
+  </channel>
+</rss>

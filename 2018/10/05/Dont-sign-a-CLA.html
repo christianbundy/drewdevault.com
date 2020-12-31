@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Don&#39;t sign a CLA</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Don&#39;t sign a CLA
+  <small>
+    <span class="date">October 5, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>A large minority of open-source projects come with a CLA, or Contributor License
+Agreement, and require you to sign one before they&rsquo;ll merge your patch. These
+agreements typically ask you to go above and beyond the rights you afford the
+project by contributing under the license the software is distributed with. And
+you should never sign one.</p>
+<p>Free and open source software licenses grant explicit freedoms to three groups:
+the maintainers, the users, <em>and</em> the contributors. An important freedom is the
+freedom to make changes to the software and to distribute these changes to the
+public. The natural place to do so is by contributing to the upstream project,
+something a project should be thankful for. A CLA replaces this gratitude with
+an attempt to weaken these freedoms in a manner which may stand up to the letter
+of the license, but is far from the spirit.</p>
+<p>A CLA is a kick in the groin to a contributor&rsquo;s good-faith contribution to the
+project. Many people, myself included, contribute to open source projects under
+the assumption that my contributions will help serve a project which continues
+to be open source in perpetuity, and a CLA provides a means for the project
+maintainers to circumvent that. What the CLA is actually used for is to give the
+project maintainers the ability to relicense your work under a more restrictive
+software license, up to and including making it entirely closed source.</p>
+<p>We&rsquo;ve seen this happen before. Consider the Redis Labs debacle, where they
+adopted the nonfree<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> Anti-Commons Clause<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, and used their CLA to pull along
+any external contributions for the ride. As thanks for the generous time
+invested by their community into their software, they yank it out from
+underneath it and repurpose it to make money with an obscenely nonfree product.
+Open source is a commitment to your community. Once you make it, you cannot take
+it back. You don&rsquo;t get the benefits associated with being an open source project
+if you have an exit hatch. You may argue that it&rsquo;s your right to do what you
+want with your project, but making it open source is <em>explicitly waiving that
+right</em>.</p>
+<p>So to you, the contributor: if you are contributing to open source and you want
+it to stay that way, you should not sign a CLA. When you send a patch to a
+project, you are affording them the same rights they afforded you. The
+relationship is one of equals. This is a healthy balance. When you sign a CLA,
+you give them unequal power over you. If you&rsquo;re scratching an itch and just
+want to submit the patch in good faith, it&rsquo;s easy enough to fork the project and
+put up your changes in a separate place. This is a right afforded to you by
+every open source license, and it&rsquo;s easy to do. Anyone who wants to use your
+work can apply your patches on top of the upstream software. Don&rsquo;t sign away
+your rights!</p>
+<hr>
+<p>Additional reading: <a href="https://blog.hansenpartnership.com/gpl-as-the-best-licence-governance-and-philosophy/">GPL as the Best Licence – Governance and Philosophy</a></p>
+<p>Some responses to the discussion around this article:</p>
+<p><em>What about the <a href="https://www.apache.org/licenses/cla-corporate.txt">Apache Foundation
+CLA</a>?</em> This CLA is one of the
+better ones, because it doesn&rsquo;t transfer copyright over your work to the Apache
+Foundation. I have no beef with clauses 1 and 3-8. However, term 2 is too broad
+and I would not sign this CLA.</p>
+<p><em>What about the Linux kernel <a href="https://elinux.org/Developer_Certificate_Of_Origin">developer certificate of
+origin</a>?</em> I applaud the
+Linux kernel&rsquo;s approach here. It covers their bases while still strongly
+protecting the rights of the patch owner. It&rsquo;s a short statement with little
+legalese and little fanfare to agreeing to it (just add &ldquo;Signed-off By&rdquo; to your
+commit message). I approve.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="/2018/08/22/Commons-clause-will-destroy-open-source.html">Free as in freedom</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Call me petty, but I can&rsquo;t in good faith call it the &ldquo;Commons Clause&rdquo; when its purpose is to <em>remove</em> software from the commons. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

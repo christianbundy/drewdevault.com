@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Getting started with qemu</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Getting started with qemu
+  <small>
+    <span class="date">September 10, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I often get asked questions about using my software, particularly sway, on
+hypervisors like VirtualBox and VMWare, as well as for general advice on
+which hypervisor to choose. My answer is always the same: qemu. There&rsquo;s no
+excuse to use anything other than qemu, in my books. But I can admit that it
+might be a bit obtuse to understand at first. qemu&rsquo;s greatest strength is also
+its greatest weakness: it has so many options that it&rsquo;s hard to know which ones
+you need just to get started.</p>
+<p>qemu is the swiss army knife of virtualisation, much like ffmpeg is the swiss
+army knife of multimedia (which comes as no surprise, given that both are written
+by Fabrice Bellard). I run a dozen permanent VMs with qemu, as well as all of
+the ephemeral VMs used on <a href="https://meta.sr.ht">builds.sr.ht</a>. Why is it better
+than all of the other options? Well, in short: qemu is fast, portable, better
+supported by guests, and has more features than Hollywood. There&rsquo;s nothing other
+hypervisors can do that qemu can&rsquo;t, and there&rsquo;s plenty qemu can that they
+cannot.</p>
+<p>Studying the full breadth of qemu&rsquo;s featureset is something you can do over
+time. For now, let&rsquo;s break down a simple Linux guest installation. We&rsquo;ll start
+by downloading some install media (how about <a href="https://alpinelinux.org/">Alpine
+Linux</a>, I like Alpine Linux) and preparing a virtual
+hard drive.</p>
+<pre><code>curl -O https://nl.alpinelinux.org/alpine/v3.8/releases/x86_64/alpine-standard-3.8.0-x86_64.iso
+qemu-img create -f qcow2 alpine.qcow2 16G
+</code></pre>
+<p>This makes a 16G virtual hard disk in a file named alpine.qcow2, the qcow2
+format being a format which appears to be 16G to the guest (VM), but only
+actually writes to the host any sectors which were written to by the guest in
+practice. You can also expose this as a block device on your local system (or a
+remote system!) with qemu-nbd if you need to. Now let&rsquo;s boot up a VM using our
+install media and virtual hard disk:</p>
+<pre><code>qemu-system-x86_64 \
+    -enable-kvm \
+    -m 2048 \
+    -nic user,model=virtio \
+    -drive file=alpine.qcow2,media=disk,if=virtio \
+    -cdrom alpine-standard-3.8.0-x86_64.iso \
+    -sdl
+</code></pre>
+<p>This is a lot to take in. Let&rsquo;s break it down:</p>
+<p><strong>-enable-kvm</strong>: This enables use of the KVM (kernel virtual machine) subsystem
+to use hardware accelerated virtualisation on Linux hosts.</p>
+<p><strong>-m 2048</strong>: This specifies 2048M (2G) of RAM to provide to the guest.</p>
+<p><strong>-nic user,model=virtio</strong>: Adds a virtual <strong>n</strong>etwork <strong>i</strong>nterface
+<strong>c</strong>ontroller, using a virtual LAN emulated by qemu. This is the most
+straightforward way to get internet in a guest, but there are other options (for
+example, you will probably want to use <code>-nic tap</code> if you want the guest to do
+networking directly on the host NIC). <code>model=virtio</code> specifies a special
+<code>virtio</code> NIC model, which is used by the virtio kernel module in the guest to
+provide faster networking.</p>
+<p><strong>-drive file=alpine.qcow2,media=disk,if=virtio</strong>: This attaches our virtual
+disk to the guest. It&rsquo;ll show up as <code>/dev/vda</code>. We specify <code>if=virtio</code> for the
+same reason we did for <code>-nic</code>: it&rsquo;s the fastest interface, but requires special
+guest support from the Linux virtio kernel module.</p>
+<p><strong>-cdrom alpine-standard-3.8.0-x86_64.iso</strong> connects a virtual CD drive to the
+guest and loads our install media into it.</p>
+<p><strong>-sdl</strong> finally specifies the graphical configuration. We&rsquo;re using the SDL
+backend, which is the simplest usable graphical backend. It attaches a display
+to the guest and shows it in an <a href="https://www.libsdl.org/">SDL</a> window on the
+host.</p>
+<p>When you run this command, the SDL window will appear and Alpine will boot! You
+can complete the Alpine installation normally, using <code>setup-alpine</code> to install
+it to the attached disk. When you shut down Alpine, run qemu again without
+<code>-cdrom</code> to start the VM.</p>
+<p>That covers enough to get you off of VirtualBox or whatever other bad hypervisor
+you&rsquo;re using. What else is possible with qemu? Here&rsquo;s a short list of common
+stuff you can look into:</p>
+<ul>
+<li>Running pretty much any guest operating system</li>
+<li>Software emulation of non-native architectures like ARM, PPC, RISC-V</li>
+<li>Using <code>-spice</code> instead of <code>-sdl</code> to enable remote access to the
+display/keyboard/mouse</li>
+<li>Read-only disk images with guest writes stored in RAM (<code>snapshot=on</code>)</li>
+<li>Non-graphical boot with <code>-nographic</code> and <code>console=ttyS0</code> configured in your
+kernel command line</li>
+<li>Giving a genuine graphics card to your guest with KVM passthrough for high
+performance gaming, OpenCL, etc</li>
+<li>Using <a href="https://virt-manager.org/">virt-manager</a> or
+<a href="https://help.gnome.org/users/gnome-boxes/stable/">Boxes</a> if you want a GUI to
+hold your hand</li>
+<li>And much more&hellip;</li>
+</ul>
+<p>There&rsquo;s really no excuse to be using any other hypervisor<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. They&rsquo;re all
+dogshit compared to qemu.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Especially VirtualBox. If you use VirtualBox after reading this article you make poor life choices and are an embarrassment to us all. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

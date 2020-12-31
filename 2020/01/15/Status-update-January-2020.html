@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Status update, January 2020</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Status update, January 2020
+  <small>
+    <span class="date">January 15, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I forgot to write this post this morning, and I&rsquo;m on cup 3 of coffee while
+knee-deep in some arcane work with tarballs in Python. Forgive the brevity of
+this introduction. Let&rsquo;s get right into the status update.</p>
+<p>First of all, <a href="https://fosdem.org/2020/">FOSDEM 2020</a> is taking place on February 1st and 2nd, and
+I&rsquo;m planning on being there again this year. I hope to see you there! I&rsquo;ll be
+hosting another <a href="https://fosdem.org/2020/schedule/event/bof_sourcehut/">small session</a> for SourceHut and aerc users
+where I&rsquo;ll take questions, demo some new stuff, and give out stickers.</p>
+<p>In Wayland news, the upcoming Sway 1.3 release is getting very close - rc3 is
+planned to ship later today. We&rsquo;ve confirmed that it&rsquo;ll ship with VNC support
+via <a href="https://github.com/any1/wayvnc">wayvnc</a> and improvements to input latency.
+I haven&rsquo;t completed much extra work on Casa (and &ldquo;Sway Mobile&rdquo; alongside it),
+but there have been some small improvements. I did find some time to work on
+<a href="https://git.sr.ht/~sircmpwn/sedna">Sedna</a>, however. We&rsquo;ve decided to use it as
+a proving grounds for the new wlroots scene graph API, which plans to
+incorporate Simon Ser&rsquo;s <a href="https://github.com/emersion/libliftoff">libliftoff</a> and put to rest the eternal
+debate over how wlroots renderer should take shape. This&rsquo;ll be <em>lots</em> of work
+but the result will be a remarkably good foundation on which we can run
+performant compositors on a huge variety of devices — and, if we&rsquo;re
+lucky, might help resolve the Nvidia problem. I also did a bit more work on the
+<a href="https://wayland-book.com">Wayland Book</a>, refactoring some of the chapter
+ordering to make more sense and getting started with the input chapter. More
+soon.</p>
+<p>On SourceHut, lots of new developments have been underway. The latest round of
+performance improvements for git.sr.ht finally landed with the introduction of
+new server hardware, and it&rsquo;s finally competitive with its peers in terms of
+push and web performance. I&rsquo;ve also overhauled our monitoring infrastructure
+<a href="https://metrics.sr.ht">and made it public</a>. Our <a href="https://sourcehut.org/blog/2020-01-13-sourcehut-q4-2019-financial-report/">Q4 2019 financial
+report</a> was also published earlier this week. I&rsquo;m currently
+working on pushing forward through the self-service data ownership goals, and
+we&rsquo;ve already seen some improvements in that todo.sr.ht can now re-import
+tracker exports from itself or other todo.sr.ht instances.</p>
+<p>I&rsquo;ve also been working more on <a href="https://git.sr.ht/~sircmpwn/himitsu">himitsu</a>
+recently, though I&rsquo;m taking it pretty slowly because it&rsquo;s a security-sensitive
+project. Most of the crypto code has been written at this point - writing
+encrypted secrets to disk, reading and writing the key index - but reading
+encrypted secrets back from the disk remains to be implemented. I know there are
+some bugs in the current implementation, which I&rsquo;ll be sorting out before I
+write much more code. I also implemented most of the support code for the Unix
+socket RPC, and implemented a couple of basic commands which have been helpful
+with proving out the secret store code (proving that it&rsquo;s wrong, at least).</p>
+<p>Simon Ser&rsquo;s <a href="https://mrsh.sh">mrsh</a> has also been going very well lately, and is
+now a nearly complete implementation of the POSIX shell. I&rsquo;ve started working on
+something I&rsquo;ve long planned to build on top of mrsh: a comfortable interactive
+shell, inspired by fish&rsquo;s interactive mode, but with a strictly POSIX syntax. I
+call the project <a href="https://git.sr.ht/~sircmpwn/imrsh">imrsh</a>, for interactive
+mrsh. I&rsquo;ve already got it in somewhat good shape, but many of the features
+remain to be implemented. The bulk of the work was in Simon&rsquo;s mrsh, so it
+shouldn&rsquo;t be too hard to add a pretty interface on top. We&rsquo;ll see how it goes.</p>
+<p>That&rsquo;s all for today. In the coming month I hope to expand on each of these, and
+I&rsquo;m also working on a new Secret Project which may start bearing fruits soon
+(but likely not). Thank you for your continued support! I&rsquo;ll see you at FOSDEM.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

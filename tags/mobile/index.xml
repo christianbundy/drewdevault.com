@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>mobile on Drew DeVault&#39;s blog</title>
+    <link>./tags/mobile.html</link>
+    <description>Recent content in mobile on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 18 Dec 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/mobile/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>PinePhone review</title>
+      <link>./2019/12/18/PinePhone-review.html</link>
+      <pubDate>Wed, 18 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/12/18/PinePhone-review.html</guid>
+      <description>tl;dr: Holy shit! This is the phone I have always wanted. I have never been this excited about the mobile sector before. However: the software side is totally absent — phone calls are very dubious, SMS is somewhat dubious, LTE requires some hacks, and everything will have to be written from the ground up.
+I have a PinePhone developer edition model, which I paid for out of pocket1 and which took an excruciatingly long time to arrive.</description>
+    </item>
+    
+    <item>
+      <title>On taking good care of your phone</title>
+      <link>./2017/11/24/Phone-maintenance.html</link>
+      <pubDate>Fri, 24 Nov 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/11/24/Phone-maintenance.html</guid>
+      <description>I just finished replacing the micro-USB daughterboard on my Samsung Galaxy S5, which involved taking the phone most of the way apart, doing the replacement, and putting it back together. This inspired me to write about my approach to maintaining my cell phone. I&amp;rsquo;ve had this phone for a while and I have no plans to upgrade - I backed the upcoming Purism phone, but I expect to spend months/years on the software before I&amp;rsquo;ll be using that as my daily driver.</description>
+    </item>
+    
+    <item>
+      <title>Custom Music Syncing on Android</title>
+      <link>./2013/08/24/Music-syncing-on-Android.html</link>
+      <pubDate>Sat, 24 Aug 2013 00:00:00 +0000</pubDate>
+      
+      <guid>./2013/08/24/Music-syncing-on-Android.html</guid>
+      <description>I have an HTC One, with CyanogenMod installed. I usually use Spotify, but I&amp;rsquo;ve been wanting to move away from it for a while. The biggest thing keeping me there was the ease of syncing up with my phone - I added music on my PC and it just showed up on my phone.
+So, I finally decided to make it work on my phone without Spotify. You might have success if you aren&amp;rsquo;t using CyanogenMod, but you definitely need to be rooted and you need to access a root shell on your phone.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Porting Alpine Linux to RISC-V</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Porting Alpine Linux to RISC-V
+  <small>
+    <span class="date">December 20, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I recently received my <a href="https://www.sifive.com/boards/hifive-unleashed">HiFive Unleashed</a>, after several excruciating
+months of waiting, and it&rsquo;s incredibly cool. For those unaware, the HiFive
+Unleashed is the first consumer-facing Linux-capable <a href="https://en.wikipedia.org/wiki/RISC-V">RISC-V</a> hardware.
+For anyone who&rsquo;s still lost, RISC-V is an <a href="https://github.com/riscv">open</a>,
+royalty-free <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set
+architecture</a>, and
+the HiFive is an <a href="https://github.com/sifive">open</a> CPU implementing it. And here
+it is on my dining room table:</p>
+<p><img src="https://sr.ht/JMao.jpg" alt=""></p>
+<p>This board is <em>cool</em>. I&rsquo;m working on making this hardware available to
+<a href="https://meta.sr.ht">builds.sr.ht</a> users in the next few months, where I intend to use it to
+automate the remainder of the Alpine Linux port and make it available to any
+other operating systems (including non-Linux) and userspace software which are
+interested in working on a RISC-V port. I&rsquo;m fairly certain that this will be the
+first time hardware-backed RISC-V cycles are being made available to the public.</p>
+<p>There are two phases to porting an operating system to a new architecture:
+bootstrapping and, uh, porting. For lack of a better term. As part of
+bootstrapping, you need to obtain a cross-compiler, port libc, and cross-compile
+the basics. Bootstrapping ends once the system is <em>self-hosting</em>: able to
+compile itself. The &ldquo;porting&rdquo; process involves compiling all of the packages
+available for your operating system, which can take a long time and is generally
+automated.</p>
+<p>The first order of business is the cross-compiler. RISC-V support landed in
+binutils 2.28 and gcc 7.1 several releases ago, so no need to worry about adding
+a RISC-V target to our compiler. Building both with
+<code>--target=riscv64-linux-musl</code> is sufficient to complete this step. The other
+major piece is the C standard library, or libc. Unlike the C compiler, this step
+required some extra effort on my part - the RISC-V port of musl libc, which
+Alpine Linux is based on, is a work-in-progress and has not yet been upstreamed.</p>
+<p>There does exist <a href="https://github.com/riscv/riscv-musl">a patch</a> for RISC-V support, though it had never
+been tested at a scale like this. Accordingly, I ran into several bugs, for
+which I wrote several patches (<a href="https://github.com/riscv/riscv-musl/pull/2">1</a> <a href="https://github.com/riscv/riscv-musl/pull/3">2</a> <a href="https://github.com/riscv/riscv-musl/pull/4">3</a>). Having a working distro
+based on the RISC-V port makes a much more compelling argument for the maturity
+of the port, and for its inclusion upstream, so I&rsquo;m happy to have caught these
+issues. Until then, I added the port and my patches to the Alpine Linux musl
+package manually.</p>
+<p>A C compiler and libc implementation open the floodgates to porting a huge
+volume of software to your platform. The next step is to identify and port the
+essential packages for a self-hosting system.  For this, Alpine has a great
+<a href="https://git.alpinelinux.org/cgit/aports/tree/scripts/bootstrap.sh">bootstrapping script</a> which handles preparing the cross-compiler
+and building the base system. Many (if not most) of these packages required
+patching, tweaks, and manual intervention - this isn&rsquo;t a turnkey solution - but
+it is an incredibly useful tool. The most important packages at this step are
+the native toolchain<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, the package manager itself, and various other useful
+things like tar, patch, openssl, and so on.</p>
+<p>Once the essential packages are built and the system can compile itself, the
+long porting process begins. It&rsquo;s generally wise to drop the cross-compiler here
+and start doing native builds, if your hardware is fast enough. This is a
+tradeoff, because the RISC-V system is somewhat slower than my x86_64 bootstrap
+machine - but many packages require lots of manual tweaks and patching to get
+cross-compiling working. The time saved by not worrying about this makes up for
+the slower build times<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
+<p>There are thousands of packages, so the next step for me (and anyone else
+working on a port) is to automate the remainder of the process. For me, an
+intermediate step is integrating this with builds.sr.ht to organize my own work
+and to make cycles available to other people interested in RISC-V. Not all
+packages are going to be ported for free - but many will! Once you unlock the
+programming languages - C, Python, Perl, Ruby<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>, etc - most open source
+software is pretty portable across architectures. One of my core goals with
+sr.ht is to encourage portable software to proliferate!</p>
+<p>If any readers have their own RISC-V hardware, or want to try it with qemu, I
+have a RISC-V Alpine Linux repository here<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>. Something like this will install
+it to /mnt:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">apk add <span class="se">\
+</span><span class="se"></span>    -X https://mirror.sr.ht/alpine/main/ <span class="se">\
+</span><span class="se"></span>    --allow-untrusted <span class="se">\
+</span><span class="se"></span>    --arch<span class="o">=</span>riscv64 <span class="se">\
+</span><span class="se"></span>    --root<span class="o">=</span>/mnt <span class="se">\
+</span><span class="se"></span>    alpine-base alpine-sdk vim chrony
+</code></pre></div><p>Run <code>/bin/busybox --install</code> and <code>apk fix</code> on first boot. This is still a work
+in progress, so configuring the rest is an exercise left to the reader until I
+can clean up the process and make a nice install script. Good luck!</p>
+<hr>
+<p>Closing note: big thanks to the help from the community in #riscv on Freenode,
+and to the hard work of the Debian and Fedora teams paving a lot of the way and
+getting patches out there for lots of software! I still got to have all the fun
+working on musl so I wasn&rsquo;t entirely on the beaten path :)</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Meaning a compiler which both <em>targets</em> RISC-V and <em>runs</em> on RISC-V. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>I was actually really impressed with the speed of the HiFive Unleashed. The main bottleneck is the mmcblk driver - once you get files in the kernel cache things are quite pleasant and snappy. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>I have all four of these now! <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://mirror.sr.ht/alpine/main/">main</a>, <a href="https://mirror.sr.ht/alpine/community/">community</a>, <a href="https://mirror.sr.ht/alpine/testing/">testing</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

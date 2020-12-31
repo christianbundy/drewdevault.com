@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Life, liberty, and the pursuit of privacy</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Life, liberty, and the pursuit of privacy
+  <small>
+    <span class="date">June 29, 2016</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Privacy is my hobby, and should be a hobby of every technically competent
+American. Within the eyes of the law I have a right to secure the privacy of my
+information. At least that&rsquo;s the current law - many officials are <a href="http://www.apple.com/customer-letter/">trying to
+subvert that right</a>. I figure that we&rsquo;d
+better exercise that right while we have it, so that we know how to keep
+exercising it once it&rsquo;s illegal and all the information about it dries up.</p>
+<p>One particularly annoying coworker often brings up, &ldquo;what do you have to hide?&rdquo;
+Though it would defeat the purpose to explain what I&rsquo;m hiding, let&rsquo;s assume that
+what I&rsquo;m hiding is benign, at least legally speaking. I&rsquo;m sure you can
+understand why I don&rsquo;t want <code>~/Porn</code> to be public information should my
+equipment be seized after I publish this blog post and an incompetent (or angry)
+investigator leaks it. Building secure facilities for housing secrets is fun!
+That&rsquo;s true even if there aren&rsquo;t a lot of interesting secrets to hide there.</p>
+<p>But the porn folder brings up an interesting point. I&rsquo;m not ashamed to admit I
+have one, but I would be uncomfortable with everyone being able to see it. Or
+maybe I&rsquo;m having an affair (a scandalous proposition for a single guy, I know)
+and there are relevant texts are on my cell phone. Perhaps I suck at managing my
+finances and the spreadsheets in my documents would tell you so. Maybe I have
+embarrassing home videos of bedroom activities on my hard drive<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. Maybe
+there&rsquo;s evidence that I&rsquo;m a recovering alcoholic in my files. Maybe I&rsquo;m a
+closeted homosexual and my files prove it, and 10 years from now the homophobes
+win and suddenly the country is more hostile to that. Maybe all of this is true
+at once!</p>
+<p>Keeping these things secret is an important right, and one I intend to exercise.
+I don&rsquo;t want to be accused of some crime and have my equipment seized and then
+mishandled by incompetent officials and made public. I don&rsquo;t want a jury chosen
+to decide if I really stole that pack of gum when I was 8 and then have
+unfavorable secrets leaked. Human nature might lead them to look on my case
+unfavorably if they found out about all the tentacle porn or erotic Harry
+Potter fanfics I&rsquo;ve been secretly writing. Maybe an investigator finds something
+they don&rsquo;t understand, like a private key, and it ends up being exposed through
+the proceedings. Maybe this private key proves that I&rsquo;m Satoshi Nakamoto<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> and
+my life is threatened when the case is closed because of it.</p>
+<p>To the government: <strong>stay the fuck out of my right to encrypt</strong>, or, as I
+like to think of it, my right to use math. They will try, again and again, to
+take it from us. They must never win.</p>
+<p>The second act of this blog post is advice on how to go about securing your
+privacy. The crucial bit of advice is that you must strive to understand the
+systems you use for privacy and security. Look for their weak spots and be aware
+of them. Don&rsquo;t deceive yourself about how secure your systems are.</p>
+<p>I try to identify pain points in my security model. Some of them will be hard
+to swallow. The first one was Facebook - delete your account<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>. I did
+this years ago. The second one was harder still - Google. I use an Android
+phone running CyanogenMod without Google Play Services. I also don&rsquo;t use GMail
+or any Google services (I search with DuckDuckGo and add !sp to use StartPage if
+necessary). Another one was not using Windows or OS X. This is easy for me but a
+lot of people will bitch and moan about it. A valid privacy &amp; security model
+does not include Windows. OS X is an improvement but you&rsquo;d be better off on
+Linux. Even your non-technical family can surely figure out how to use Xubuntu
+to surf the web.</p>
+<p>I also use browser extensions to subvert tracking and ads. Ad networks have
+severely fucked themselves by this point - I absolutely never trust any ads on
+the web, and never will, period. Use software like
+<a href="https://github.com/gorhill/uBlock">uBlock</a> to get rid of trackers (and speed
+up the web, bonus!). I also block lots of trackers in my /etc/hosts file -
+<a href="https://github.com/StevenBlack/hosts">check this out</a>. Also check out
+<a href="https://free-software-for-android.github.io/AdAway/">AdAway</a> for Android.</p>
+<p>These changes help to remove your need to trust that corporate interests will
+be good stewards of your private information. This is very important - no amount
+of encryption will help you if you give Google a GPS map of your every move<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>
+and your search history<sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> and information about basically every page on the
+internet you visit<sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup>. And all of your emails and contacts and appointments on
+your calendar. Google can be subpoenaed or subverted<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup> and many other
+companies won&rsquo;t even try<sup id="fnref:9"><a href="#fn:9" class="footnote-ref" role="doc-noteref">9</a></sup> to keep your data secret even when they aren&rsquo;t
+legally compelled to. I like this image from Maciej Cegłowski&rsquo;s excellent
+talk<sup id="fnref:10"><a href="#fn:10" class="footnote-ref" role="doc-noteref">10</a></sup> on website obesity about the state of most websites:</p>
+<p><img src="https://sr.ht/ks75.jpg" alt=""></p>
+<p>When you give all of this information to Google, Facebook, and others, you&rsquo;re
+basically waiving your fifth amendment<sup id="fnref:11"><a href="#fn:11" class="footnote-ref" role="doc-noteref">11</a></sup> rights.</p>
+<p>Once you do have control of your information, there are steps you should take to
+keep it secure. The answer is encryption. I use
+<a href="https://wiki.archlinux.org/index.php/Dm-crypt">dm-crypt</a> which allows me to
+encrypt my entire hard drive on Linux. I&rsquo;m prompted for a password on boot and
+then everything proceeds (and I&rsquo;ve never noticed any performance issues, for the
+record).</p>
+<p>I also do most of my mobile computing on a laptop running libreboot<sup id="fnref:12"><a href="#fn:12" class="footnote-ref" role="doc-noteref">12</a></sup> with
+100% open source software. The weak point here is that if your hardware is
+compromised and you don&rsquo;t know it, they could steal your password. One possible
+solution is keeping your boot partition and perhaps another key on a flash
+drive, but this doesn&rsquo;t fully solve the problem. I suggest looking into things
+like case intrusion detection and working on being aware of it when your
+hardware is messed with.</p>
+<p>I mentioned earlier that my phone is running CyanogenMod without any of the
+Google apps. The weak point here is the radio, which is very insecure and likely
+riddled with vulnerabilities. I intend to build my own phone soon with a
+Raspberry Pi, where I can have more control over this - things like being able
+to disconnect power to the radio or disconnect the microphone when not in use
+will help.</p>
+<p>I also self host my email, which was a huge pain in the ass to set up, but is
+lovely now that I have it. At some point I intend to write a better mail server
+to make this easier. I use opportunistic PGP encryption for my emails, but I
+send depressingly few encrypted emails like this due to poor adoption (follow me
+on <a href="https://keybase.io/sircmpwn">keybase</a>? I&rsquo;ll give you an invitation if you
+send me an encrypted email asking for one!)</p>
+<p>If you have any questions about how to implement any of this, help identifying
+the weaknesses in your setup, or anything else, please feel free to reach out to
+me via email (<a href="mailto:sir@cmpwn.com">sir@cmpwn.com</a>+<a href="/publickey.txt">F4EA1B88</a>)
+or <a href="https://twitter.com/sircmpwn">Twitter</a> or whatever. Good luck sticking it to
+the man!</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://en.wikipedia.org/wiki/ICloud_leaks_of_celebrity_photos">ICloud leaks of celebrity photos</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>The secretive inventor of Bitcoin. I&rsquo;m not Satoshi, if you were wondering. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://www.facebook.com/help/delete_account?rdrhc">Click this</a> to do so <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p>&ldquo;But I liiiiike Facebook and it let&rsquo;s me keep up with my frieeeends&hellip;&rdquo; There&rsquo;s no privacy model that includes Facebook and works. Give up. <a href="https://stallman.org/facebook.html">Read this</a> and try to ignore the childish language and see the tangible evidence instead. <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p>If you have location services enabled on your phone, <a href="https://maps.google.com/locationhistory/">here&rsquo;s a map of everywhere you&rsquo;ve been</a>. Enjoy! <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p><a href="https://myactivity.google.com/myactivity">Here&rsquo;s all of your searches</a>. You can delete the history here, supposedly. I bet it doesn&rsquo;t unfeed that history to your personal advertising neural network at Google. <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:7" role="doc-endnote">
+<p>Google Adsense and Google Analytics are present on basically every website. I&rsquo;m positive they&rsquo;re writing it down somewhere when you hit a page with those on it. Facebook certainly is, too. <a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:8" role="doc-endnote">
+<p>Remember <a href="https://en.wikipedia.org/wiki/PRISM">PRISM</a>? <a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:9" role="doc-endnote">
+<p><a href="http://www.pbs.org/newshour/rundown/report-att-cooperated-extensively-nsa-sharing-billions-phone-email-records/">Like AT&amp;T, for example</a> <a href="#fnref:9" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:10" role="doc-endnote">
+<p><a href="http://idlewords.com/talks/website_obesity.htm">The Website Obesity Crisis</a> <a href="#fnref:10" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:11" role="doc-endnote">
+<p>That&rsquo;s the right to remain silent. Come on, you should know this. <a href="#fnref:11" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:12" role="doc-endnote">
+<p><a href="https://libreboot.org/">libreboot</a> is an open source BIOS. I got my laptop from <a href="https://minifree.org/">minifree</a>, which directly supports the libreboot project with their profits. <a href="#fnref:12" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

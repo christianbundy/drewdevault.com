@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Lessons to learn from C</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Lessons to learn from C
+  <small>
+    <span class="date">January 30, 2017</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>C is my favorite language, though I acknowledge that it has its warts. I&rsquo;ve
+tried looking at languages people hope will replace C (Rust, Go, etc), and
+though they&rsquo;ve improved on some things they won&rsquo;t be supplanting C in my life
+any time soon. I&rsquo;ll share with you what makes C a great language to me. Take
+some of these things as inspiration for the next C replacement you write.</p>
+<p>First of all, it&rsquo;s important to note that I&rsquo;m talking about the language, not
+its standard library. The C standard library isn&rsquo;t <em>awful</em>, but it certainly
+leaves a lot to be desired. I also want to place a few limitations on the kind
+of C we&rsquo;re talking about - you can write bad code in any language, and C is no
+different. For the purpose of argument, let&rsquo;s assume the following:</p>
+<ul>
+<li>C99 minimum</li>
+<li>Absolutely no code in headers - just type definitions and function prototypes</li>
+<li>Minimal use of typedefs</li>
+<li>No macros</li>
+<li>No compiler extensions</li>
+</ul>
+<p>I hold myself to these guidelines when writing C, and it is from this basis that
+I compare other languages with C. It&rsquo;s not useful to compare bad C to another
+language, because I wouldn&rsquo;t want to write bad C either.</p>
+<p>Much of what I like about C boils down to this: <strong>C is simple</strong>. The ultimate
+goal of any system should be to attain the simplest solution for the problems it
+faces. C prefers to be conservative with new features. The lifetime of a feature
+in Rust, for example, from proposal to shipping is generally 0 to 6 months. The
+same process in C can take up to 10 years. C is a venerable language, and has
+already long since finished adding core features. It is stable, simple, and
+reliable.</p>
+<p>To this end, language features map closely to behaviors common to most CPUs. C
+strikes a nearly perfect balance of usability versus simplicity, which
+results in a small set of features that are easy to reason about. A C expert
+could roughly predict the assembly code produced by their compiler (assuming
+<code>-O0</code>) for any given C function. It follows that C compilers are easy to write
+and reason about.</p>
+<p>The same person would also be able to give you a rough idea of the
+performance characteristics of that function, pointing out things like cache
+misses and memory accesses that are draining on speed, or giving you a precise
+understanding of how the function handles memory. If I look at a function in
+other languages, it&rsquo;s much more difficult to discern these things with any
+degree of precision without actually compiling the code and looking at the
+output.</p>
+<p>The compiler also integrates very comfortably with the other tools near it, like
+the assembler and linker. Symbols in C map 1:1 to symbols in the object files,
+which means linking objects together is simple and easily reasoned about. It
+also makes interop with other languages and tools straightforward - there&rsquo;s a
+reason every language has a means of writing C bindings, but not generally C++
+bindings. The use of headers to declare external symbols and types is also nicer
+than some would have you believe, since it gives you an opportunity to organize
+and document your API.</p>
+<p>C is also the most portable programming language in the world. Every operating
+system on every architecture has a C compiler, and they weren&rsquo;t really
+considered a viable platform until it did. Once you have a C compiler you
+generally have everything else, because everything else was either written in C
+or was written in a language that was implemented in C. I can write C programs
+on/for Linux, Windows, BSD, Minix, plan9, and a dozen other niche operating
+systems, or even no operating system, on pretty much any CPU architecture I
+want. No other language supports nearly as many platforms as C does.</p>
+<p>With these benefits acknowledged, there are some things C could do better. The
+standard library is one of them, but we can talk about that some other time.
+Another is generics; using void* all the time isn&rsquo;t good. Some features from
+other languages would be nice - I would take something similar to Rust&rsquo;s match
+keyword. Of course, the fragility of memory management in C is a concern that
+other languages are wise to address. Undefined behavior is awful.</p>
+<p>Even for all of these warts, however, the basic simplicity and elegance of C
+keeps me there. I would love to see a language that fixes these problems without
+trying to be the kitchen sink, too.</p>
+<p>In short, I like C because <strong>C is simple</strong>.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

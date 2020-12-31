@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>It&#39;s not okay to pretend your software is open source</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  It&#39;s not okay to pretend your software is open source
+  <small>
+    <span class="date">October 30, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Unfortunately, I find myself writing about the Commons Clause again. For those
+not in the know, the Commons Clause is an addendum designed to be added to free
+software licenses. The restrictions it imposes (you cannot sell the software)
+makes the resulting franken-license nonfree. I&rsquo;m not going to link to the
+project which brought this subject back into the discussion - they don&rsquo;t deserve
+the referral - but the continued proliferation of software using the Commons
+Clause gives me reason to speak out against it some more.</p>
+<p>One of my largest complaints with the Commons Clause is that it hijacks
+language used by open source projects to proliferate nonfree software, and
+encourages software using it to do the same. Instead of being a new software
+license, it tries to stick itself onto other respected licences - often the
+Apache 2.0 license. The name, &ldquo;Commons Clause&rdquo;, is also disingenuous, hijacking
+language used by respected entities like Creative Commons. In truth, the Commons
+Clause serves to remove software from the commons<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. Combining these
+problems gives you language like &ldquo;Apache+Commons Clause&rdquo;, which is easily
+confused with [Apache Commons][apache-commons].</p>
+<p>Projects using the Commons Clause have also been known to describe their license
+as &ldquo;permissive&rdquo; or &ldquo;open&rdquo;, some even calling their software &ldquo;open source&rdquo;. This
+is dishonest. FOSS refers to &ldquo;free and open source software&rdquo;. The former, free
+software, is defined by the <a href="https://www.gnu.org/philosophy/free-sw.en.html">free software definition</a>, published by
+<a href="https://gnu.org">GNU</a>. The latter, open source software, is defined by the <a href="https://opensource.org/osd">open source
+definition</a>, published by the <a href="https://opensource.org">OSI</a>. Their definitions are very
+similar, and nearly all FOSS licenses qualify under both definitions. These are
+unambiguous, basic criteria which protects developers, contributors, and users
+of free and open source software. These definitions are so basic, important and
+well-respected that dismissing them is akin to dismissing climate change.</p>
+<p>Claiming your software is open source, permissively licensed, free software,
+etc, when you use the Commons Clause, is <em>lying</em>. These lies are pervasive among
+users of the Commons Clause. The page listing <a href="https://redis.io/modules">Redis
+Modules</a>, for example, states that only software under
+an OSI-approved license is listed. Six of the modules there are using nonfree
+licenses, and antirez seems content to <a href="https://github.com/antirez/redis-doc/pull/984">ignore the problem</a> until <a href="https://github.com/RedisLabsModules/RediSearch/issues/518">we
+forget about it</a>. They&rsquo;re in for a long wait - we&rsquo;re not going to
+forget about <strong>shady, dishonest, and unethical companies like Redis Labs</strong>.</p>
+<p>I don&rsquo;t use nonfree software<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, but I&rsquo;m not going to sit here and tell you
+not to make nonfree software. You have every right to license your work in any
+way you choose. However, if you choose not to use a FOSS license, you need to
+own up to it. Don&rsquo;t pretend that your software is something it&rsquo;s not. There are
+many benefits to being a member of the free software community, but you are not
+entitled to them if your software isn&rsquo;t. This behavior has to stop.</p>
+<p>Finally, I have some praise to offer. <a href="https://dgraph.io/">Dgraph</a> was briefly
+licensed under Apache plus the Commons Clause, and had the sort of misleading
+and false information this article decries on their marketing website, docs, and
+so on. However, they&rsquo;ve rolled it back, and Dgraph is now using the Apache 2.0
+license with no modifications.  Thank you!</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>This is why I often refer to it as the &ldquo;Anti-Commons Clause&rdquo;, though I felt that was a bit too Stallman-esque for this article.
+[apache-commons]: <a href="http://commons.apache.org/">http://commons.apache.org/</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Free as in freedom, not as in free beer. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>go on Drew DeVault&#39;s blog</title>
+    <link>./tags/go.html</link>
+    <description>Recent content in go on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sat, 01 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="./tags/go/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>pkg.go.dev is more concerned with Google&#39;s interests than good engineering</title>
+      <link>./2020/08/01/pkg-go-dev-sucks.html</link>
+      <pubDate>Sat, 01 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/08/01/pkg-go-dev-sucks.html</guid>
+      <description>pkg.go.dev sucks. It&amp;rsquo;s certainly prettier than godoc.org, but under the covers, it&amp;rsquo;s a failure of engineering characteristic of the Google approach.
+Go is a pretty good programming language. I have long held that this is not attributable to Google&amp;rsquo;s stewardship, but rather to a small number of language designers and a clear line of influences which is drawn entirely from outside of Google — mostly from Bell Labs. pkg.go.dev provides renewed support for my argument: it has all the hallmarks of Google crapware and none of the deliberate, good engineering work that went into Go&amp;rsquo;s design.</description>
+    </item>
+    
+    <item>
+      <title>Generics aren&#39;t ready for Go</title>
+      <link>./2019/02/18/Generics-arent-ready-for-Go.html</link>
+      <pubDate>Mon, 18 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/02/18/Generics-arent-ready-for-Go.html</guid>
+      <description>In the distance, a gradual roar begins to grow in volume. A dust cloud is visible over the horizon. As it nears, the shouts of the oncoming angry mob can be heard. Suddenly, it stops, and a brief silence ensues. Then the air is filled with the clackings of hundreds of keyboards, angrily typing the owner&amp;rsquo;s opinion about generics and Go. The clans of Java, C#, Rust, C++, TypeScript, Haskell, and more - usually mortal enemies - have combined forces to fight in what may become one of the greatest flamewars of our time.</description>
+    </item>
+    
+    <item>
+      <title>Go 1.11 got me to stop ignoring Go</title>
+      <link>./2018/10/08/Go-1.11.html</link>
+      <pubDate>Mon, 08 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/10/08/Go-1.11.html</guid>
+      <description>I took a few looks at Go over the years, starting who knows when. My first serious attempt to sit down and learn some damn Go was in 2014, when I set a new personal best at almost 200 lines of code before I got sick of it. I kept returning to Go because I could see how much potential it had, but every time I was turned off for the same reason: GOPATH.</description>
+    </item>
+    
+    <item>
+      <title>Go&#39;s error handling doesn&#39;t sit right with me</title>
+      <link>./2014/06/07/Why-Go-error-handling-doesnt-sit-right-with-me.html</link>
+      <pubDate>Sat, 07 Jun 2014 00:00:00 +0000</pubDate>
+      
+      <guid>./2014/06/07/Why-Go-error-handling-doesnt-sit-right-with-me.html</guid>
+      <description>I&amp;rsquo;ll open up by saying that I am not a language designer, and I do like a lot of things about Go. I just recently figured out how to describe why Go&amp;rsquo;s error handling mechanics don&amp;rsquo;t sit right with me.
+If you aren&amp;rsquo;t familiar with Go, here&amp;rsquo;s an example of how Go programmers might do error handling:
+result, err := SomethingThatMightGoWrong() if err != nil { // Handle error } // Proceed Let&amp;rsquo;s extrapolate this:</description>
+    </item>
+    
+  </channel>
+</rss>

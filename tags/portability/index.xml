@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>portability on Drew DeVault&#39;s blog</title>
+    <link>./tags/portability.html</link>
+    <description>Recent content in portability on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 13 Nov 2017 00:00:00 +0000</lastBuildDate><atom:link href="./tags/portability/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Portability matters</title>
+      <link>./2017/11/13/Portability-matters.html</link>
+      <pubDate>Mon, 13 Nov 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/11/13/Portability-matters.html</guid>
+      <description>There are many kinds of &amp;ldquo;portability&amp;rdquo; in software. Portability refers to the relative ease of &amp;ldquo;porting&amp;rdquo; a piece of software to another system. That platform might be another operating system, another CPU architecture, another web browser, another filesystem&amp;hellip; and so on. More portable software uses the limited subset of interfaces that are common between systems, and less portable software leverages interfaces specific to a particular system.
+Some people think that portability isn&amp;rsquo;t very important, or don&amp;rsquo;t understand the degree to which it&amp;rsquo;s important.</description>
+    </item>
+    
+  </channel>
+</rss>

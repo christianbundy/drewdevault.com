@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Sway &amp; wlroots at XDC 2018</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Sway &amp; wlroots at XDC 2018
+  <small>
+    <span class="date">September 30, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Just got my first full night of sleep after the return flight from Spain after
+attending <a href="https://xdc2018.x.org/">XDC 2018</a>. It was a lot of fun! I attended
+along with four other major wlroots contributors. Joining me were <a href="https://github.com/emersion">Simon Ser
+(emersion)</a> (a volunteer) and <a href="https://github.com/ascent12">Scott Anderson
+(ascent12)</a> of
+<a href="https://www.collabora.com/">Collabora</a>, who work on both
+<a href="https://github.com/swaywm/wlroots">wlroots</a> and
+<a href="https://github.com/swaywm/sway">sway</a>. <a href="https://github.com/ongy">ongy</a> works on
+wlroots, <a href="https://github.com/swaywm/hsroots">hsroots</a>, and
+<a href="https://github.com/waymonad/waymonad">waymonad</a>, and joined us on behalf
+of <a href="https://www.igel.com/">IGEL</a>. Finally, we were joined by <a href="https://github.com/agx">Guido Günther
+(agx)</a> of <a href="https://puri.sm/">Purism</a>, who works with us
+on wlroots and on the Librem 5. This was my first time meeting most of them
+face-to-face!</p>
+<p>wlroots was among the highest-level software represented at XDC. Most of the
+attendees are hacking on the kernel or mesa drivers, and we had a lot to learn
+from each other. The most directly applicable talk was probably VKMS (virtual
+kernel mode setting), a work-in-process kernel subsystem which will be useful
+for testing the complex wlroots DRM code. We had many chances to catch up with
+the presenters after their talk to learn more and establish a good
+relationship. We discovered from these chats that some parts of our DRM code
+was buggy, and have even started onboarding some of them as contributors to sway
+and wlroots.</p>
+<p>We also learned a lot from the other talks, in ways that will pay off over time.
+One of my favorites was an introduction to the design of Intel GPUs, which went
+into a great amount of detail into how the machine code for these GPUs worked,
+why these design decisions make them efficient, and their limitations and
+inherent challenges. Combined with other talks, we got a lot of insight into the
+design and function of mesa, graphics drivers, and GPUs. These folks were very
+available to us for further discussion and clarification after their talks, a
+recurring theme at XDC and one of the best parts of the conference.</p>
+<p>Another recurring theme at XDC was talks about how mesa is tested, with the most
+in-depth coverage being on Intel&rsquo;s new CI platform. They provide access to Mesa
+developers to test their code on <em>every</em> generation of Intel GPU in the course
+of about 30 minutes, and brought some concrete data to the table to show that it
+really works to make their drivers more stable. I took notes that you can expect
+to turn into builds.sr.ht features! And since these folks were often available
+for chats afterwards, I think they were taking notes, too.</p>
+<p>I also met many of the driver developers from AMD, Intel, and Nvidia; all of
+whom had interesting insights and were a pleasure to hang out with. In fact,
+Nvidia&rsquo;s representatives were the first people I met! On the night of the
+kick-off party, I led the wlroots clan to the bar for beers and introduced
+myself to the people who were standing there - who already knew me from my
+writings critical of Nvidia. Awkward! A productive conversation ensued
+regardless, where I was sad to conclude that we still aren&rsquo;t going to see any
+meaningful involvement in open source from Nvidia. Many of their engineers are
+open to it, but I think that the engineering culture at Nvidia is unhealthy and
+that the engineers have very little influence. We made our case and brought up
+points they weren&rsquo;t thinking about, and I can only hope they&rsquo;ll take them home
+and work on gradually improving the culture.</p>
+<p>Unfortunately, Wayland itself was somewhat poorly represented. Daniel Stone (a
+Wayland &amp; Weston maintainer) was there, and Roman Glig (of KDE), but some KDE
+folks had to cancel and many people I had hoped to meet were not present. Some
+of the discussions I wanted to have about protocol standardization and
+cooperation throughout Wayland didn&rsquo;t happen. Regardless, the outcome of XDC was
+very positive - we learned a lot and taught a lot. We found new contributors to
+our projects, and have been made into new contributors for everyone else&rsquo;s
+projects.</p>
+<p>Big shoutout to the X Foundation for organizing the event, and to the beautiful
+city of A Coruña for hosting us, and to University of A Coruña for sharing their
+university - which consequently led to meeting some students there that used
+Sway and wanted to contribute! Thanks as well to the generous sponsors, both for
+sponsoring the event and for sending representatives to give talks and meet the
+community.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

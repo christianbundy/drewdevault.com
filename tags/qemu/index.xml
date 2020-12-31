@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>qemu on Drew DeVault&#39;s blog</title>
+    <link>./tags/qemu.html</link>
+    <description>Recent content in qemu on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 10 Sep 2018 00:00:00 +0000</lastBuildDate><atom:link href="./tags/qemu/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Getting started with qemu</title>
+      <link>./2018/09/10/Getting-started-with-qemu.html</link>
+      <pubDate>Mon, 10 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/09/10/Getting-started-with-qemu.html</guid>
+      <description>I often get asked questions about using my software, particularly sway, on hypervisors like VirtualBox and VMWare, as well as for general advice on which hypervisor to choose. My answer is always the same: qemu. There&amp;rsquo;s no excuse to use anything other than qemu, in my books. But I can admit that it might be a bit obtuse to understand at first. qemu&amp;rsquo;s greatest strength is also its greatest weakness: it has so many options that it&amp;rsquo;s hard to know which ones you need just to get started.</description>
+    </item>
+    
+  </channel>
+</rss>

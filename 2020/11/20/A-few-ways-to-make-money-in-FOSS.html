@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>A few ways to make money in FOSS</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  A few ways to make money in FOSS
+  <small>
+    <span class="date">November 20, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I work on free and open-source software full time, and I make a comfortable
+living doing it. And I don&rsquo;t half-ass it: 100% of my code is free and
+open-source. There&rsquo;s no proprietary add-ons, no periodic code dumps, just
+100% bona-fide free and open source software. Others have often sought my advice
+— how can they, too, make a living doing open source?</p>
+<p>Well, there&rsquo;s more than one way to skin a cat. There are many varieties of
+software, each with different needs, and many kinds of people, each with
+different needs. The exact approach which works for you and your project will
+vary quite a bit depending on the nature of your project.</p>
+<p>I would generally categorize my advice into two bins:</p>
+<ul>
+<li>You want to make money from your own projects</li>
+<li>You want to make money participating in open source</li>
+</ul>
+<p>The first one is more difficult. We&rsquo;ll start with the latter.</p>
+<h2 id="being-employed-in-foss">Being employed in FOSS</h2>
+<p>One way to make money in FOSS is to get someone to pay you to write free
+software. There&rsquo;s lots of advantages to this: minimal personal risk, at-market
+salaries, benefits, and so on, but at the cost of not necessarily getting to
+choose what you work on all the time.</p>
+<p>I have a little trick that I often suggest to people who vaguely want to work
+&ldquo;in FOSS&rdquo;, but who aren&rsquo;t trying to find the monetization potential in their own
+projects. Use git to clone the source repositories for some (large) projects
+you&rsquo;re interested in,
+<a href="https://drewdevault.com/2020/08/10/How-to-contribute-to-FOSS.html">the kind of stuff you want to work on</a>,
+and then run this command:</p>
+<pre><code>git log -n100000 --format=&quot;%ae&quot; | cut -d@ -f2 | sort | uniq -c | sort -nr | less
+</code></pre><p>This will output a list of the email domains who have committed to the
+repository in the last 100,000 commits. This is a good set of leads for
+companies who might be interested in paying you to work on projects like this
+😉</p>
+<p>Another good way is to explicitly seek out large companies known to work a lot
+in FOSS, and see if they&rsquo;re hiring in those departments. There are some
+companies that specialize in FOSS, such as RedHat, Collabora, and dozens more;
+and there are large companies with FOSS-specific teams, such as Intel, AMD, IBM,
+and so on.</p>
+<h2 id="making-money-from-your-own-foss-work">Making money from your own FOSS work</h2>
+<p>If you want to pay for the project infrastructure, and maybe beer money for the
+weekend, then donations are an easy way to do that. I&rsquo;ll give it to you
+straight, though: you&rsquo;re unlikely to make a living from donations.  Programmers
+who do are a small minority. If you want to make a living from FOSS, it&rsquo;s
+going to be more difficult.</p>
+<p>Start by unlearning what you think you know about startups. The toxic startup
+culture around venture capital and endless hyper-growth is more stressful, less
+likely to succeed, and socially irresponsible. Building a sustainable business
+responsibly takes time, careful planning, and hard work. The fast route —
+venture capital funded — is going to impose constraints on your business
+that will ultimately make it difficult to remain true to your open-source
+mission.</p>
+<p>And yes, you are building a <em>business</em>. You need to start thinking of your
+project as a business and of yourself as a business owner. This undertaking is
+going to require developing business skills in planning, budgeting, scheduling,
+resource allocation, marketing &amp; sales, compliance, and more. At times, you will
+be forced to embrace your inner
+<a href="http://www.catb.org/jargon/html/S/suit.html">suit</a>. Channel your engineering
+problem-solving skills into the business problems.</p>
+<p>So, you&rsquo;ve got the right mindset. What are some business models that work?</p>
+<p><a href="https://sourcehut.org">SourceHut</a>, my company, has two revenue streams. We have
+a hosted SaaS product. It&rsquo;s open source, and users can choose to deploy and
+maintain it themselves, or they can just buy a hosted account from us. The
+services are somewhat complex, so the managed offering saves them a lot of time.
+We have skilled sysops/sysadmins, support channels, and so on, for paying users.
+Importantly, we don&rsquo;t have a free tier (but we do choose to provide free service
+to those who need it, at our discretion).</p>
+<p>Our secondary revenue stream is <a href="https://sourcehut.org/consultancy">free software
+consulting</a>. Our developers work part-time
+writing free and open-source software on contracts. We&rsquo;re asked to help
+implement features upstream for various projects, or to develop new open-source
+applications or libraries, to share our expertise in operations, and so on, and
+charge for these services. This is different from providing paid support or
+development on our own projects — we accept contracts to work on <em>any</em>
+open source project.</p>
+<p>The other approach to consulting is also possible: paid support and development
+on your own projects. If there are businesses that rely on your project, then
+you may be able to offer them support or develop new features or bugfixes that
+they need, on a paid basis. Projects with a large corporate userbase also
+sometimes <em>do</em> find success in donations — albeit rebranded as
+sponsorships. The largest projects often set up foundations to manage them in
+this manner.</p>
+<p>These are, in my experience, some of the most successful approaches to
+monetizing FOSS. You may have success with a combination of these, or with other
+business models as well.  Remember to turn that engineering mind of yours
+towards the task of monetization, and experiment with and invent new ways of
+making money that best suit the kind of software you want to work on.</p>
+<p>Feel free to <a href="mailto:sir@cmpwn.com">reach out</a> if you have some questions or
+need a sounding board for your ideas. Good luck!</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+  <p>
+  ⇒ This article is also available <a href="gemini://./2020/11/20/A-few-ways-to-make-money-in-FOSS.gmi">on gemini</a>.
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>linux on Drew DeVault&#39;s blog</title>
+    <link>./tags/linux.html</link>
+    <description>Recent content in linux on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 05 May 2017 00:00:00 +0000</lastBuildDate><atom:link href="./tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Building a &#34;real&#34; Linux distro</title>
+      <link>./2017/05/05/Building-a-real-Linux-distro.html</link>
+      <pubDate>Fri, 05 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/05/05/Building-a-real-Linux-distro.html</guid>
+      <description>I recently saw a post on Hacker News: &amp;ldquo;Build yourself a Linux&amp;rdquo;, a cool project that guides you through building a simple Linux system. It&amp;rsquo;s similar to Linux from Scratch in that it helps you build a simple Linux system for personal use. I&amp;rsquo;d like to supplement this with some insight into my experience with a more difficult task: building a full blown Linux distribution. The result is agunix, the &amp;ldquo;silver unix&amp;rdquo; system.</description>
+    </item>
+    
+    <item>
+      <title>[VIDEO] Arch Linux with full disk encryption in (about) 15 minutes</title>
+      <link>./2016/08/18/Arch-Linux-with-full-disk-encryption-in-15-minutes.html</link>
+      <pubDate>Thu, 18 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/08/18/Arch-Linux-with-full-disk-encryption-in-15-minutes.html</guid>
+      <description>window.HELP_IMPROVE_VIDEOJS = false;   After my blog post emphasizing the importance of taking control of your privacy, I&amp;rsquo;ve decided to make a few more posts going over detailed instructions on how to actually do so. Today we have a video that goes over the process of installing Arch Linux with full disk encryption.
+This is my first go at publishing videos on my blog, so please provide some feedback in the comments of this article.</description>
+    </item>
+    
+  </channel>
+</rss>

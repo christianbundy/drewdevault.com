@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>List of ideas</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  List of ideas
+</h1>
+
+<main>
+  <p>This is a list of ideas that I don&rsquo;t have time to work on right now, but I might
+work on later or contribute to if someone else started up the project.
+Naturally, all of these assume that the result is based on free and open-source
+software, uses open standards and protocols, leverages federation if
+appropriate, etc. Shoot me a message on <a href="https://cmpwn.com/@sir">Mastodon</a> if
+you want to pick my brain on any of these ideas, or to let me know they exist.</p>
+<p>A <strong>social networking site</strong> which is designed to enrich IRL relationships.
+Your instance would probably be run by someone in your neighborhood, and if you
+wanted to hang out it&rsquo;d match you up with people with similar interests and help
+you hang out together IRL, be it having drinks at a bar or playing video games
+or board games for an evening, or whatever else. Instead of &ldquo;social networking&rdquo;
+sites which try to keep you stuck staring at their pages for as long as
+possible, the prime directive of this site would be to quickly get you off of
+your phone and into IRL face-time with other people.</p>
+<p>A marriage of <strong>git and bittorrent</strong>, for the purpose of tracking large blobs.
+Like git-lfs, but decentralized. Instead of storing the URL to fetch files from
+like git-lfs does, it stores the infohash. git push should block until 100% of
+the changes are replicated in the swarm.</p>
+<p>A <strong>vector graphics display</strong> with open hardware, an open standard for driving
+it from a PC, and upstream kernel drivers implementing that interface. Could be
+CRT-style or a laser+mirror+projector kind of system, or both. Kernel interface
+should be fairly general to encourage manufacturers to write drivers for it, and
+should be paired with a nice userspace library for driving the ioctls, like DRM
+but for vector graphics. Relevant resources:
+<a href="https://hackaday.com/2011/11/10/rgb-laser-projector-is-a-jaw-dropping-build/">Hackaday</a>,
+<a href="https://github.com/greiman/ChRt">Arduino RTOS</a>.</p>
+<p>A <strong>Wayland port of xscreensaver</strong> based on layer-shell.</p>
+<p>A <strong>web browser engine</strong> which flagrantly disregards modern web standards,
+written in C or Rust. No JavaScript, limited CSS. Designed as a library which
+others can make GUIs et al out of. Like Servo if they gave a shit about making
+anything other than a testbed for rewriting Firefox.</p>
+<p>A new <strong>kernel for z80 calculators</strong>. <a href="https://knightos.org">KnightOS</a> is far
+from the mark in terms of POSIX support and general Unixisms, but it&rsquo;d probably
+be a good start. There&rsquo;s no reason a POSIX-compatible operating system wouldn&rsquo;t
+work on these devices. Particularly egregious failures in KnightOS include the
+file descriptor design and the lack of a TTY subsystem, though depending on who
+you ask that last one isn&rsquo;t so bad.</p>
+<p>A simple replacement for <strong>gas/nasm and binutils</strong>, with less GNU and more
+modularity. Ideally should pair well with
+<a href="https://git.sr.ht/~mcf/cproc">cproc</a>/qbe.</p>
+<p>An <strong>ethical engineering index</strong> which defines a set of criteria by which tech
+companies are evaluated for ethics and assigns each a score. Factors include
+their approach to military contracting, their treatment of their employees,
+attitude towards open source, etc. Above a certain rating, companies would be
+allowed to post job listings for free (under that level they wouldn&rsquo;t be allowed
+to post at all). There&rsquo;s no business model here, ping me for free hosting.</p>
+
+</main>
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

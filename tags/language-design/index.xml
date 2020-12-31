@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>language design on Drew DeVault&#39;s blog</title>
+    <link>./tags/language-design.html</link>
+    <description>Recent content in language design on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 18 Feb 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/language-design/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Generics aren&#39;t ready for Go</title>
+      <link>./2019/02/18/Generics-arent-ready-for-Go.html</link>
+      <pubDate>Mon, 18 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/02/18/Generics-arent-ready-for-Go.html</guid>
+      <description>In the distance, a gradual roar begins to grow in volume. A dust cloud is visible over the horizon. As it nears, the shouts of the oncoming angry mob can be heard. Suddenly, it stops, and a brief silence ensues. Then the air is filled with the clackings of hundreds of keyboards, angrily typing the owner&amp;rsquo;s opinion about generics and Go. The clans of Java, C#, Rust, C++, TypeScript, Haskell, and more - usually mortal enemies - have combined forces to fight in what may become one of the greatest flamewars of our time.</description>
+    </item>
+    
+    <item>
+      <title>Compiler devnotes: Machine specs</title>
+      <link>./2017/02/22/cozy-devnotes-machine-specs.html</link>
+      <pubDate>Wed, 22 Feb 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/02/22/cozy-devnotes-machine-specs.html</guid>
+      <description>I have a number of long-term projects that I plan for on long timelines, on the order of decades or more. One of these projects is cozy, a C toolchain. I haven&amp;rsquo;t talked about this project in public before, so I&amp;rsquo;ll start by introducing you to the project. The main C toolchains in the &amp;ldquo;actually usable&amp;rdquo; category are GNU and LLVM, but I&amp;rsquo;m satisfied with neither and I want to build my own toolchain.</description>
+    </item>
+    
+    <item>
+      <title>Lessons to learn from C</title>
+      <link>./2017/01/30/Lessons-to-learn-from-C.html</link>
+      <pubDate>Mon, 30 Jan 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/01/30/Lessons-to-learn-from-C.html</guid>
+      <description>C is my favorite language, though I acknowledge that it has its warts. I&amp;rsquo;ve tried looking at languages people hope will replace C (Rust, Go, etc), and though they&amp;rsquo;ve improved on some things they won&amp;rsquo;t be supplanting C in my life any time soon. I&amp;rsquo;ll share with you what makes C a great language to me. Take some of these things as inspiration for the next C replacement you write.</description>
+    </item>
+    
+  </channel>
+</rss>

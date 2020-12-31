@@ -1,0 +1,34 @@
+#  gmnisrv: a Gemini server
+
+gmnisrv is a high-performance Gemini server for POSIX systems.
+
+=> https://sr.ht/~sircmpwn/gmnisrv Development information
+=> https://git.sr.ht/~sircmpwn/gmnisrv Source code (git)
+
+Features:
+
+* Zero-configuration TLS
+* CGI script support
+* Directory auto-indexing
+* Multiple domains and routing configs
+* Regex routing and URL rewriting
+
+The configuration is straightforward:
+
+```
+listen=0.0.0.0:1965 [::]:1965
+
+[:tls]
+store=/var/lib/gemini/certs
+organization=gmnisrv user
+
+[example.org]
+root=/srv/gemini/example.org
+
+[example.org:/cgi-bin]
+root=/srv/gemini/example.org/cgi-bin
+cgi=on
+
+[example.com]
+root=/srv/gemini/example.com
+```

@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Dependencies and maintainers</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Dependencies and maintainers
+  <small>
+    <span class="date">February 6, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I&rsquo;m 34,018 feet over the Atlantic at the moment, on my way home from FOSDEM. It
+was as always a lovely event, with far too many events of interest for any
+single person to consume. One of the few talks I was able to attend<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> left a
+persistent worm of thought in my brain. This talk was put on by representatives
+of Microsoft and GitHub and discusses whether or not there is a sustainability
+problem in open source (<a href="https://fosdem.org/2020/schedule/event/foss_sustainability_issues/">link</a>). The content of the talk,
+interpreted within the framework in which it was presented, was moderately
+interesting. It was more fascinating to me, however, as a lens for interpreting
+GitHub&rsquo;s (and, indirectly, Microsoft&rsquo;s) approach to open source, and of the
+mindset of developers who approach problems in the same ways.</p>
+<p>The presenters drew attention to a few significant crises open-source
+communities have faced in recent years — left-pad, in which a trivial
+library was removed from npm and was unknowingly present in thousands of
+dependency graphs; event-stream, in which a maintainer transferred project
+ownership to an unknown individual who added crypto mining; and heartbleed, in
+which a bug in a critical security library caused mass upgrades and panic
+— and asks whether or not these can be considered sustainability issues.
+The talk has a lot to dissect and will frame my thinking and writings for a
+while. Today I&rsquo;ll focus on one specific problem, which I called attention to
+during the Q&amp;A.</p>
+<p>At a few points, the presenters spoke from the perspective of a business which
+depends on up to thousands of open-source libraries or tools. In such a context,
+how do you prioritize which of your thousands of dependencies requires
+attention, for financial support, contributions upstream, and so on? I found
+this worldview dissonant, and asked the following question: &ldquo;why do you have
+thousands of dependencies in the first place?&rdquo; Because this approach seems to be
+fast becoming the norm, this may seem like a stupid question.<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> If any Node
+developers are reading, scan through your nearest node_modules directory and see
+how many of these dependencies you&rsquo;ve even heard of.</p>
+<p>Such an environment is primed to fail in the ways enumerated by this talk.
+Consider the case of the maintainer who lost interest and gave their project to
+an untrusted third party. If I had depended on this library, I would have
+noticed long ago that the project was effectively unmaintained. It&rsquo;s likely that
+I or my peers would have sent patches to this project, given that bugfixes would
+have stopped coming from upstream. We would be aware of the larger risk this
+project posed, and have studied alternatives. Earlier than that, I would
+probably have lent my ear to the maintainer to vent their frustrations, and
+offered my help where possible.</p>
+<p>For most of my projects, I can probably list the entire dependency graph,
+including transitive dependencies, off of the top of my head. I can name most of
+their maintainers, and many of their contributors. I have shaken the hands of
+these people, shared drinks and meals with them, and count many of them among my
+close friends. The idea of depending on a library I&rsquo;ve never heard of, several
+degrees removed via transitive dependencies, maintained by someone I&rsquo;ve never
+met and have no intention of speaking to, is <em>absolutely nuts</em> to me. I know of
+these problems well in advance because I know the people affected as my friends.
+If someone is frustrated or overworked, I&rsquo;m right there with them trying to find
+solutions and correct the over-burden. If someone is in dire financial
+straights, I&rsquo;m helping them touch up their resume and introducing them to
+companies that I know are looking for their skillset, or helping them work on
+more sustainable sources of donations and grants. They do the same for me, and
+for each other.</p>
+<p>Quit treating open-source projects like a black box that conveniently solves
+your problem. Engage with the human beings who work on it, participate in the
+community, and <em>make</em> it healthy and sustainable. You shouldn&rsquo;t be surprised
+when the 3 AM alarm goes off if the most you see of a project is a line in your
+<code>package.json</code>.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>And strictly speaking I even had to slip in under the radar to attend in the first place — the room was full. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>If so, you may be pleased by a Microsoft&rsquo;s ridiculous answer: &ldquo;we have 60,000 developers, that&rsquo;s why.&rdquo; <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

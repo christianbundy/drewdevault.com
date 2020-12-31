@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>What is this Gemini thing anyway, and why am I excited about it?</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  What is this Gemini thing anyway, and why am I excited about it?
+  <small>
+    <span class="date">November 1, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I&rsquo;ve been writing about some specific topics in the realm of Gemini on my blog
+over the past two months or so, but I still haven&rsquo;t written a broader
+introduction to Gemini, what I&rsquo;m doing with it, and why you should be excited
+about it, too. Let&rsquo;s do that today!</p>
+<p><a href="https://gemini.circumlunar.space/">Gemini</a> is a network protocol for exchanging
+hypertext documents — &ldquo;hypertext&rdquo; in the general sense of the word, not
+with respect to the hypertext markup language (HTML) that web browsers
+understand. It&rsquo;s a simple network protocol which allows clients to request
+hypertext documents (in its own document format, gemtext). It is, in some
+respects, an evolution of <a href="https://en.wikipedia.org/wiki/Gopher_(protocol)">Gopher</a>, but more modernized and streamlined.</p>
+<p>Gemini is very simple. The protocol uses TLS to establish an encrypted
+connection (using self-signed certificates and
+<abbr title="trust on first use">TOFU</abbr> rather than certificate
+authorities), and performs a very simple exchange: the client sends the URL it
+wants to retrieve, terminated with CRLF.  The server responds with an
+informative line, consisting of a numeric status code and some additional
+information (such as the document&rsquo;s mimetype), then writes the document and
+closes the connection. Authentication, if desired, is done with client
+certificates. User input, if desired, is done with a response code which conveys
+a prompt string and a request for user input, followed by a second request with
+the user&rsquo;s response filled into the URL&rsquo;s query string. And that&rsquo;s pretty much
+it!</p>
+<pre><code>$ openssl s_client -quiet -crlf   \
+    -servername drewdevault.com   \
+    -connect drewdevault.com:1965 \
+  | awk '{ print &quot;response: &quot; $0 }'
+gemini://drewdevault.com
+response: 20 text/gemini
+response: ```ASCII art of a rocket next to &quot;Drew DeVault&quot; in a stylized font
+response:   /\
+response:   ||    ________                         ________       ____   ____            .__   __
+response:   ||    \______ \_______   ______  _  __ \______ \   ___\   \ /   /____   __ __|  |_/  |_
+response:  /||\    |    |  \_  __ \_/ __ \ \/ \/ /  |    |  \_/ __ \   Y   /\__  \ |  |  \  |\   __\
+response: /:||:\   |    `   \  | \/\  ___/\     /   |    `   \  ___/\     /  / __ \|  |  /  |_|  |
+response: |:||:|  /_______  /__|    \___  &gt;\/\_/   /_______  /\___  &gt;\___/  (____  /____/|____/__|
+response: |/||\|        \/            \/                 \/     \/             \/
+response:   **
+response:   **
+response: ```
+[...]
+</code></pre><p>So why am I excited about it?</p>
+<p>My disdain for web browsers is well documented<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. Web browsers are
+<em>extraordinarily</em> complex, and any attempt to build a new one would be a
+Sisyphean task. Successfully completing that implementation, if even possible,
+would necessarily produce a Lovecraftian mess: unmaintainable, full of security
+vulnerabilities, with gigabytes in RAM use and hours in compile times. And given
+that all of the contemporary web browsers that implement a sufficiently useful
+subset of web standards are ass and getting assier, what should we do?</p>
+<p>The problem is unsolvable. We cannot have the &ldquo;web&rdquo; without all of these
+problems. But what we can have is something different, like Gemini. Gemini does
+not solve all of the web&rsquo;s problems, but it addresses a subset of its use-cases
+better than the web does, and that excites me. I want to discard the parts of
+the web that Gemini does better, and explore other solutions for anything that&rsquo;s
+left of the web which is worth keeping (hint: much of it is not).</p>
+<p>There are some aspects of Gemini which I approve of immensely:</p>
+<ul>
+<li>It&rsquo;s dead simple. A client or server implementation can be written from
+scratch by a single person in the space of an afternoon or two. A new web
+browser could take hundreds of engineers millions of hours to complete.</li>
+<li>It&rsquo;s not extensible. Gemini is designed to be <em>difficult</em> to extend without
+breaking backwards compatibility, and almost all proposals for expansion on
+the mailing list are ultimately shot down. This is a good thing: extensibility
+is generally a bad idea. Extensions ultimately lead to more complexity and
+Gemini might suffer the same fate as the web if not for its disdain for
+extensions.</li>
+<li>It&rsquo;s opinionated about document formatting. There are no inline links (every
+link goes on its own line), no formatting, and no inline images. Gemini
+strictly separates the responsibility of content and presentation. Providing
+the content is the exclusive role of the server, and providing the
+presentation is the exclusive role of the client. There are no stylesheets and
+authors have very little say in <em>how</em> their content is presented. It&rsquo;s still
+possible for authors to express themselves within these constraints —
+as with any other constraints — but it allows clients to be simpler and
+act more as <em>user</em> agents than <em>vendor</em> agents.</li>
+</ul>
+<p>Some people argue that what we should have is &ldquo;the web, but less of it&rdquo;, i.e. a
+&ldquo;sane&rdquo; subset of web standards. I don&rsquo;t agree (for one, I don&rsquo;t think there <em>is</em>
+a &ldquo;sane&rdquo; subset of those standards), but I&rsquo;ll save that for another blog post.
+Gemini is a new medium, and it&rsquo;s different from the web. Anyone who checking it
+out should be prepared for that and open to working within its constraints.
+Limitations breed creativity!</p>
+<p>For my part, I have been working on a number of Gemini projects. For one, this
+blog is now available <a href="gemini://drewdevault.com">on Gemini</a>, and I have started
+writing some Gemini-exclusive content for it. I&rsquo;ve also written some software
+you&rsquo;re welcome to use:</p>
+<p><a href="https://sr.ht/~sircmpwn/gmni"><strong>libgmni</strong></a>,
+<a href="https://sr.ht/~sircmpwn/gmni"><strong>gmni</strong></a>,
+and <a href="https://sr.ht/~sircmpwn/gmni"><strong>gmnlm</strong></a> are my suite of Gemini client
+software, all written in C11 and only depending on a POSIX-like system and
+OpenSSL. libgmni is a general-purpose Gemini client library with <a href="https://git.sr.ht/~sircmpwn/gmni/tree/master/include/gmni">a simple
+interface</a>. gmni is a
+cURL-like <a href="https://drewdevault.com/gmni.1.html">command line tool</a> for
+performing Gemini requests. Finally, gmnlm is a line-mode browser with a rich
+feature-set. Together these tools weigh just under 4,000 lines of code, of which
+about 1,600 are the URL parser from cURL vendored in.</p>
+<p><a href="https://portal.drewdevault.com/gmnisrv.gmi"><strong>gmnisrv</strong></a> is a high-performance
+Gemini server, also written in C11 for POSIX systems with OpenSSL. It supports
+zero-configuration TLS, CGI scripting, auto-indexing, regex routing and URL
+rewrites, and I have a couple more things planned for 1.0. It clocks in at about
+6,700 lines, of which the same 1,600 are vendored from cURL, and an additional
+2,800 lines are vendored from Fabrice Bellard&rsquo;s
+<a href="https://bellard.org/quickjs/">quickjs</a> regex implementation.</p>
+<p><a href="https://portal.drewdevault.com/kineto.gmi"><strong>kineto</strong></a> is an HTTP-to-Gemini
+gateway, implemented as a single Go file (under 500 lines) with the assistance
+of ~adnano&rsquo;s <a href="https://sr.ht/~adnano/go-gemini/">go-gemini</a> library. My Gemini
+blog <a href="https://portal.drewdevault.com">is available through this portal</a> if you
+would like to browse it.</p>
+<p>So dive in and explore! Install gmnisrv on your server and set up a Gemini space
+for yourself. Read the feeds from
+<a href="gemini://gemini.circumlunar.space/capcom/">CAPCOM</a>. Write some software of your
+own!</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://drewdevault.com/2020/08/13/Web-browsers-need-to-stop.html">Exhibit A</a>, <a href="https://drewdevault.com/2020/03/18/Reckless-limitless-scope.html">Exhibit B</a>, <a href="https://cmpwn.com/@sir/104894723861368333">Exhibit C</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+  <p>
+  ⇒ This article is also available <a href="gemini://./2020/11/01/What-is-Gemini-anyway.gmi">on gemini</a>.
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

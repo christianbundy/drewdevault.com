@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>encryption on Drew DeVault&#39;s blog</title>
+    <link>./tags/encryption.html</link>
+    <description>Recent content in encryption on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 27 Jun 2018 00:00:00 +0000</lastBuildDate><atom:link href="./tags/encryption/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A quick review of my Let&#39;s Encrypt setup</title>
+      <link>./2018/06/27/My-lets-encrypt-setup.html</link>
+      <pubDate>Wed, 27 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/06/27/My-lets-encrypt-setup.html</guid>
+      <description>Let&amp;rsquo;s Encrypt makes TLS much easier for pretty much everyone, but can still be annoying to use. It took me a while to smooth over the cracks in my Let&amp;rsquo;s Encrypt configuration across my (large) fleet of different TLS-enabled services. I wanted to take a quick moment to share setup with you.
+2020-01-02 update: acme-client is unmaintained and caught the BSD disease anyway. I use uacme and my current procedure is documented on my new server checklist.</description>
+    </item>
+    
+    <item>
+      <title>[VIDEO] Arch Linux with full disk encryption in (about) 15 minutes</title>
+      <link>./2016/08/18/Arch-Linux-with-full-disk-encryption-in-15-minutes.html</link>
+      <pubDate>Thu, 18 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/08/18/Arch-Linux-with-full-disk-encryption-in-15-minutes.html</guid>
+      <description>window.HELP_IMPROVE_VIDEOJS = false;   After my blog post emphasizing the importance of taking control of your privacy, I&amp;rsquo;ve decided to make a few more posts going over detailed instructions on how to actually do so. Today we have a video that goes over the process of installing Arch Linux with full disk encryption.
+This is my first go at publishing videos on my blog, so please provide some feedback in the comments of this article.</description>
+    </item>
+    
+  </channel>
+</rss>

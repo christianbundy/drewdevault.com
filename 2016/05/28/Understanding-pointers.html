@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Understanding pointers</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Understanding pointers
+  <small>
+    <span class="date">May 28, 2016</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I was recently chatting with a new contributor to Sway who is using the project
+as a means of learning C, and he had some questions about what <code>void**</code> meant
+when he found some in the code. It became apparent that this guy only has a
+basic grasp on pointers at this point in his learning curve, and I figured it
+was time for another blog post - so today, I&rsquo;ll explain pointers.</p>
+<p>To understand pointers, you must first understand how memory works. Your RAM is
+basically a flat array of
+<a href="https://en.wikipedia.org/wiki/Octet_(computing)">octets</a>. Your compiler
+describes every data structure you use as a series of octets. For the context of
+this article, let&rsquo;s consider the following memory:</p>
+<p>{:.table}</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">0x0000</th>
+<th style="text-align:left">0x0001</th>
+<th style="text-align:left">0x0002</th>
+<th style="text-align:left">0x0003</th>
+<th style="text-align:left">0x0004</th>
+<th style="text-align:left">0x0005</th>
+<th style="text-align:left">0x0006</th>
+<th style="text-align:left">0x0007</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">0x00</td>
+<td style="text-align:left">0x00</td>
+<td style="text-align:left">0x00</td>
+<td style="text-align:left">0x00</td>
+<td style="text-align:left">0x08</td>
+<td style="text-align:left">0x42</td>
+<td style="text-align:left">0x00</td>
+<td style="text-align:left">0x00</td>
+</tr>
+<tr>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+</tr>
+</tbody>
+</table>
+<p>We can refer to each element of this array by its index, or address. For
+example, the value at address 0x0004 is 0x08. On this system, we&rsquo;re using 16-bit
+addresses to refer to 8-bit values. On an i686 (32-bit) system, we use 32-bit
+addresses to refer to 8-bit values. On an amd64 (64-bit) system, we use 64-bit
+addresses to refer to 8-bit values. On Notch&rsquo;s imaginary DCPU-16 system, we use
+16-bit addresses to refer to 16-bit values.</p>
+<p>To refer to the value at 0x0004, we can use a pointer. Let&rsquo;s declare it like so:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">uint8_t</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">uint8_t</span> <span class="o">*</span><span class="p">)</span><span class="mh">0x0004</span><span class="p">;</span>
+</code></pre></div><p>Here we&rsquo;re declaring a variable named value, whose type is <code>uint8_t*</code>. The *
+indicates that it&rsquo;s a pointer. Now, because this is a 16-bit system, the size of
+a pointer is 16 bits. If we do this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">value</span><span class="p">));</span>
+</code></pre></div><p>It will print 2, because it takes 16-bits (or 2 bytes) to refer to an address on
+this system, even though the value there is 8 bits. On your system it would
+probably print 8, or maybe 4 if you&rsquo;re on a 32-bit system. We could also do this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">uint16_t</span> <span class="n">address</span> <span class="o">=</span> <span class="mh">0x0004</span><span class="p">;</span>
+<span class="n">uint8_t</span> <span class="o">*</span><span class="n">ptr</span> <span class="o">=</span> <span class="p">(</span><span class="n">uint8_t</span> <span class="o">*</span><span class="p">)</span><span class="n">address</span><span class="p">;</span>
+</code></pre></div><p>In this case we&rsquo;re not casting the <code>uint16_t</code> value 0x0004 to a <code>uint8_t</code>, which
+would truncate the integer. No, instead, we&rsquo;re casting it to a <code>uint8_t*</code>, which
+is the size required to represent a pointer on this system. All pointers are the
+same size.</p>
+<h2 id="dereferencing-pointers">Dereferencing pointers</h2>
+<p>We can refer to the value at the other end of this pointer by <em>dereferencing</em> it.
+The pointer is said to contain a <em>reference</em> to a value in memory. By
+<em>dereferencing</em> it, we can obtain that value. For example:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">uint8_t</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">uint8_t</span> <span class="o">*</span><span class="p">)</span><span class="mh">0x0004</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">*</span><span class="n">value</span><span class="p">);</span> <span class="c1">// prints 8
+</span></code></pre></div><h2 id="working-with-multi-byte-values">Working with multi-byte values</h2>
+<p>Even though memory is basically a big array of <code>uint8_t</code>, thankfully we can work
+with other kinds of data structures inside of it. For example, say we wanted to
+store the value 0x1234 in memory. This doesn&rsquo;t fit in 8 bits, so we need to
+store it at two different addresses. For example, we could store it at 0x0006
+and 0x0007:</p>
+<p>{:.table}</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">0x0000</th>
+<th style="text-align:left">0x0001</th>
+<th style="text-align:left">0x0002</th>
+<th style="text-align:left">0x0003</th>
+<th style="text-align:left">0x0004</th>
+<th style="text-align:left">0x0005</th>
+<th style="text-align:left">0x0006</th>
+<th style="text-align:left">0x0007</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">0x00</td>
+<td style="text-align:left">0x00</td>
+<td style="text-align:left">0x00</td>
+<td style="text-align:left">0x00</td>
+<td style="text-align:left">0x08</td>
+<td style="text-align:left">0x42</td>
+<td style="text-align:left">0x34</td>
+<td style="text-align:left">0x12</td>
+</tr>
+<tr>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+</tr>
+</tbody>
+</table>
+<p>*0x0007 makes up the first byte of the value, and *0x0006 makes up the second
+byte of the value.</p>
+<div class="well">
+    Why not the other way around? Well, most systems these days use the "little
+    endian" notation for storing multi-byte integers in memory, which stores the
+    least significant byte first. The least significant byte is the one with the
+    smallest order of magnitude (in base sixteen). To get the final number, we
+    use (0x12 * 0x100) + (0x34 * 0x1), which gives us 0x1234. Read more about
+    endianness <a href="https://en.wikipedia.org/wiki/Endianness">here</a>.
+</div>
+<p>C allows us to use pointers that refer to these sorts of composite values, like
+so:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">uint16_t</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">uint16_t</span> <span class="o">*</span><span class="p">)</span><span class="mh">0x0006</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&#34;0x%X</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">*</span><span class="n">value</span><span class="p">);</span> <span class="c1">// Prints 0x1234
+</span></code></pre></div><p>Here, we&rsquo;ve declared a pointer to a value whose type is <code>uint16_t</code>. Note that the
+size of this pointer is the same size of the <code>uint8_t*</code> pointer - 16 bits, or
+two bytes. The value it <em>references</em>, though, is a different type than
+<code>uint8_t*</code> references.</p>
+<h2 id="indirect-pointers">Indirect pointers</h2>
+<p>Here comes the crazy part - you can work with pointers to pointers. The address
+of the <code>uint16_t</code> pointer we&rsquo;ve been talking about is 0x0006, right? Well, we
+can store that number in memory as well. If we store it at 0x0002, our memory
+looks like this:</p>
+<p>{:.table}</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">0x0000</th>
+<th style="text-align:left">0x0001</th>
+<th style="text-align:left">0x0002</th>
+<th style="text-align:left">0x0003</th>
+<th style="text-align:left">0x0004</th>
+<th style="text-align:left">0x0005</th>
+<th style="text-align:left">0x0006</th>
+<th style="text-align:left">0x0007</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">0x00</td>
+<td style="text-align:left">0x00</td>
+<td style="text-align:left">0x06</td>
+<td style="text-align:left">0x00</td>
+<td style="text-align:left">0x08</td>
+<td style="text-align:left">0x42</td>
+<td style="text-align:left">0x34</td>
+<td style="text-align:left">0x12</td>
+</tr>
+<tr>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+</tr>
+</tbody>
+</table>
+<p>The question might then become, how do we get it out again? Well, we can use a
+pointer <em>to that pointer</em>! Check out this code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">uint16_t</span> <span class="o">**</span><span class="n">pointer_to_a_pointer</span> <span class="o">=</span> <span class="p">(</span><span class="n">uint16_t</span><span class="o">**</span><span class="p">)</span><span class="mh">0x0002</span><span class="p">;</span>
+</code></pre></div><p>This code just declared a variable whose type is <code>uint16_t**</code>, which a pointer
+whose value is a <code>uint16_t*</code>, which itself points to a value that is a
+<code>uint16_t</code>. Pretty cool, huh?  We can dereference this too:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">uint16_t</span> <span class="o">**</span><span class="n">pointer_to_a_pointer</span> <span class="o">=</span> <span class="p">(</span><span class="n">uint16_t</span><span class="o">**</span><span class="p">)</span><span class="mh">0x0002</span><span class="p">;</span>
+<span class="n">uint16_t</span> <span class="o">*</span><span class="n">pointer</span> <span class="o">=</span> <span class="o">*</span><span class="n">pointer_to_a_pointer</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&#34;0x%X</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">*</span><span class="n">pointer</span><span class="p">);</span> <span class="c1">// Prints 0x1234
+</span></code></pre></div><p>We don&rsquo;t actually even need the intermediate variable. This works too:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">uint16_t</span> <span class="o">**</span><span class="n">pointer_to_a_pointer</span> <span class="o">=</span> <span class="p">(</span><span class="n">uint16_t</span><span class="o">**</span><span class="p">)</span><span class="mh">0x0002</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&#34;0x%X</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">**</span><span class="n">pointer_to_a_pointer</span><span class="p">);</span> <span class="c1">// Prints 0x1234
+</span></code></pre></div><h2 id="void-pointers">Void pointers</h2>
+<p>The next question that would come up to your average C programmer would be,
+&ldquo;well, what is a <code>void*</code>?&rdquo; Well, remember earlier when I said that all pointers,
+regardless of the type of value they reference, are just fixed size integers?
+In the imaginary system we&rsquo;ve been talking about, pointers are 16-bit addresses,
+or indexes, that refer to places in RAM. On the system you&rsquo;re reading this
+article on, it&rsquo;s probably a 64-bit integer. Well, we don&rsquo;t actually need to
+specify the type to be able to manipulate pointers if they&rsquo;re just a fixed size
+integer - so we don&rsquo;t have to. A <code>void*</code> stores an arbitrary address without
+bringing along any type information. You can later <em>cast</em> this variable to a
+specific kind of pointer to dereference it. For example:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="n">pointer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="mh">0x0006</span><span class="p">;</span>
+<span class="n">uint8_t</span> <span class="o">*</span><span class="n">uintptr</span> <span class="o">=</span> <span class="p">(</span><span class="n">uint8_t</span><span class="o">*</span><span class="p">)</span><span class="n">pointer</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&#34;0x%X&#34;</span><span class="p">,</span> <span class="o">*</span><span class="n">uintptr</span><span class="p">);</span> <span class="c1">// prints 0x34
+</span></code></pre></div><p>Take a closer look at this code, and recall that 0x0006 refers to a 16-bit value
+from the previous section. Here, though, we&rsquo;re treating it as an 8-bit value -
+the <code>void*</code> contains no assumptions about what kind of data is there. The result
+is that we end up treating it like an 8-bit integer, which ends up being the
+least significant byte of 0x1234;</p>
+<h2 id="dereferencing-structures">Dereferencing structures</h2>
+<p>In C, we often work with structs. Let&rsquo;s describe one to play with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">coordinates</span> <span class="p">{</span>
+    <span class="n">uint16_t</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">coordinates</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div><p>Our structure describes a linked list of coordinates. X and Y are the
+coordinates, and next is a pointer to the next set of coordinates in our list.
+I&rsquo;m going to drop two of these in memory:</p>
+<p>{:.table}</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">0x0000</th>
+<th style="text-align:left">0x0001</th>
+<th style="text-align:left">0x0002</th>
+<th style="text-align:left">0x0003</th>
+<th style="text-align:left">0x0004</th>
+<th style="text-align:left">0x0005</th>
+<th style="text-align:left">0x0006</th>
+<th style="text-align:left">0x0007</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">0xAD</td>
+<td style="text-align:left">0xDE</td>
+<td style="text-align:left">0xEF</td>
+<td style="text-align:left">0xBE</td>
+<td style="text-align:left">0x06</td>
+<td style="text-align:left">0x00</td>
+<td style="text-align:left">0x34</td>
+<td style="text-align:left">0x12</td>
+</tr>
+<tr>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+<td style="text-align:left">========</td>
+</tr>
+</tbody>
+</table>
+<p>Let&rsquo;s write some C code to reason about this memory with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">coordinates</span> <span class="o">*</span><span class="n">coords</span><span class="p">;</span>
+<span class="n">coords</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">coordinates</span><span class="o">*</span><span class="p">)</span><span class="mh">0x0000</span><span class="p">;</span>
+</code></pre></div><p>If we look at this structure in memory, you might already be able to pick out
+the values. C is going to store the fields of this struct in order. So, we can
+expect the following:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">printf</span><span class="p">(</span><span class="s">&#34;0x%X, 0x%X&#34;</span><span class="p">,</span> <span class="n">coords</span><span class="o">-&gt;</span><span class="n">x</span><span class="p">,</span> <span class="n">coords</span><span class="o">-&gt;</span><span class="n">y</span><span class="p">);</span>
+</code></pre></div><p>To print out &ldquo;0xDEAD, 0xBEEF&rdquo;. Note that we&rsquo;re using the structure dereferencing
+operator here, <code>-&gt;</code>. This allows us to dereference values <em>inside</em> of a
+structure we have a pointer to. The other case is this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">printf</span><span class="p">(</span><span class="s">&#34;0x%X, 0x-X&#34;</span><span class="p">,</span> <span class="n">coords</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">coords</span><span class="p">.</span><span class="n">y</span><span class="p">);</span>
+</code></pre></div><p>Which only works if <code>coords</code> is not a pointer. We also have a pointer within
+this structure named next. You can see in the memory I included above that its
+address is 0x0004 and its value is 0x0006 - meaning that there&rsquo;s another <code>struct coordinates</code> that lives at 0x0006 in memory. If you look there, you can see the
+first part of it. It&rsquo;s X coordinate is 0x1234.</p>
+<h2 id="pointer-arithmetic">Pointer arithmetic</h2>
+<p>In C, we can use math on pointers. For example, we can do this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">uint8_t</span> <span class="o">*</span><span class="n">addr</span> <span class="o">=</span> <span class="p">(</span><span class="n">uint8_t</span><span class="o">*</span><span class="p">)</span><span class="mh">0x1000</span><span class="p">;</span>
+<span class="n">addr</span><span class="o">++</span><span class="p">;</span>
+</code></pre></div><p>Which would make the value of <code>addr</code> 0x1001. But this is only true for pointers
+whose type is 1 byte in size. Consider this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">uint16_t</span> <span class="o">*</span><span class="n">addr</span> <span class="o">=</span> <span class="p">(</span><span class="n">uint16_t</span><span class="o">*</span><span class="p">)</span><span class="mh">0x1000</span><span class="p">;</span>
+<span class="n">addr</span><span class="o">++</span><span class="p">;</span>
+</code></pre></div><p>Here, <code>addr</code> becomes 0x1002! This is because ++ on a pointer actually adds
+<code>sizeof(type)</code> to the actual address stored. The idea is that if we only added
+one, we&rsquo;d be referring to an address that is <em>in the middle</em> of a uint16_t,
+rather than the next uint16_t in memory that we meant to refer to. This is also
+how arrays work. The following two code snippets are equivalent:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">uint16_t</span> <span class="o">*</span><span class="n">addr</span> <span class="o">=</span> <span class="p">(</span><span class="n">uint16_t</span><span class="o">*</span><span class="p">)</span><span class="mh">0x1000</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="n">addr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">));</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">uint16_t</span> <span class="o">*</span><span class="n">addr</span> <span class="o">=</span> <span class="p">(</span><span class="n">uint16_t</span><span class="o">*</span><span class="p">)</span><span class="mh">0x1000</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">addr</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</code></pre></div><h2 id="null-pointers">NULL pointers</h2>
+<p>Sometimes you need to work with a pointer that points to something that may not
+exist yet, or a resource that has been freed. In this case, we use a NULL
+pointer. In the examples you&rsquo;ve seen so far, 0x0000 is a valid address. This is
+just for simplicity&rsquo;s sake. In practice, pretty much no modern computer has
+any reason to refer to the value at address 0. For that reason, we use NULL to
+refer to an uninitialized pointer. Dereferencing a NULL pointer is generally a
+Bad Thing and will lead to segfaults. As a fun side effect, since NULL is 0, we
+can use it in an if statement:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="n">ptr</span> <span class="o">=</span> <span class="p">...;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">ptr</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// ptr is valid
+</span><span class="c1"></span><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// ptr is not valid
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p>I hope you found this article useful! If you&rsquo;d
+like something fun to read next, read about <a href="http://c2.com/cgi/wiki?ThreeStarProgrammer">&ldquo;three star
+programmers&rdquo;</a>, or programmers who
+have variables like <code>void***</code>.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

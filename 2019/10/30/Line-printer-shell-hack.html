@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>An old-school shell hack on a line printer</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  An old-school shell hack on a line printer
+  <small>
+    <span class="date">October 30, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>It&rsquo;s been too long since I last did a good hack, for no practical reason other
+than great hack value. In my case, these <a href="https://drewdevault.com/2016/03/22/Integrating-a-VT220-into-my-life.html">often amount</a> to a nostalgia
+for an age of computing I wasn&rsquo;t present for. In a recent bid to capture more of
+this nostalgia, I recently picked up a dot matrix line printer, specifically the
+Epson LX-350 printer. This one is nice because it has a USB port, so I don&rsquo;t
+have to break out my pile of serial cable hacks to get it talking to Linux 😁</p>
+<p>This is the classic printer style, with infinite paper and a lovely noise during
+printing. They are also fairly simple to operate - you can just write text
+directly to <code>/dev/lp</code> (or <code>/dev/usb/lp9</code> in my case) and it&rsquo;ll print it out.
+Slightly more sophisticated instructions can be written to them with ANSI escape
+sequences, just like a terminal. They can also be rigged up to CUPS, then you
+can use something like <code>man -t 5 scdoc</code> to produce printouts like this:</p>
+<p><a href="https://sr.ht/gHCA.jpg"><img src="https://sr.ht/gHCA.jpg" alt=""></a></p>
+<p>Plugging the printer into Linux and writing out pages isn&rsquo;t much for hack value,
+however. What I really wanted to make was something resembling an old-school
+TTY - teletypewriter. So I wrote some <a href="https://git.sr.ht/~sircmpwn/lpsh">glue code in
+Golang</a>, and soon enough I had a shell:</p>
+<iframe width="560" height="315" sandbox="allow-same-origin allow-scripts
+allow-popups"
+src="https://spacepub.space/videos/embed/d8943b2d-8280-497b-85ec-bc282ec2afdc"
+frameborder="0" allowfullscreen style="width: 100%"></iframe>
+<p>The glue code I wrote for this is fairly straightforward. In the simplest form,
+it spins up a pty (pseudo-terminal), runs <code>/bin/sh</code> in it, and writes the pty
+output into the line printer device. For those unaware, a pseudo-terminal is the
+key piece of software infrastructure for running interactive text applications.
+Applications which want to do things like print colored text, move
+the cursor around and draw a TUI, and so on, will open <code>/dev/tty</code> to open the
+current TTY device. For most applications used today, this is a
+&ldquo;pseudo-terminal&rdquo;, or pty, which is a terminal emulated in userspace - i.e. by
+your terminal emulator. However, your terminal emulator is <em>emulating</em> a
+terminal - the control sequences applications send to these are
+backwards-compatible with 50 years of computing history.  Interfaces like these
+are the namesake of the TTY.</p>
+<p>Visual terminals came onto the scene later on, and in the classic computing
+tradition, the old hands complained that it was less useful - you could no
+longer write notes on your backlog, tear off a page and hand it to a colleague,
+or <a href="https://en.wikipedia.org/wiki/Wite-Out">white-out</a> mistakes. Early
+<a href="https://en.wikipedia.org/wiki/Computer_terminal">visual terminals</a> could also
+be plugged directly into a line printer, and you could configure them to echo to
+the printer or print out a screenfull of text at a time. A distinct advantage of
+visual terminals is not having to deal with so much bloody paper, a problem that
+I&rsquo;ve become acutely familiar with in the past few days<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
+<p>Getting back to the glue code, I chose Golang because setting up a TTY is a bit
+of a hassle in C, but in Golang it&rsquo;s pretty straightforward. There is a serial
+port and in theory I could have plugged it in and spawned a getty on the
+resulting serial device - but (1) it&rsquo;d be write-only, so not especially
+interactive without <em>hardware</em> hacks, and (2) I didn&rsquo;t feel like digging out my
+serial cables. So:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">import</span> <span class="s">&#34;git.sr.ht/~sircmpwn/pty&#34;</span> <span class="c1">// fork of github.com/kr/pty
+</span><span class="c1"></span>
+<span class="c1">// ...
+</span><span class="c1"></span><span class="nx">winsize</span> <span class="o">:=</span> <span class="nx">pty</span><span class="p">.</span><span class="nx">Winsize</span><span class="p">{</span>
+  <span class="nx">Cols</span><span class="p">:</span> <span class="mi">160</span><span class="p">,</span>
+  <span class="nx">Rows</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="nx">cmd</span> <span class="o">:=</span> <span class="nx">exec</span><span class="p">.</span><span class="nf">Command</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">)</span>
+<span class="nx">cmd</span><span class="p">.</span><span class="nx">Env</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nf">Environ</span><span class="p">(),</span>
+  <span class="s">&#34;TERM=lp&#34;</span><span class="p">,</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;COLUMNS=%d&#34;</span><span class="p">,</span> <span class="mi">180</span><span class="p">))</span>
+<span class="nx">tty</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">pty</span><span class="p">.</span><span class="nf">StartWithSize</span><span class="p">(</span><span class="nx">cmd</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">winsize</span><span class="p">)</span>
+</code></pre></div><p><em>P.S. We&rsquo;re going to dive through the code in detail now. If you just want more
+cool videos of this in action, skip to the bottom.</em></p>
+<p>I set the TERM environment variable to <code>lp</code>, for line printer, which doesn&rsquo;t
+really exist but prevents most applications from trying anything too tricksy
+with their escape codes. The <code>tty</code> variable here is an <code>io.ReadWriter</code> whose
+output is sent to the printer and whose input is sourced from wherever, in my
+case from the stdin of this process<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
+<p>For a little more quality-of-life, I looked up Epson&rsquo;s proprietary ANSI escape
+sequences and found out that you can tell the printer to feed back and forth in
+216th&quot; increments with the j and J escape sequences. The following code will
+feed 2.5&quot; out, then back in:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">f</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;\x1BJ\xD8\x1BJ\xD8\x1BJ\x6C&#34;</span><span class="p">))</span>
+<span class="nx">f</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;\x1Bj\xD8\x1Bj\xD8\x1Bj\x6C&#34;</span><span class="p">))</span>
+</code></pre></div><p>Which happens to be the perfect amount to move the last-written line up out of
+the printer for the user to read, then back in to be written to some more. A
+little bit of timing logic in a goroutine manages the transition between &ldquo;spool
+out so the user can read the output&rdquo; and &ldquo;spool in to write some more output&rdquo;:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">lpmgr</span><span class="p">(</span><span class="nx">in</span> <span class="kd">chan</span> <span class="p">(</span><span class="kd">interface</span><span class="p">{}),</span> <span class="nx">out</span> <span class="kd">chan</span> <span class="p">([]</span><span class="kt">byte</span><span class="p">))</span> <span class="p">{</span>
+	<span class="c1">// TODO: Runtime configurable option? Discover printers? dunno
+</span><span class="c1"></span>	<span class="nx">f</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">OpenFile</span><span class="p">(</span><span class="s">&#34;/dev/usb/lp9&#34;</span><span class="p">,</span> <span class="nx">os</span><span class="p">.</span><span class="nx">O_RDWR</span><span class="p">,</span> <span class="mo">0755</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+
+	<span class="nx">feed</span> <span class="o">:=</span> <span class="kc">false</span>
+	<span class="nx">f</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;\n\n\n\r&#34;</span><span class="p">))</span>
+
+	<span class="nx">timeout</span> <span class="o">:=</span> <span class="mi">250</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Millisecond</span>
+	<span class="k">for</span> <span class="p">{</span>
+		<span class="k">select</span> <span class="p">{</span>
+		<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">in</span><span class="p">:</span>
+			<span class="c1">// Increase the timeout after input
+</span><span class="c1"></span>			<span class="nx">timeout</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span>
+		<span class="k">case</span> <span class="nx">data</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">out</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nx">feed</span> <span class="p">{</span>
+				<span class="nx">f</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;\x1Bj\xD8\x1Bj\xD8\x1Bj\x6C&#34;</span><span class="p">))</span>
+				<span class="nx">feed</span> <span class="p">=</span> <span class="kc">false</span>
+			<span class="p">}</span>
+			<span class="nx">f</span><span class="p">.</span><span class="nf">Write</span><span class="p">(</span><span class="nf">lptl</span><span class="p">(</span><span class="nx">data</span><span class="p">))</span>
+		<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">time</span><span class="p">.</span><span class="nf">After</span><span class="p">(</span><span class="nx">timeout</span><span class="p">):</span>
+			<span class="nx">timeout</span> <span class="p">=</span> <span class="mi">200</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Millisecond</span>
+			<span class="k">if</span> <span class="p">!</span><span class="nx">feed</span> <span class="p">{</span>
+				<span class="nx">feed</span> <span class="p">=</span> <span class="kc">true</span>
+				<span class="nx">f</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;\x1BJ\xD8\x1BJ\xD8\x1BJ\x6C&#34;</span><span class="p">))</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p><code>lptl</code> is a work-in-progress thing which tweaks the outgoing data for some
+quality-of-life changes, like changing backspace to ^H. Then, the main event
+loop looks something like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">inch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="p">(</span><span class="kd">interface</span><span class="p">{}))</span>
+<span class="nx">outch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="p">([]</span><span class="kt">byte</span><span class="p">))</span>
+<span class="k">go</span> <span class="nf">lpmgr</span><span class="p">(</span><span class="nx">inch</span><span class="p">,</span> <span class="nx">outch</span><span class="p">)</span>
+
+<span class="nx">inbuf</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">4096</span><span class="p">)</span>
+<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">{</span>
+    <span class="nx">n</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">.</span><span class="nf">Read</span><span class="p">(</span><span class="nx">inbuf</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+      <span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="nx">tty</span><span class="p">.</span><span class="nf">Write</span><span class="p">(</span><span class="nx">inbuf</span><span class="p">[:</span><span class="nx">n</span><span class="p">])</span>
+    <span class="nx">inch</span> <span class="o">&lt;-</span> <span class="kc">nil</span>
+  <span class="p">}</span>
+<span class="p">}()</span>
+
+<span class="nx">outbuf</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">4096</span><span class="p">)</span>
+<span class="k">for</span> <span class="p">{</span>
+  <span class="nx">n</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">tty</span><span class="p">.</span><span class="nf">Read</span><span class="p">(</span><span class="nx">outbuf</span><span class="p">)</span>
+  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+    <span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+  <span class="p">}</span>
+  <span class="nx">b</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">n</span><span class="p">)</span>
+  <span class="nb">copy</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span> <span class="nx">outbuf</span><span class="p">[:</span><span class="nx">n</span><span class="p">])</span>
+  <span class="nx">outch</span> <span class="o">&lt;-</span> <span class="nx">b</span>
+<span class="p">}</span>
+</code></pre></div><p>The tty will echo characters written to it, so we just write to it from stdin
+and increase the form feed timeout closer to the user&rsquo;s input so that it&rsquo;s not
+constantly feeding in and out as you write. The resulting system is pretty
+pleasant to use! I spent about hour working on improvements to it on a <a href="https://live.drewdevault.com">live
+stream</a>. You can watch the system in action on the
+archive here:</p>
+<iframe width="560" height="370" sandbox="allow-same-origin allow-scripts"
+src="https://spacepub.space/videos/embed/a8be6c87-9267-452e-8d3e-dd206880fa98"
+frameborder="0" allowfullscreen style="width: 100%"></iframe>
+<p>If you were a fly on the wall when Unix was written, it would have looked a lot
+like this. And remember: <a href="https://www.gnu.org/fun/jokes/ed-msg.html">ed is the standard text
+editor</a>.</p>
+<p>?</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Don&rsquo;t worry, I recycled it all. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>In the future I want to make this use libinput or something, or eventually make a kernel module which lets you pair a USB keyboard with a line printer to make a TTY directly. Or maybe a little microcontroller which translates a USB keyboard into serial TX and forwards RX to the printer. Possibilities! <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

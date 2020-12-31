@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>The only problem with Python 3&#39;s str is that you don&#39;t grok it</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  The only problem with Python 3&#39;s str is that you don&#39;t grok it
+  <small>
+    <span class="date">January 13, 2017</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I&rsquo;ve found myself explaining Python 3&rsquo;s str to people online more and more often
+lately. There&rsquo;s this ridiculous claim about that Python 3&rsquo;s string handling is
+broken or somehow worse than Python 2, and today I intend to put that myth to
+rest.  Python 2 strings are broken, and Python 3 strings are sane. The only
+problem is that you don&rsquo;t grok strings.</p>
+<p>The basic problem many people seem to have with Python 3&rsquo;s strings arises when
+they write code that treats bytes like a string, because that&rsquo;s how it was in
+Python 2. Let me make this as clear as possible:</p>
+<div class="loud">a bytes is not a string</div>
+<style>
+.loud {
+    font-size: 14pt;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+</style>
+<p>I want you to read that, over and over again, until it sinks in. A string is
+basically an array of characters (characters being Unicode codepoints), whereas
+bytes is an array of bytes, aka octets, aka unsigned 8 bit integers. That&rsquo;s
+right - bytes is an array of unsigned 8 bit integers, or as the name would
+imply, bytes.  If you <em>ever</em> do string operations against bytes, you are Doing
+It Wrong because bytes are not strings.</p>
+<div class="loud">a bytes is not a string</div>
+<p>It&rsquo;s entirely possible that your bytes contains an <em>encoded representation</em> of a
+string. That encoding could be ASCII, UTF-8, UTF-32, etc. These encodings are
+means of representing strings as bytes, aka unsigned 8 bit integers. In order to
+treat it like a string, you first must <em>decode</em> it. Luckily Python 3 makes this
+painless: <code>bytes.decode()</code>. This defaults to UTF-8, but you can specify any
+encoding you want: <code>bytes.decode('latin-1')</code>. If you want bytes again, use
+<code>str.encode()</code>, which again defaults to UTF-8 but accepts any encoding. If you
+have a bytes that contains an encoded string, your first order of business is
+decoding it.</p>
+<div class="loud">a bytes is not a string</div>
+<p>Let&rsquo;s look at some examples of why this matters in practice:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">Python</span> <span class="mf">3.6</span><span class="o">.</span><span class="mi">0</span> <span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">Dec</span> <span class="mi">24</span> <span class="mi">2016</span><span class="p">,</span> <span class="mi">08</span><span class="p">:</span><span class="mo">03</span><span class="p">:</span><span class="mi">08</span><span class="p">)</span> 
+<span class="p">[</span><span class="n">GCC</span> <span class="mf">6.2</span><span class="o">.</span><span class="mi">1</span> <span class="mi">20160830</span><span class="p">]</span> <span class="n">on</span> <span class="n">linux</span>
+<span class="n">Type</span> <span class="s2">&#34;help&#34;</span><span class="p">,</span> <span class="s2">&#34;copyright&#34;</span><span class="p">,</span> <span class="s2">&#34;credits&#34;</span> <span class="ow">or</span> <span class="s2">&#34;license&#34;</span> <span class="k">for</span> <span class="n">more</span> <span class="n">information</span><span class="o">.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;おはようございます&#39;</span>
+<span class="s1">&#39;おはようございます&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;おはようございます&#39;</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="s1">&#39;すまいざごうよはお&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;おはようございます&#39;</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="s1">&#39;お&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;おはようございます&#39;</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="s1">&#39;は&#39;</span>
+</code></pre></div><p>Or in Python 2:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">Python</span> <span class="mf">2.7</span><span class="o">.</span><span class="mi">13</span> <span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">Dec</span> <span class="mi">21</span> <span class="mi">2016</span><span class="p">,</span> <span class="mo">07</span><span class="p">:</span><span class="mi">16</span><span class="p">:</span><span class="mi">46</span><span class="p">)</span> 
+<span class="p">[</span><span class="n">GCC</span> <span class="mf">6.2</span><span class="o">.</span><span class="mi">1</span> <span class="mi">20160830</span><span class="p">]</span> <span class="n">on</span> <span class="n">linux2</span>
+<span class="n">Type</span> <span class="s2">&#34;help&#34;</span><span class="p">,</span> <span class="s2">&#34;copyright&#34;</span><span class="p">,</span> <span class="s2">&#34;credits&#34;</span> <span class="ow">or</span> <span class="s2">&#34;license&#34;</span> <span class="k">for</span> <span class="n">more</span> <span class="n">information</span><span class="o">.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;おはようございます&#39;</span>
+<span class="s1">&#39;</span><span class="se">\xe3\x81\x8a\xe3\x81\xaf\xe3\x82\x88\xe3\x81\x86\xe3\x81\x94\xe3\x81\x96\xe3\x81\x84\xe3\x81\xbe\xe3\x81\x99</span><span class="s1">&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;おはようございます&#39;</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="s1">&#39;</span><span class="se">\x99\x81\xe3\xbe\x81\xe3\x84\x81\xe3\x96\x81\xe3\x94\x81\xe3\x86\x81\xe3\x88\x82\xe3\xaf\x81\xe3\x8a\x81\xe3</span><span class="s1">&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="s1">&#39;おはようございます&#39;</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="err">㾁㄁㖁㔁ㆁ㈂㯁㊁ã</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;おはようございます&#39;</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="s1">&#39;</span><span class="se">\xe3</span><span class="s1">&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;おはようございます&#39;</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="s1">&#39;</span><span class="se">\x81</span><span class="s1">&#39;</span>
+</code></pre></div><p>For anything other than ASCII, Python 2 &ldquo;strings&rdquo; are broken. Python 3&rsquo;s string
+handling is superb. The problem with it has only ever been that you don&rsquo;t
+actually know how strings work. Instead of starting ignorant flamewars about it,
+learn how it works.</p>
+<h2 id="actual-examples-people-have-given-me">Actual examples people have given me</h2>
+<p><strong>&ldquo;Python 3 can&rsquo;t handle bytes as file names&rdquo;</strong></p>
+<p>Yes it can. Just stop treating them like strings:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span><span class="nb">open</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;test-</span><span class="se">\xd8\x01</span><span class="s1">.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div><p>Note the use of bytes as the file name, not str. \xd8\x01 is unrepresentable as
+UTF-8.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">close</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;.&#39;</span><span class="p">)]</span>
+<span class="p">[</span><span class="bp">None</span><span class="p">]</span>
+</code></pre></div><p>Note the use of bytes as the path to os.listdir (the documentation says that if
+you want bytes back as file names, pass bytes as the path. The docs are helpful
+like that). Also note the lack of crashes or broken behavior.</p>
+<p><strong>&ldquo;Python 3&rsquo;s csv module writes b&rsquo;Hello',b&rsquo;World' into CSV files&rdquo;</strong></p>
+<p>CSV files are &ldquo;comma seperated values&rdquo;. Is each value an array of unsigned 8 bit
+integers? No, of course not. They&rsquo;re strings. So why would you pass an array of
+unsigned 8 bit integers to it?</p>
+<p><strong>&ldquo;Python 3 doesn&rsquo;t support writing files as latin-1&rdquo;</strong></p>
+<p>Sure it does.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;some latin-1 file&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;some utf8 file&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+  <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+</code></pre></div><div class="loud">a bytes is not a string</div>
+<div class="loud">a bytes is not a string</div>
+<div class="loud">a bytes is not a string</div>
+<p>Python 2&rsquo;s shitty design has broken your mindset. Unlearn it.</p>
+<h2 id="python-2-is-dead-long-live-python-3">Python 2 is dead, long live Python 3</h2>
+<p>Listen. It&rsquo;s time you moved to Python 3. You&rsquo;re missing out on a lot of really
+great improvements to the language and are stuck with a lot of problems. Python
+2 is really being EoL&rsquo;d, and closing your eyes and covering your ears singing
+&ldquo;la la la&rdquo; doesn&rsquo;t change that. The transition is really not that difficult or
+time consuming, and well worth it. Some people say only new projects should be
+written in Python 3. I say that&rsquo;s bollocks - all projects should be written in
+Python 3 and you need to migrate, <em>now</em>.</p>
+<p>Python 3 is better. Much, much better. For every legitimate criticism of Python
+3 I&rsquo;ve seen, I&rsquo;ve seen 10 that are bullshit. Come join us in the wonderful world
+of sane string handling, type decorations, async/await, and more awesome
+features. Every library supports it now. Let go of your biases and evaluate the
+language honestly.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

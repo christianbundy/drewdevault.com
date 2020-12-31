@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>maintainership on Drew DeVault&#39;s blog</title>
+    <link>./tags/maintainership.html</link>
+    <description>Recent content in maintainership on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 06 Feb 2020 00:00:00 +0000</lastBuildDate><atom:link href="./tags/maintainership/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Dependencies and maintainers</title>
+      <link>./2020/02/06/Dependencies-and-maintainers.html</link>
+      <pubDate>Thu, 06 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/02/06/Dependencies-and-maintainers.html</guid>
+      <description>I&amp;rsquo;m 34,018 feet over the Atlantic at the moment, on my way home from FOSDEM. It was as always a lovely event, with far too many events of interest for any single person to consume. One of the few talks I was able to attend1 left a persistent worm of thought in my brain. This talk was put on by representatives of Microsoft and GitHub and discusses whether or not there is a sustainability problem in open source (link).</description>
+    </item>
+    
+    <item>
+      <title>The happinesses and stresses of full-time FOSS work</title>
+      <link>./2020/01/21/Stress-and-happiness.html</link>
+      <pubDate>Tue, 21 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/01/21/Stress-and-happiness.html</guid>
+      <description>In the past few days, several free software maintainers have come out to discuss the stresses of their work. Though the timing was suggestive, my article last week on the philosophy of project governance was, at best, only tangentially related to this topic - I had been working on that article for a while. I do have some thoughts that I&amp;rsquo;d like to share about what kind of stresses I&amp;rsquo;ve dealt with as a FOSS maintainer, and how I&amp;rsquo;ve managed (or often mismanaged) it.</description>
+    </item>
+    
+    <item>
+      <title>FOSS contributor tracks</title>
+      <link>./2019/07/29/FOSS-contributor-tracks.html</link>
+      <pubDate>Mon, 29 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/07/29/FOSS-contributor-tracks.html</guid>
+      <description>Just like many companies have different advancement tracks for their employees (for example, a management track and an engineering track), similar concepts exist in free software projects. One of the roles of a maintainer is to help contributors develop into the roles which best suit them. I&amp;rsquo;d like to explain what this means to me in my role as a maintainer of several projects, though I should mention upfront that I&amp;rsquo;m just some guy and, while I can explain what has and hasn&amp;rsquo;t worked for me, I can&amp;rsquo;t claim to have all of the answers.</description>
+    </item>
+    
+    <item>
+      <title>How to abandon a FLOSS project</title>
+      <link>./2018/12/04/How-to-abandon-a-FLOSS-project.html</link>
+      <pubDate>Tue, 04 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/12/04/How-to-abandon-a-FLOSS-project.html</guid>
+      <description>It&amp;rsquo;s no secret that maintaining free and open source software is often a burdensome and thankless job. I empathise with maintainers who lost interest in a project, became demotivated by the endless demands of users, or are no longer blessed with enough free time. Whatever the reason, FLOSS work is volunteer work, and you&amp;rsquo;re free to stop volunteering at any time.
+In my opinion, there are two good ways to abandon a project: the fork it option and the hand-off option.</description>
+    </item>
+    
+    <item>
+      <title>How I maintain FOSS projects</title>
+      <link>./2018/06/01/How-I-maintain-FOSS-projects.html</link>
+      <pubDate>Fri, 01 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/06/01/How-I-maintain-FOSS-projects.html</guid>
+      <description>Today&amp;rsquo;s is another blog post which has been on my to-write list for a while. I have hesitated a bit to write about this, because I&amp;rsquo;m certain that my approach isn&amp;rsquo;t perfect. I think it&amp;rsquo;s pretty good, though, and people who work with me in FOSS agreed after a quick survey. So! Let&amp;rsquo;s at least put it out there and discuss it.
+There are a few central principles I use to guide my maintainership work:</description>
+    </item>
+    
+  </channel>
+</rss>

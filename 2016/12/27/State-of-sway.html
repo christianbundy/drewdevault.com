@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>State of Sway December 2016 - secure your Wayland desktop, get paid to work on Sway</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  State of Sway December 2016 - secure your Wayland desktop, get paid to work on Sway
+  <small>
+    <span class="date">December 27, 2016</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Earlier today I released <a href="https://github.com/SirCmpwn/sway/releases/tag/0.11">sway
+0.11</a>, which (along with
+lots of the usual new features and bug fixes) introduces support for security
+policies that can help realize the promise of a secure Wayland desktop. We also
+just started a bounty program that lets you sponsor the things you want done and
+rewards contributors for working on them.</p>
+<p>Today sway has 19,371 lines of C (and 3,761 lines of header files) written by 70
+authors across 2,067 commits. These were written through 589 pull requests and
+425 issues. Sway packages are available today in the official repos of Arch,
+Gentoo, Fedora, NixOS, openSUSE, Void Linux, and more. Sway looks like this:</p>
+<p><a href="https://sr.ht/ICd5.png"><img src="https://sr.ht/ICd5.png" alt=""></a></p>
+<p>Side note: please add pretty screenshots of sway to <a href="https://github.com/SirCmpwn/sway/wiki/Screenshots-of-Sway">this wiki
+page</a>. Thanks!</p>
+<p>For those who are new to the project, <a href="http://swaywm.org">Sway</a> is an
+i3-compatible Wayland compositor. That is, your existing <a href="http://i3wm.org/">i3</a>
+configuration file will work as-is on Sway, and your keybindings and colors and
+fonts and for_window rules and so on will all be the same. It&rsquo;s i3, but for
+Wayland, plus it&rsquo;s got some bonus features. Here&rsquo;s a quick rundown of what&rsquo;s
+new since the <a href="/2016/08/02/Sway-0.9-in-retro.html">previous state of Sway</a>:</p>
+<ul>
+<li>Security policy configuration (man sway-security)</li>
+<li>FreeBSD support</li>
+<li>Initial support for HiDPI among sway clients (swaybar et al)</li>
+<li>Support for new i3 features</li>
+<li>Clicky title bars</li>
+<li>Lots of i3 compatability improvements</li>
+<li>Lots of documentation improvements</li>
+<li>Lots of bugfixes</li>
+</ul>
+<p>Today it seems that most of the features sway needs are implemented. Work hasn&rsquo;t
+slowed down - there&rsquo;s been lots of work fixing small bugs, improving
+documentation, fixing subtle incompatabilities with i3, and so on. However, to
+encourage the development of new features, I&rsquo;ve officially put into action the
+new bounty program today. Here&rsquo;s how it works - you can donate to the features
+you want to see, and you can claim the donations by implementing the features
+and sending a pull request. To date I&rsquo;ve received about $200 in donations
+towards sway, and I&rsquo;ve matched that with a donation of my own to bring it up to
+$400. I&rsquo;ve distributed these donations into various buckets of features. Not
+every feature is for sway - anything that improves the sway experience is
+eligible for a bounty, and in fact over half of the initial bounties are for
+features in other parts of the ecosystem. For details on the program, check out
+<a href="https://github.com/SirCmpwn/sway/issues/986">this link</a>.</p>
+<p>Here&rsquo;s the updated stats. First, <strong>lines of code per author</strong>:</p>
+<table class="table">
+    <tbody>
+        <tr><td>3799 (+775)</td><td>Drew DeVault</td></tr>
+        <tr><td>3489 (-1170)</td><td>Mikkel Oscar Lyderik</td></tr>
+        <tr><td>1705 (-527)</td><td>taiyu</td></tr>
+        <tr><td>1236 (-550)</td><td>S. Christoffer Eliesen</td></tr>
+        <tr><td>1160 (+70)</td><td>Zandr Martin</td></tr>
+        <tr><td>449 (-12)</td><td>minus</td></tr>
+        <tr><td>311 (-54)</td><td>Christoph Gysin</td></tr>
+        <tr><td>285 (+285)</td><td>D.B</td></tr>
+        <tr><td>247 (-87)</td><td>Kevin Hamacher</td></tr>
+        <tr><td>227 (-298)</td><td>Cole Mickens</td></tr>
+        <tr><td>219 (+219)</td><td>David Eklov</td></tr>
+    </tbody>
+</table>
+<p>Finally, I&rsquo;m the top contributor! I haven&rsquo;t been on top for over a year. Lots of
+the top contributors are slowly having their lines of code reduced as lots of
+new contributors are coming in and displacing them with refactorings and bug
+fixes.</p>
+<p>Here&rsquo;s the total <strong>number of commits per author</strong> for each of the top ten
+committers:</p>
+<table class="table">
+    <tbody>
+        <tr><td>1009</td><td> Drew DeVault</td></tr>
+        <tr><td>245</td><td> Mikkel Oscar Lyderik</td></tr>
+        <tr><td>153</td><td> taiyu</td></tr>
+        <tr><td>97</td><td> Luminarys</td></tr>
+        <tr><td>91</td><td> S. Christoffer Eliesen</td></tr>
+        <tr><td>68</td><td> Zandr Martin</td></tr>
+        <tr><td>58</td><td> Christoph Gysin</td></tr>
+        <tr><td>45</td><td> D.B</td></tr>
+        <tr><td>33</td><td> Taiyu</td></tr>
+        <tr><td>32</td><td> minus</td></tr>
+    </tbody>
+</table>
+<p>Most of what I do for Sway personally is reviewing and merging pull requests.
+Here&rsquo;s the same figures using <strong>number of commits per author, excluding merge
+commits</strong>, which changes my stats considerably:</p>
+<table class="table">
+    <tbody>
+        <tr><td>479</td><td> Drew DeVault</td></tr>
+        <tr><td>229</td><td> Mikkel Oscar Lyderik</td></tr>
+        <tr><td>138</td><td> taiyu</td></tr>
+        <tr><td>96</td><td> Luminarys</td></tr>
+        <tr><td>91</td><td> S. Christoffer Eliesen</td></tr>
+        <tr><td>58</td><td> Christoph Gysin</td></tr>
+        <tr><td>56</td><td> Zandr Martin</td></tr>
+        <tr><td>45</td><td> D.B</td></tr>
+        <tr><td>32</td><td> Taiyu</td></tr>
+        <tr><td>32</td><td> minus</td></tr>
+    </tbody>
+</table>
+<p>These stats only cover the top ten in each, but there are more - check out the
+<a href="https://github.com/SirCmpwn/sway/graphs/contributors">full list</a>.</p>
+<p>Here&rsquo;s looking forward to sway 1.0 in 2017!</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>We can do better than DuckDuckGo</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  We can do better than DuckDuckGo
+  <small>
+    <span class="date">November 17, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p><a href="https://duckduckgo.com">DuckDuckGo</a> is one of the long-time darlings of the
+technophile&rsquo;s pro-privacy recommendations, and in fact the search engine that I
+use myself on the daily. They certainly present a more compelling option than
+many of the incumbents, like Google or Bing. Even so, DuckDuckGo is not good
+enough, and we ought to do better.</p>
+<p>I have three grievances with DuckDuckGo:</p>
+<ol>
+<li><strong>It&rsquo;s not open source.</strong> Almost all of DDG&rsquo;s software is proprietary, and
+they&rsquo;ve demonstrated <a href="https://github.com/duckduckgo/Android/issues/527">gross incompetence</a> in privacy in what little
+software they have made open source. Who knows what else is going on in the
+proprietary code?</li>
+<li><strong>DuckDuckGo is not a search engine</strong>. It&rsquo;s more aptly described as a search
+engine frontend. They <em>do</em> handle features like bangs and instant answers
+internally, but their actual search results come from third-parties like
+Bing. They don&rsquo;t operate a crawler for their search results, and are not
+independent.</li>
+<li><strong>The search results suck!</strong> The authoritative sources for anything I want to
+find are almost always buried beneath 2-5 results from content scrapers and
+blogspam. This is also true of other search engines like Google. Search
+engines are highly vulnerable to abuse and they aren&rsquo;t doing enough to
+address it.</li>
+</ol>
+<p>There are some FOSS attempts to do better here, but they all fall flat.
+<a href="https://github.com/bauruine/searx/">searX</a> is also a false search engine
+— that is, they serve someone else&rsquo;s results. <a href="https://yacy.net/">YaCy</a>
+has their own crawler, but the distributed design makes results untolerably
+slow, poor quality, and vulnerable to abuse, and it&rsquo;s missing strong central
+project leadership.</p>
+<p>We need a real, working FOSS search engine, complete with its own crawler.</p>
+<p>Here&rsquo;s how I would design it.</p>
+<p>First, YaCy-style decentralization is <em>way</em> too hard to get right, especially
+when a search engine project already has a lot of Very Hard problems to solve.
+Federation is also very hard in this situation — queries will have to
+consult <em>most</em> instances in order to get good quality results, or a novel
+sharding algorithm will have to be designed, and either approach will have to be
+tolerant of nodes appearing and disappearing at any time. Not to mention it&rsquo;d be
+slow! Several unsolved problems with federation and decentralziation would have
+to be addressed on top of building a search engine in the first place.</p>
+<p>So, a SourceHut-style approach is better. 100% of the software would be free
+software, and third parties would be encouraged to set up their own
+installations. It would use standard protocols and formats where applicable, and
+accept patches from the community. However, the database would still be
+centralized, and even if programmable access were provided, it would not be with
+an emphasis on decentralization or shared governance. It might be possible to
+design tools which help third-parties bootstrap their indexes, and create a
+community of informal index sharing, but that&rsquo;s not the focus here.</p>
+<p>It would also need its own crawler, and probably its own indexer. I&rsquo;m not
+convinced that any of the existing FOSS solutions in this space are quite right
+for this problem. Crucially, I would <em>not</em> have it crawling the entire web from
+the outset. Instead, it should crawl a whitelist of domains, or &ldquo;tier 1&rdquo;
+domains. These would be the limited mainly to authoritative or high-quality
+sources for their respective specializations, and would be weighed upwards in
+search results. Pages that these sites link to would be crawled as well, and
+given tier 2 status, recursively up to an arbitrary N tiers. Users who want to
+find, say, a blog post about a subject rather than the documentation on that
+subject, would have to be more specific: &ldquo;$subject blog posts&rdquo;.</p>
+<p>An advantage of this design is that it would be easy for anyone to take the
+software stack and plop it on their own servers, with their own whitelist of
+tier 1 domains, to easily create a domain-specific search engine. Independent
+groups could create search engines which specialize in academia, open standards,
+specific fandoms, and so on. They could tweak their precise approach to
+indexing, tokenization, and so on to better suit their domain.</p>
+<p>We should also prepare the software to boldly lead the way on new internet
+standards. Crawling and indexing non-HTTP data sources (Gemini?  Man pages?
+Linux distribution repositories?), supporting non-traditional network stacks
+(Tor? Yggdrasil? cjdns?) and third-party name systems (OpenNIC?), and anything
+else we could leverage our influence to give a leg up on.</p>
+<p>There&rsquo;s a <em>ton</em> of potential in this domain which is just sitting on the floor
+right now. The main problem is: who&rsquo;s going to pay for it? Advertisements or
+paid results are <em>not</em> going to fly — conflict of interest. Private, paid
+access to search APIs or index internals is one opportunity, but it&rsquo;s kind of
+shit and I think that preferring open data access and open APIs would be
+exceptionally valuable for the community.</p>
+<p>If SourceHut eventually grows in revenue — at least 5-10× its
+<a href="https://sourcehut.org/blog/2020-11-11-sourcehut-q3-2020-financial-report/">present revenue</a> — I intend to sponsor this as a public
+benefit project, with no plans for generating revenue. I am not aware of any
+monetization approach for a search engine which squares with my ethics and
+doesn&rsquo;t fundamentally undermine the mission. So, if no one else has figured it
+out by the time we have the resources to take it on, we&rsquo;ll do it.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+  <p>
+  ⇒ This article is also available <a href="gemini://./2020/11/17/Better-than-DuckDuckGo.gmi">on gemini</a>.
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>scdoc on Drew DeVault&#39;s blog</title>
+    <link>./tags/scdoc.html</link>
+    <description>Recent content in scdoc on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 13 May 2018 00:00:00 +0000</lastBuildDate><atom:link href="./tags/scdoc/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Introducing scdoc, a man page generator</title>
+      <link>./2018/05/13/scdoc.html</link>
+      <pubDate>Sun, 13 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/05/13/scdoc.html</guid>
+      <description>A man page generator is one of those tools that I&amp;rsquo;ve said I would write for a long time, being displeased with most of the other options. For a while I used asciidoc, but was never fond of it. There are a few things I want to see in a man page generator:
+ A syntax which is easy to read and write Small and with minimal dependencies Designed with man pages as a first-class target  All of the existing tools failed some of these criteria.</description>
+    </item>
+    
+  </channel>
+</rss>

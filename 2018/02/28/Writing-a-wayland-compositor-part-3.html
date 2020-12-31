@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Writing a Wayland Compositor, Part 3: Rendering a window</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Writing a Wayland Compositor, Part 3: Rendering a window
+  <small>
+    <span class="date">February 28, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>This is the third in a series of articles on the subject of writing a Wayland
+compositor from scratch using <a href="https://github.com/swaywm/wlroots">wlroots</a>.
+Check out <a href="/2018/02/17/Writing-a-Wayland-compositor-1.html">the first article</a>
+if you haven&rsquo;t already. We left off with a Wayland server which accepts client
+connections and exposes a handful of globals, but does not do anything
+particularly interesting yet. Our goal today is to do something interesting -
+render a window!</p>
+<p>The commit that this article dissects is
+<a href="https://github.com/SirCmpwn/mcwayland/commit/342b7b6">342b7b6</a>.</p>
+<p>The first thing we have to do in order to render windows is establish the
+<strong>compositor</strong>. The wl_compositor global is used by clients to allocate
+<code>wl_surface</code>s, to which they attach <code>wl_buffer</code>s. These surfaces are just a
+generic mechanism for sharing buffers of pixels with compositors, and don&rsquo;t
+carry an implicit <strong>role</strong>, such as &ldquo;application window&rdquo; or &ldquo;panel&rdquo;.</p>
+<p>wlroots provides an implementation of <code>wl_compositor</code>. Let&rsquo;s set aside a
+reference for it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff">struct mcw_server {
+        struct wl_display *wl_display;
+        struct wl_event_loop *wl_event_loop;
+ 
+        struct wlr_backend *backend;
+<span class="gi">+       struct wlr_compositor *compositor;
+</span><span class="gi"></span> 
+        struct wl_listener new_output;
+</code></pre></div><p>Then rig it up:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff">        wlr_primary_selection_device_manager_create(server.wl_display);
+        wlr_idle_create(server.wl_display);
+ 
+<span class="gi">+       server.compositor = wlr_compositor_create(server.wl_display,
+</span><span class="gi">+                       wlr_backend_get_renderer(server.backend));
+</span><span class="gi">+
+</span><span class="gi"></span>        wl_display_run(server.wl_display);
+        wl_display_destroy(server.wl_display);
+</code></pre></div><p>If we run mcwayface now and check out the globals with <code>weston-info</code>, we&rsquo;ll see
+a wl_compositor and wl_subcompositor have appeared:</p>
+<pre><code>interface: 'wl_compositor', version: 4, name: 8
+interface: 'wl_subcompositor', version: 1, name: 9
+</code></pre><p>You get a wl_subcompositor for free with the wlroots wl_compositor
+implementation. We&rsquo;ll discuss subcompositors in a later article. Speaking of
+things we&rsquo;ll discuss in another article, add this too:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff">        wlr_primary_selection_device_manager_create(server.wl_display);
+        wlr_idle_create(server.wl_display);
+ 
+        server.compositor = wlr_compositor_create(server.wl_display,
+                        wlr_backend_get_renderer(server.backend));
+ 
+<span class="gi">+       wlr_xdg_shell_v6_create(server.wl_display);
+</span><span class="gi">+
+</span><span class="gi"></span>        wl_display_run(server.wl_display);
+        wl_display_destroy(server.wl_display);
+        return 0;
+</code></pre></div><p>Remember that I said earlier that surfaces are just globs of pixels with no
+role? xdg_shell is something that can give surfaces a role. We&rsquo;ll talk about it
+more in the next article. After adding this, many clients will be able to
+connect to your compositor and spawn a window. However, without adding anything
+else, these windows will never be shown on-screen. You have to render them!</p>
+<p>Something that distinguishes wlroots from libraries like wlc and libweston is
+that wlroots does not do any rendering for you. This gives you a lot of
+flexibility to render surfaces any way you like. The clients just gave you a
+pile of pixels, what you do with them is up to you - maybe you&rsquo;re making a
+desktop compositor, or maybe you want to draw them on an Android-style app
+switcher, or perhaps your compositor arranges windows in VR - all of this is
+possible with wlroots.</p>
+<p>Things are about to get complicated, so let&rsquo;s start with the easy part: in
+the output_frame handler, we have to get a reference to every wlr_surface we
+want to render. So let&rsquo;s iterate over every surface our <code>wlr_compositor</code> is
+keeping track of:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff">        wlr_renderer_begin(renderer, wlr_output);
+
+<span class="gi">+       struct wl_resource *_surface;
+</span><span class="gi">+       wl_resource_for_each(_surface, &amp;server-&gt;compositor-&gt;surfaces) {
+</span><span class="gi">+               struct wlr_surface *surface = wlr_surface_from_resource(_surface);
+</span><span class="gi">+               if (!wlr_surface_has_buffer(surface)) {
+</span><span class="gi">+                       continue;
+</span><span class="gi">+               }
+</span><span class="gi">+               // TODO: Render this surface
+</span><span class="gi">+       }
+</span><span class="gi"></span>
+        wlr_output_swap_buffers(wlr_output, NULL, NULL);
+</code></pre></div><p>The <code>wlr_compositor</code> struct has a member named <code>surfaces</code>, which is a list of
+<code>wl_resource</code>s. A helper method is provided to produce a <code>wlr_surface</code> from its
+corresponding <code>wl_resource</code>. The <code>wlr_surface_has_buffer</code> call is just to make
+sure that the client has actually given us pixels to display on this surface.</p>
+<p>wlroots might make you do the rendering yourself, but some tools <em>are</em> provided
+to help you write compositors with simple rendering requirements:
+<strong>wlr_renderer</strong>. We&rsquo;ve already touched on this a little bit, but now we&rsquo;re
+going to use it for real. A little bit of OpenGL knowledge is required here. If
+you&rsquo;re a complete novice with OpenGL<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, I can recommend <a href="https://learnopengl.com/">this
+tutorial</a> to help you out. Since you&rsquo;re in a hurry,
+we&rsquo;ll do a quick crash course on the concepts necessary to utilize wlr_renderer.
+If you get lost, just skip to the next diff and treat it as magic incantations
+that make your windows appear.</p>
+<p>We have a pile of pixels, and we want to put it on the screen. We can do this
+with a <strong>shader</strong>. If you&rsquo;re using wlr_renderer (and mcwayface will be), shaders
+are provided for you. To use our shaders, we feed them a <strong>texture</strong> (the pile
+of pixels) and a <strong>matrix</strong>. If we treat every pixel coordinate on our surface
+as a vector from (0, 0); top left, to (1, 1); bottom right, our goal is to
+produce a matrix that we can multiply a vector by to find the final coordinates
+on-screen for the pixel to be drawn to. We must project pixel coordinates from
+this 0-1 system to the coordinates of our desired rectangle on screen.</p>
+<p>There&rsquo;s gotcha here, however: the coordinates on-screen <em>also</em> go from 0 to 1,
+instead of, for example, 0-1920 and 0-1080. To project coordinates like
+&ldquo;put my 640x480 window at coordinates 100,100&rdquo; to screen coordinates, we use an
+<strong>orthographic projection matrix</strong>. I know that sounds scary, but don&rsquo;t worry -
+wlroots does all of the work for you. Your <code>wlr_output</code> already has a suitable
+matrix called <code>transform_matrix</code>, which incorporates into it the current
+resolution, scale factor, and rotation of your screen.</p>
+<p>Okay, hopefully you&rsquo;re still with me. This sounds a bit complicated, but the
+manifestation of all of this nonsense is fairly straightforward. wlroots
+provides some tools to make it easy for you. First, we have to prepare a
+<code>wlr_box</code> that represents (in output coordinates) where we want the surface to
+show up.</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff">        struct wl_resource *_surface;
+        wl_resource_for_each(_surface, &amp;server-&gt;compositor-&gt;surfaces) {
+                struct wlr_surface *surface = wlr_surface_from_resource(_surface);
+                if (!wlr_surface_has_buffer(surface)) {
+                        continue;
+                }
+<span class="gd">-               // TODO: Render this surface
+</span><span class="gd"></span><span class="gi">+               struct wlr_box render_box = {
+</span><span class="gi">+                       .x = 20, .y = 20,
+</span><span class="gi">+                       .width = surface-&gt;current-&gt;width,
+</span><span class="gi">+                       .height = surface-&gt;current-&gt;height
+</span><span class="gi">+               };
+</span><span class="gi"></span>        }
+</code></pre></div><p>Now, here&rsquo;s the great part: all of that fancy math I was just talking about can
+be done with a single helper function provided by wlroots: <code>wlr_matrix_project_box</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff">        struct wl_resource *_surface;
+        wl_resource_for_each(_surface, &amp;server-&gt;compositor-&gt;surfaces) {
+                struct wlr_surface *surface = wlr_surface_from_resource(_surface);
+                if (!wlr_surface_has_buffer(surface)) {
+                        continue;
+                }
+                struct wlr_box render_box = {
+                        .x = 20, .y = 20,
+                        .width = surface-&gt;current-&gt;width,
+                        .height = surface-&gt;current-&gt;height
+                };
+<span class="gi">+               float matrix[16];
+</span><span class="gi">+               wlr_matrix_project_box(&amp;matrix, &amp;render_box,
+</span><span class="gi">+                               surface-&gt;current-&gt;transform,
+</span><span class="gi">+                               0, &amp;wlr_output-&gt;transform_matrix);
+</span><span class="gi"></span>        }
+</code></pre></div><p>This takes a reference to a <code>float[16]</code> to store the output matrix in, a box you
+want to project, some other stuff that isn&rsquo;t important right now, and the
+projection you want to use - in this case, we just use the one provided by
+<code>wlr_output</code>.</p>
+<p>The reason we make you understand and perform these steps is because it&rsquo;s
+entirely possible that you&rsquo;ll want to do them differently in the future. This
+is only the simplest case, but remember that wlroots is designed for <em>every</em>
+case. Now that we&rsquo;ve obtained this matrix, we can finally render the surface:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff">        struct wl_resource *_surface;
+        wl_resource_for_each(_surface, &amp;server-&gt;compositor-&gt;surfaces) {
+                struct wlr_surface *surface = wlr_surface_from_resource(_surface);
+                if (!wlr_surface_has_buffer(surface)) {
+                        continue;
+                }
+                struct wlr_box render_box = {
+                        .x = 20, .y = 20,
+                        .width = surface-&gt;current-&gt;width,
+                        .height = surface-&gt;current-&gt;height
+                };
+                float matrix[16];
+                wlr_matrix_project_box(&amp;matrix, &amp;render_box,
+                                surface-&gt;current-&gt;transform,
+                                0, &amp;wlr_output-&gt;transform_matrix);
+<span class="gi">+               wlr_render_with_matrix(renderer, surface-&gt;texture, &amp;matrix, 1.0f);
+</span><span class="gi">+               wlr_surface_send_frame_done(surface, &amp;now);
+</span><span class="gi"></span>        }
+</code></pre></div><p>We also throw in a <code>wlr_surface_send_frame_done</code> for good measure, which lets
+the client know that we&rsquo;re done with it so they can send another frame. We&rsquo;re
+done! Run mcwayface now, then the following commands:</p>
+<pre><code>$ WAYLAND_DISPLAY=wayland-1 weston-simple-shm &amp;
+$ WAYLAND_DISPLAY=wayland-1 gnome-terminal -- htop
+</code></pre><p>To see the following beautiful image:</p>
+<p><img src="https://sr.ht/y_qN.png" alt=""></p>
+<p>Run any other clients you like - many of them will work!</p>
+<p>We used a bit of a hack today by simply rendering all of the surfaces the
+<code>wl_compositor</code> knew of. In practice, we&rsquo;re going to need to extend our
+xdg_shell support (and add some other shells, too) to do this properly. We&rsquo;ll
+cover this in the next article.</p>
+<p>Before you go, a quick note: after this commit, I reorganized things a bit -
+we&rsquo;re going to outgrow this single-file approach pretty quickly soon. Check out
+That commit <a href="https://github.com/SirCmpwn/mcwayface/commit/e800facb371c42d844b858af5ced456ffd6e9d08">here</a>.</p>
+<p>See you next time!</p>
+<p>
+    Previous &mdash;
+    <a href="/2018/02/22/Writing-a-wayland-compositor-part-2.html">
+        Part 2: Rigging up the server
+    </a>
+</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>If you&rsquo;re not a novice, we&rsquo;ll cover more complex rendering scenarios in the future. But the short of it is that you can implement your own <code>wlr_renderer</code> that wlr_compositor can use to bind textures to the GPU and then you can do whatever you want. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

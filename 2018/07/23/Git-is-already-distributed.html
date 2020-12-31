@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Git is already federated &amp; decentralized</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Git is already federated &amp; decentralized
+  <small>
+    <span class="date">July 23, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>There have always been murmurs about &ldquo;replacing GitHub with something
+decentralized!&rdquo;, but in the wake of the Microsoft acquisition these murmurs have
+become conversations. In particular, this blog post is a direct response to
+forge-net (formerly known as <a href="https://github.com/git-federation/gitpub">GitPub</a>). They want to federate and
+decentralize git using ActivityPub, the same technology leveraged by Mastodon
+and PeerTube. But get this: git is already federated <em>and</em> decentralized!</p>
+<p>I already spoke at length about how a large minority of the git community uses
+email for collaboration in my <a href="https://drewdevault.com/2018/07/02/Email-driven-git.html">previous article</a> on the subject.
+Definitely give it a read if you haven&rsquo;t already. In this article I want to
+focus on comparing this model with the possibilities afforded by ActivityPub
+and provide direction for new forge<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> projects to work towards embracing and
+improving git&rsquo;s email-based collaboration tools.</p>
+<p>The main issue with using ActivityPub for decentralized git forges boils down to
+email simply being a better choice. The advantages of email are numerous. It&rsquo;s
+already standardized and has countless open source implementations, many in the
+standard libraries of almost every programming language. It&rsquo;s decentralized and
+federated, and it&rsquo;s <em>already</em> integrated with git. Has been since day one!  I
+don&rsquo;t think that we should replace web forges with our email clients, not at
+all. Instead, web forges should embrace email to communicate with each other.</p>
+<p>Let me give an example of how this could play out. On my platform,
+<a href="https://meta.sr.ht">sr.ht</a>, users can view their git repositories on the web
+(duh). One of my goals is to add some UI features here which let them select a
+range of commits and prepare a patchset for submission via <a href="https://www.git-scm.com/docs/git-send-email">git
+send-email</a>. They&rsquo;ll enter an email address (or addresses) to
+send the patch(es) to, and we&rsquo;ll send it along on their behalf.  This email
+address might be a mailing list on another sr.ht instance in the wild! If so,
+the email gets recognized as a patch and displayed on the web with a pretty diff
+and code review tools. Inline comments automatically get formatted as an email
+response. This shows up in the user&rsquo;s inbox and sr.ht gets copied on it, showing
+it on the web again.</p>
+<p>I think that workflow looks an awful lot like the workflow forge-net hopes to
+realize! Here&rsquo;s where it gets good, though. What if the emails the user puts in
+are <code>linux-kernel@vger.kernel.org</code> and a handful of kernel maintainers? Now your
+git forge can suddenly be used to contribute to the Linux kernel! ActivityPub
+would build a <em>second</em>, incompatible federation of projects, while ignoring the
+already productive federation which powers many of our most important open
+source projects.</p>
+<p>git over email is already supported by a tremendous amount of open source
+software. There&rsquo;s tools like <a href="https://www.gnu.org/software/mailman/">mailman</a> which provide mailing lists and
+public archives, or <a href="https://public-inbox.org/">public-inbox</a>, which archives email in git,
+or <a href="http://jk.ozlabs.org/projects/patchwork/">patchworks</a> for facilitating code review over email. Some email
+clients have grown features which make them more suitable for git, such as
+<a href="http://mutt.org">mutt</a>. These are the nuts and bolts of hundreds of important projects,
+including Linux, *BSD, gcc, Clang, postgresql, MariaDb, emacs, vim, ffmpeg,
+Linux distributions like Debian, Fedora, Arch, Alpine, and countless other
+projects, including git itself! These projects are incredibly important,
+foundational projects upon which our open source empire is built, and the tools
+they use already provide an open, federated protocol for us to talk to.</p>
+<p>Not only is email <em>better</em>, but it&rsquo;s also <em>easier</em> to implement. Programming
+tools for email are very mature. I recently started experimenting with building
+an ActivityPub service, and it was crazy difficult. I had to write a whole lot
+of boilerplate and understand new and still-evolving specifications, not to
+mention setting up a public-facing server with a domain and HTTPs to test
+federation with other implementations. Email is comparatively easy, it&rsquo;s built
+into the standard library. You can shell out to git and feed the patch to the
+nearest SMTP library in only a handful of lines of code. I bet every single
+person who reads this article already has an email address, so the setup time
+approaches zero.</p>
+<p>Email also puts the power in the hands of the user right away. On Mastodon there
+are occasional problems of instance owners tearing down their instance on short
+notice, taking with them all of their user&rsquo;s data. If everything is being
+conducted over email instead, all of the data already lives in the user&rsquo;s inbox.
+Freely available tools can take their mail spool and publish a new archive if
+our services go down. Mail archives can be trivially made redundant across many
+services. This stuff is seriously resilient to failure. Email was designed when
+networks were measured in bits per second and often connected through a single
+unreliable route!</p>
+<p>I&rsquo;m not suggesting that the approach these projects use for collaboration is
+perfect. I&rsquo;m suggesting that we should embrace it and solve these problems
+instead of throwing out the baby with the bathwater. Tools like <code>git send-email</code>
+can be confusing at first, which is why we should build tools like web forges
+that smooth over the process for novices, and write better docs to introduce
+people to the tools (I recently <a href="https://man.sr.ht/git.sr.ht/send-email.md">wrote a guide</a> for sr.ht users).</p>
+<p>Additionally, many popular email clients have bastardized email to the point
+where the only way to use git+email for many people starts with abandoning the
+email client they&rsquo;re used to using. This can also be solved by having forges
+send the emails for them, and process the replies. We can also support open
+source mail clients by building better tools to integrate our emails with them.
+Setting up the mail servers on the other end can be difficult, too, but we
+should invest in better mail server software, something which would definitely
+be valuable even setting aside the matter of project forges.</p>
+<p>We need to figure out something for bugs as well, perhaps based on Debian&rsquo;s work
+on <a href="https://www.debian.org/Bugs/">Debbugs</a>. Other areas of development, such as
+continuous integration, I find are less difficult problems. Many build services
+already support sending the build results by email, we just need to find a way
+to get our patches to them (something I&rsquo;m working on with sr.ht). But we should
+take these problems one step at a time. Let&rsquo;s focus on improving the patch
+workflow git endorses, and as our solutions shake out the best solutions to our
+other problems will become more and more apparent.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Forge refers to any software which provides comprehensive tools for project hosting. This originally referred to SourceForge but is now a category of software which includes GitHub, BitBucket, GitLab, Gogs/Gitea, etc. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

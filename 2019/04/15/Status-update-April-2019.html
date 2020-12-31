@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Status update, April 2019</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Status update, April 2019
+  <small>
+    <span class="date">April 15, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Spring is here, and I&rsquo;m already miserable in the heat. Crazy weather here in
+Philadelphia - I was woken up at 3 AM by my phone buzzing, telling me to take
+immediate shelter from a tornado. But with my A/C cranked up and the tornado
+safely passed, I&rsquo;ve been able to get a lot of work done.</p>
+<p>The project with the most impressive progress is
+<a href="https://git.sr.ht/~sircmpwn/aerc2">aerc2</a>. It can now read emails, including
+filtering them through arbitrary commands for highlighting diffs or coloring
+quotes, or even rendering HTML email with a TUI browser like w3m.</p>
+<script
+  id="asciicast-vy5GmO0tBjppr4G2LSQONIFjH"
+  src="https://asciinema.org/a/pafXXANiWHY9MOH2yXdVHHJRd.js" async
+></script>
+<p>Here&rsquo;s another demo focusing on the embedded terminal emulator which makes this
+possible:</p>
+<script
+  id="asciicast-N57RaPJqwQD2h0AejLGDWrSi9"
+  src="https://asciinema.org/a/pafXXANiWHY9MOH2yXdVHHJRd.js" async
+></script>
+<p>Keybindings are also working, which are configured simiarly to vim - each
+keybinding simulates a series of keystrokes, which all eventually boil down to
+an ex-style command. I&rsquo;ve bought a domain for aerc, and I&rsquo;ll be populating it
+with some marketing content and a nice tour of the features soon. I hope to have
+time to work on sending emails this month as well. In the immediate future, I
+need to fix some crashiness that occurs in some situations.</p>
+<p>In other email-related news, <a href="https://git-send-email.io">git-send-email.io</a> is
+now live, an interactive tutorial on using email with git. This workflow is the
+one sourcehut focuses on, and is also used by a large number of important free
+software projects, like Linux, gcc, clang, glibc, musl, ffmpeg, vim, emacs,
+coreutils&hellip; and many, many more. Check it out!</p>
+<p>I also spent a fair bit of time working on lists.sr.ht this month. Alpine Linux
+has provisioned some infrastructure for a likely migration from their current
+mailing list solution (mlmmj+hypermail) to one based on lists.sr.ht, which I
+deployed a lists.sr.ht instance to for them, and trained them on some
+administrative aspects of lists.sr.ht. User-facing improvments that came from
+this work include tools for importing and exporting mail spools from lists,
+better access controls, moderation tools, and per-list mime whitelisting and
+blacklisting. Admin-facing tools include support for a wider variety of MTA
+configurations and redirects to continue supporting old incoming mail addresses
+when migrating from another mailing list system.</p>
+<p>Stepping outside the realm of email, let&rsquo;s talk about Wayland. Since Sway 1.0,
+development has continued at a modest pace, fixing a variety of small bugs and
+further improving i3 compatibility. We&rsquo;re getting ready to split swaybg into a
+standalone project which can be used on other Wayland compositors soon, too. I
+also have been working more on Godot, and have switched gears towards adding a
+Wayland backend to Godot upstream - so you can play Godot-based video games on
+Wayland. I&rsquo;m still working with upstream and some other interested contributors
+on the best way to integrate these changes upstream, but I more or less
+completed a working port with support for nearly all of Godot&rsquo;s platform
+abstractions.</p>
+<p><a href="https://sr.ht/fOvB.png"><img src="https://sr.ht/fOvB.png" alt="Godot editor running on Wayland with HiDPI support"></a></p>
+<p>In smaller project news, I spent an afternoon putting together a home-grown
+video livestreaming platform a few weeks ago. The result:
+<a href="https://live.drewdevault.com">live.drewdevault.com</a>. Once upon a time I was
+livestreaming programming sessions on Twitch.tv, and in the future I&rsquo;d like to
+do this more often on my new platform. This one is open source and built on the
+shoulders of free software tools. I announce new streams on
+<a href="https://cmpwn.com/@sir">Mastodon</a>, join us for the next one!</p>
+<p>I&rsquo;m also starting on another project called cozy, which is yak-shaving for
+several other projects I have in mind. It&rsquo;s kind of ambitious&hellip; it&rsquo;s a full
+end-to-end C compiler toolchain. One of my goals (which, when completed, can
+unblock other tasks before cozy as a whole is done) is to make the parser work
+as a standalone library for reading, writing, and maniuplating the C AST. I&rsquo;ve
+completed the lexer and basic yacc grammar, and I&rsquo;m working on extracting an AST
+from the parser. I only started this weekend, so it&rsquo;s pretty early on.</p>
+<p>I&rsquo;ll leave you with a fun weekend project I did shortly after the last update:
+<a href="https://qlock.drewdevault.com/">otaqlock</a>. The server this runs on isn&rsquo;t awash
+with bandwidth and the site doesn&rsquo;t work great on mobile - so your milage may
+vary - but it is a cool artsy restoration project nonetheless. Until next time,
+and thank you for your support!</p>
+<small class="text-muted">
+This work was possible thanks to users who support me financially. Please
+consider <a href="/donate">donating to my work</a> or <a
+href="https://sourcehut.org">buying a sourcehut.org subscription</a>. Thank you!
+</small>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

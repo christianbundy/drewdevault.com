@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>The bug that hides from breakpoints</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  The bug that hides from breakpoints
+  <small>
+    <span class="date">February 2, 2014</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>This is the story of the most difficult bug I ever had to solve. See if you can
+figure it out before the conclusion.</p>
+<h3 id="background">Background</h3>
+<p>For some years now, I&rsquo;ve worked on a kernel for Texas
+Instruments calculators called <a href="https://github.com/KnightOS/kernel">KnightOS</a>.
+This kernel is written entirely in assembly, and targets the old-school z80
+processor from back in 1976. This classic processor was built without any
+concept of protection rings. It&rsquo;s an 8-bit processor, with 150-some instructions
+and (in this application) 32K of RAM and 32K of Flash. This stuff is so old, I
+ended up writing most of the KnightOS toolchain from scratch rather than try to
+get archaic assemblers and compilers running on modern systems.</p>
+<p>When you&rsquo;re working in an enviornment like this, there&rsquo;s no seperation between
+kernel and userland. All &ldquo;userspace&rdquo; programs run as root, and crashing the entire
+system is a simple task. All the memory my kernel sets aside for the
+process table, or memory ownership, file handles, stacks, any other executing
+process - any program can modify this freely. Of course, we have to rely on the
+userland to play nice, and it usually does. But when there are bugs, they can be a
+real pain in the ass to hunt down.</p>
+<h3 id="the-elusive-bug">The elusive bug</h3>
+<p>The original bug report: <strong>When running the counting demo and switching between
+applications, the thread list graphics become corrupted.</strong></p>
+<p>I can reproduce this problem, so I settle into my development enviornment and I
+set a breakpoint near the thread list&rsquo;s graphical code. I fire up the emulator and
+repeat the steps&hellip; but it doesn&rsquo;t happen. This happened consistently: <strong>the bug
+was not reproduceable when a breakpoint was set</strong>. Keep in mind, I&rsquo;m running this
+in a z80 emulator, so the enviornment is supposedly no different. There&rsquo;s no
+debugger attached here.</p>
+<p>Though this is quite strange, I don&rsquo;t immediately despair. I try instead setting a
+&ldquo;breakpoint&rdquo; by dropping an infinite loop in the code, instead of a formal
+breakpoint. I figure that I can halt the program flow manually and open the
+debugger to inspect the problem. However, the bug wouldn&rsquo;t be tamed quite so
+easily. The bug was unreproducable when I had this psuedo-breakpoint in place,
+too.</p>
+<p>At this point, I started to get a little frustrated. How do I debug a problem that
+disappears when you debug it? I decided to try and find out what caused it after
+it had taken place, by setting the breakpoint to be hit only after the graphical
+corruption happened. Here, I gained some ground. I was able to reproduce it, and
+<em>then</em> halt the machine, and I could examine memory and such after the bug was
+given a chance to have its way over the system.</p>
+<p>I discovered the reason the graphics were being corrupted. The kernel kept the
+length of the process table at a fixed address. The thread list, in order to draw
+the list of active threads, looks to this value to determine how many threads it
+should draw. Well, when the bug occured, the value was too high! The thread list
+was drawing threads that did not exist, and the text rendering puked non-ASCII
+characters all over the display. But why was that value being corrupted?</p>
+<p>It was an oddly specific address to change. None of the surrounding memory was
+touched. Making it even more odd was the very specific conditions this happened
+under - only when the counting demo was running. I asked myself, &ldquo;what makes the
+counting demo unique?&rdquo; It hit me after a moment of thought. The counting demo
+existed to demonstrate non-supsendable threads. The kernel would stop executing
+threads (or &ldquo;suspend&rdquo; them) when they lost focus, in an attempt to keep the
+system&rsquo;s very limited resources available. The counting demo was marked as
+non-suspendable, a feature that had been implemented a few months prior. It
+showed a number on the screen that counted up forever, and the idea was that you
+could go give some other application focus, come back, and the number would have
+been counting up while you were away. A background task, if you will.</p>
+<p>A more accurate description of the bug emerged: &ldquo;the length of the kernel process
+table gets corrupted when launching the thread list when a non-suspendable thread
+is running&rdquo;. What followed was hours and hours of crawling through the hundreds of
+lines of assembly between summoning the thread list, and actually seeing it. I&rsquo;ll
+spare you the details, because they are very boring. We&rsquo;ll pick the story back up
+at the point where I had isolated the area in which it occured: applib.</p>
+<p>The KnightOS userland offered &ldquo;applib&rdquo;, a library of common functions applications
+would need to get the general UX of the system. Among these was the function
+<code>applibGetKey</code>, which was a wrapper around the kernel&rsquo;s <code>getKey</code> function. The
+idea was that it would work the same way (return the last key pressed), but for
+special keys, it would do the appropriate action for you. For example, if you
+pressed the F5 key, it would suspend the current thread and launch the thread
+list. This is the mechanism with which most applications transfer control out of
+their own thread and into the thread list.</p>
+<p>Eager that I had found the source of the issue, I placed a breakpoint nearby. That
+same issue from before struck again - the bug vanished when the breakpoint was
+set. I tried a more creative approach: instead of using a proper breakpoint, I
+asked the emulator to halt whenever that address was written to. Even still - the
+bug hid itself whenever this happened.</p>
+<p>I decided to dive into the kernel&rsquo;s getKey function. Here&rsquo;s the start of the
+function, as it appeared at the time:</p>
+<pre><code>getKey:
+    call hasKeypadLock
+    jr _
+    xor a
+    ret
+_:  push bc
+; ...
+</code></pre><p>I started going through this code line-by-line, trying to see if there was
+anything here that could concievably touch the thread table. I noticed a minor
+error here, and corrected it without thinking:</p>
+<pre><code>getKey:
+    call hasKeypadLock
+    jr z, _
+    xor a
+    ret
+_:  push bc
+; ...
+</code></pre><p>The simple error I had corrected: getKey was pressing forward, even when the
+current thread didn&rsquo;t have control of the keyboard hardware. This was a silly
+error - only two characters were omitted.</p>
+<p>A moment after I fixed that issue, the answer set in - this was the source of the
+entire problem. Confirming it, I booted up the emulator with this change applied
+and the bug was indeed resolved.</p>
+<p>Can you guess what happened here? Here&rsquo;s the other piece of the puzzle to help you
+out, translated more or less into C for readability:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">applibGetKey</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">key</span> <span class="o">=</span> <span class="n">getKey</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="o">==</span> <span class="n">KEY_F5</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">launch_threadlist</span><span class="p">();</span>
+        <span class="n">suspend_thread</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">key</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>Two more details you might not have picked up on:</p>
+<ul>
+<li>applibGetKey is non-blocking</li>
+<li>suspend_thread suspends the current thread immediately, so it doesn&rsquo;t return until the
+thread resumes.</li>
+</ul>
+<h3 id="the-bug-uncovered">The bug, uncovered</h3>
+<p>Here&rsquo;s what actually happened. For most threads (the suspendable kind), that
+thread stops processing when <code>suspend_thread()</code> is called. The usually
+non-blocking applibGetKey function blocks until the thread is resumed in this
+scenario. However, the counting demo was <em>non-suspendable</em>. The suspend_thread
+function has no effect, by design. So, suspend_thread did not block, and the
+keypress was returned straight away. By this point, the thread list had launched
+properly and it was given control of the keyboard.</p>
+<p>However, the counting demo went back into its main loop, and started calling
+applibGetKey again. Since the average user&rsquo;s finger remained pressed against the
+button for a few moments more, applibGetKey <em>continued to launch the thread list,
+over and over</em>. The thread list itself is a special thread, and it doesn&rsquo;t
+actually have a user-friendly name. It was designed to ignore itself when it drew
+the active threads. However, it was <em>not</em> designed to ignore other instances of
+itself, the reason being that there would never be two of them running at once.
+When attempting to draw these other instances, the thread list started rendering
+text that wasn&rsquo;t there, causing the corruption.</p>
+<p>This bug vanished whenever I set a breakpoint because it would halt the system&rsquo;s
+keyboard processing logic. I lifted my finger from the key before allowing it to
+move on.</p>
+<p>The solution was to make the kernel&rsquo;s getKey function respect hardware locks by
+fixing that simple, two-character typo. That way, the counting demo, which had no
+right to know what keys were being pressed, would not know that they key was still
+being pressed.</p>
+<p>The debugging described by this blog post took approximately three weeks.</p>
+<p><a href="https://news.ycombinator.com/item?id=7688700">Discussion on Hacker News</a></p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

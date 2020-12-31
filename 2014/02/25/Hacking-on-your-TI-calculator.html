@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Hacking on your TI calculator</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Hacking on your TI calculator
+  <small>
+    <span class="date">February 25, 2014</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I&rsquo;ve built the <a href="https://github.com/KnightOS/kernel">KnightOS kernel</a>, an open-source OS that runs on
+several TI calculator models, including the popular TI-83+ family, and recently the new TI-84+ Color
+Silver Edition. I have published some information on how to build your own operating sytsems for these
+devices, but I&rsquo;ve learned a lot since then and I&rsquo;m writing this blog post to include the lessons I&rsquo;ve
+learned from other attempts.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Coming into this, you should be comforable with z80 assembly. It&rsquo;s possible to write an OS for these
+devices in C (and perhaps other high-level languages), but proficiency in z80 assembly is still
+required. Additionally, I don&rsquo;t consider C a viable choice for osdev on these devices when you
+consider that the available compliers do not optimize the result very well, and these devices have
+very limited resources.</p>
+<p>You will also have to be comfortable (though not neccessarily expert-level) with these tools:</p>
+<ul>
+<li>make</li>
+<li>The assembler of your choice</li>
+<li>The toolchain of your choice</li>
+</ul>
+<p>I&rsquo;m going to gear this post from the perspective of a Linux user, but Windows users should be able to
+do fine with cygwin. If you&rsquo;re looking for a good assembler, I suggest
+<a href="https://github.com/KnightOS/sass">sass</a>, the assembler KnightOS uses. I built it myself to address
+the needs of the kernel, and it includes several nice features that make it easier to maintain such a
+large and complex codebase. Other good choices include
+<a href="https://wabbit.codeplex.com/releases/view/45088">spasm</a> and
+<a href="https://code.google.com/p/brass-assembler/">brass</a>.</p>
+<p>For your toolchain, there are a few options, but I&rsquo;ve built custom tools that work well for KnightOS
+and should fit into your project as well. You need to accomplish a couple of tasks:</p>
+<ul>
+<li><a href="https://github.com/KnightOS/MakeROM">Create ROM files from assembler output</a></li>
+<li><a href="https://github.com/KnightOS/CreateUpgrade">Create OS upgrades from ROM files</a></li>
+</ul>
+<p>You also need the <a href="http://brandonw.net/calculators/keys/">cryptographic signing keys</a> for any of the
+calculators you intend to support. There are ways to get around using these (which you&rsquo;ll need to
+research for the TI-84+ CSE, for example) that you may want to look into. These keys will allow you
+to add a cryptographic signature on your OS upgrades that will make your calculator think it&rsquo;s an
+official Texas Instruments operating system, and you will be able to send it to the device. The
+CreateUpgrade tool linked above produces signed upgrade files for you, but if you choose to use other
+tools you may need to find a seperate signing tool.</p>
+<p>Additonally, if you target devices with a newer boot code, you&rsquo;ll have to reflash your boot code or
+use a tool like <a href="http://brandonw.net/calcstuff/uosrecv.zip">UOSRECV</a> to send your OS to an actual
+device.</p>
+<h2 id="what-youre-getting-into">What you&rsquo;re getting into</h2>
+<p>You will be replacing everything on the calculator with your own system (though if you want to retain
+compatability with TIOS like <a href="http://brandonw.net/calculators/OS2/">OS2</a> tried to, feel free). You&rsquo;ll
+need to do <em>everything</em>, including common things like providing your own multiplication functions, or
+drawing functions, or anything else. You&rsquo;ll also be responsible for initializing the calculator and
+all of the hardware you want to use (such as the LCD or keypad).</p>
+<p>That being said, you can take some code from projects like the KnightOS kernel to help you out. The
+KnightOS kernel is open sourced under the MIT license, which means you&rsquo;re free to take any code from
+it and use it in your own project. I also strongly suggest using it as a reference for when you get
+stuck.</p>
+<p>The advantage to taking on this task is that you can leverage the full potential of these devices.
+What you&rsquo;re building for is a 6/15 MHz z80 with 32K or more of RAM, plus plenty of Flash and all
+sorts of fun hardware. You can also build something that frees your device of proprietary code, if
+that is what you are interested in (though the proprietary boot code would remain - but that&rsquo;s a
+story for another day).</p>
+<p>If you plan on making a full blown operating systems that can run arbituary programs and handle all
+sorts of fun things, you&rsquo;ll want to make sure you have a strong understanding of programming in
+general, as well as solid algorithmic knowledge and low-level knowledge. If you don&rsquo;t know how to
+use pointers or bit math, or don&rsquo;t fully understand the details of the device, you may want to try
+again when you do. That being said, I didn&rsquo;t know a lot when I started KnightOS (as the community was
+happy to point out), and now I feel much more secure in my skills.</p>
+<h2 id="building-the-basic-os">Building the basic OS</h2>
+<p>We&rsquo;ll build a simple OS here to get you started, including booting the thing up and showing a
+simple sprite on the screen. First, we&rsquo;ll create a simple Makefile. This OS will run on the
+TI-73, TI-83+, TI-83+ SE, TI-84+, TI-84+ SE, and TI-84+ CSE, as well as the French variations
+on these devices.</p>
+<p><a href="/demo_os.tar.gz">Grab this tarball</a> with the basic OS to get started. It looks like this:</p>
+<pre><code>.
+├── build
+│   ├── CreateUpgrade.exe
+│   ├── MakeROM.exe
+│   └── sass.exe
+├── inc
+│   └── platforms.inc
+├── Makefile
+└── src
+    ├── 00
+    │   ├── base.asm
+    │   ├── boot.asm
+    │   ├── display.asm
+    │   └── header.asm
+    └── boot
+        └── base.asm
+</code></pre>
+<p>If you grab this, run <code>make all</code> and you&rsquo;ll get a bunch of ROM files in the <code>bin</code> directory.
+I&rsquo;ll explain a little bit about how it works. The important file here is <code>boot.asm</code>, but I
+encourage you to read whatever else you feel like - especially the Makefile.</p>
+<h3 id="miscellaneous-files">Miscellaneous Files</h3>
+<p>Here is the purpose of each file, save for boot.asm (which gets its own section later):</p>
+<ul>
+<li>The makefile is like a script for building the OS. You should probably learn how these work
+if you don&rsquo;t already.</li>
+<li>Everything in build/ is part of the suggested toolchain.</li>
+<li>The inc folder can be #included to, and includes <code>platforms.inc</code>, which defines a bunch of
+useful constants for you.</li>
+<li><code>base.asm</code> is just a bunch of #include statements, for linking without a linker</li>
+<li><code>display.asm</code> has some useful display code I pulled out of KnightOS</li>
+<li><code>header.asm</code> contains the OS header and RST list</li>
+</ul>
+<h3 id="bootasm">boot.asm</h3>
+<p>The real juciy stuff is boot.asm. This file initializes everything and draws a smiley face
+in the middle of the screen. Here&rsquo;s what it does (in order):</p>
+<ol>
+<li>Disable interrupts</li>
+<li>Set up memory mappings</li>
+<li>Create a stack and set SP accordingly</li>
+<li>Initialize the LCD (B&amp;W or color)</li>
+<li>Draw a smiley face</li>
+</ol>
+<p>I&rsquo;m sure your OS will probably want to do more interesting things. The KnightOS kernel, for
+example, adds on top of this a bunch of kernel state initialization, filesystem initialization,
+and loads up a boot program.</p>
+<p><code>boot.asm</code> is well-commented and I encourage you to read through it to get an idea of what
+needs to be done. The most complicated and annoying bit is the color LCD initialization, which is
+mostly in <code>display.asm</code>.</p>
+<p>I encourage you to spend some time playing with this. Bring in more things and try to build
+something simple. Remember, you have no bcalls here. You need to build everything yourself.</p>
+<h2 id="resources">Resources</h2>
+<p>There are several things you might want to check out. The first and most obvious is
+<a href="http://wikiti.brandonw.net/index.php?title=Calculator_Documentation">WikiTI</a>. I don&rsquo;t use much
+here except for the documentation on I/O ports, and you&rsquo;ll find it useful, too.</p>
+<p>The rest of the resources here are links to code in the KnightOS kernel.</p>
+<p>The <a href="https://github.com/KnightOS/kernel/blob/master/src/00/interrupt.asm#L19">interrupt handler</a>
+is a good reference for anyone wanting to work with interrupts to do things like handle the ON
+button, link activity, or timers. One good use case here (and what KnightOS uses it for) is
+preemptive multitasking. Note that you might want to use <code>exx</code> and <code>ex af, af'</code> instead of
+pushing all the registers like KnightOS does. Take special note of how we handle USB activity.</p>
+<p>You might want to consider offering some sort of color LCD compatabilty mode like KnightOS does.
+This allows you to treat it like a black &amp; white screen. The relevant code is
+<a href="https://github.com/KnightOS/kernel/blob/master/src/00/display-color.asm">here</a>.</p>
+<p>If you want to interact with the keyboard, you&rsquo;ll probably want to reference the KnightOS
+keyboard code <a href="https://github.com/KnightOS/kernel/blob/master/src/00/keyboard.asm">here</a>. You
+might also consider working out an interrupt-based keyboard driver.</p>
+<p>If you&rsquo;d like to manipulate Flash, you need to run most of it from RAM. You will probably want
+to reference the <a href="https://github.com/KnightOS/kernel/blob/master/src/00/flash.asm">KnightOS Flash driver</a>.</p>
+<h2 id="skipping-to-the-good-part">Skipping to the good part</h2>
+<p>It&rsquo;s entirely possible to avoid writing an entire system by yourself. If you want to dive right
+in and start immediately making something cool, you might consider grabbing the KnightOS kernel.
+Right off the bat, you&rsquo;ll get:</p>
+<ul>
+<li>A tree-based filesystem</li>
+<li>Multitasking and IPC</li>
+<li>Memory management</li>
+<li>A standard library (math, sorting, etc)</li>
+<li>Library support</li>
+<li>Hardware drivers for the keyboard, displays, etc</li>
+<li>Color and monochrome graphics (and a compatability layer)</li>
+<li>A font and text rendering</li>
+<li><a href="http://www.knightos.org/documentation.html">Great documentation</a></li>
+<li>Full support for 9 calculator models</li>
+</ul>
+<p>The kernel is standalone and open-source, and it runs great without the KnightOS userspace.
+If you&rsquo;re interested in that, you can get started <a href="https://github.com/KnightOS/kernel">on GitHub</a>.
+We&rsquo;d also love some contributors, if you want to help make the kernel even better.</p>
+<h2 id="closing-thoughts">Closing thoughts</h2>
+<p>I hope to see a few cool OSes come into being in the TI world. It&rsquo;s unfortunately sparse in that
+regard. If you run into any problems, feel free to drop by #knightos on irc.freenode.net, where
+I&rsquo;m sure myself or someone else can help answer your questions. Good luck!</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,88 @@
+This is my first Gemini-exclusive blog post. Enjoy!
+
+My blog on the WWW is managed by Hugo, a static site generator written in Go.
+
+=> https://drewdevault.com My home page on the WWW
+=> https://gohugo.io Hugo
+
+I want to have something similar set up to allow me to more easily share content between my WWW site and my Gemini site, and so today I set out to teach Hugo about Gemini. At first I expected to be patching Hugo, but I was able to get something with a reasonable level of workitude with the OOTB tools for custom output formats.
+
+=> https://gohugo.io/templates/output-formats/ Hugo's custom output formats
+
+I had these goals from the outset:
+
+1. I wanted to opt-in to mixing content between the Gemini site and the WWW site. Not all WWW content is appropriate to Gemini.
+
+2. By no means was I going to attempt an automated translation of Markdown (the original source for my WWW articles) to Gemini. The Gemini experience should be first-class, so a manual translation was called for.
+
+3. Some means of having Gemini-exclusive content is desirable. Not just blog posts like this, but also pages like information about my Gemini software.
+
+=> /gmni.gmi gmni: a gemini client
+=> /gmnisrv.gmi gmnisrv: a gemini server
+
+In order to accomplish these goals, I needed to set aside some kind of Gemini-specific output directory for Hugo, convince it to read Gemtext alternate versions of my pages, and figure out how to designate some pages as Gemini-only. Turns out Hugo already supports custom output formats, which can have their own templates and needn't be HTML. The relevant config.toml additions, for me, were:
+
+```
+[mediaTypes]
+[mediaTypes."text/gemini"]
+suffixes = ["gmi"]
+
+[outputFormats]
+[outputFormats.Gemini]
+name = "GEMTEXT"
+isPlainText = true
+isHTML = false
+mediaType = "text/gemini"
+protocol = "gemini://"
+permalinkable = true
+path = "gemini/"
+```
+
+This also accomplishes another goal: by adding `path = "gemini/"`, I can cordon the Gemini content off into a subdirectory, and avoid polluting the Gemini site with WWW content or vice versa.
+
+However, after a few minutes trying to figure out how this worked, it dawned upon me that Hugo does not support custom *input* formats as well. This made goal #2 a challenge. Ultimately I came up with the following hack for layouts/blog/single.gmi:
+
+```
+# {{$.Title}}
+
+{{ trim (readFile (replace $.File.Path ".md" ".gmi")) "\n" | safeHTML }}
+
+(further templating code trimmed)
+```
+
+This just swaps .md for .gmi in the file extension of the input file, then reads it and runs it through safeHTML to get rid of the typical HTML garbage (e.g. &amp;). Gemtext is whitespace-sensitive, so I also trim off any leading or trailing newlines so that I can make it flow more nicely into the templated content.
+
+In order to write a Gemini version of an article, I add `outputs: [html, gemtext]` to the frontmatter of the WWW version, then write a gemtext version to the same file path s/.html/.gmi/. Easy!
+
+I was also able to write a layout for the Gemini index page which enumerates all of the articles with Gemini versions:
+
+```
+## Blog posts
+{{ range (where .Site.RegularPages "Section" "blog") }}
+{{- if .OutputFormats.Get "gemtext" }}
+=> {{replace .Permalink "/gemini" "" 1}} {{.Date.Format "January 2, 2006"}}: {{.Title}}{{ end }}{{ end }}
+```
+
+Gemini's sensitivity to whitespace is again the reason why this is a bit ugly. A similar change to the WWW index page omits articles which have no HTML version. Also note the replacing of "/gemini" with "" in the permalinks - this was necessary to un-do the path = "gemini/" from config.toml so that once the gemini subdirectory was rehomed as the root of a Gemini site, the links lined up right.
+
+I also wanted to generate a Gemini-specific RSS feed. I updated config.toml with another custom format:
+
+```
+[outputFormats.GEMRSS]
+name = "GEMRSS"
+isHTML = false
+mediaType = "application/rss+xml"
+protocol = "gemini://"
+path = "gemini/"
+```
+
+Then I updated the default output formats for "section"-class pages, i.e. blog posts.
+
+```
+[outputs]
+section = ["HTML", "RSS", "GEMRSS"]
+```
+
+layouts/_default/section.gemrss.xml renders the feed, but I'll let you read that on your own time rather than paste that mess into this article. An oddity that I decided not to care about is that the rendered feed is *not* output to the gemini directory - I'll just update my build script to move it to the right location after Hugo finishes its work.
+
+And that's it! A few minor tweaks & updates to my deploy script and this is ready to ship. Tada! Thanks for having me here in Geminispace - I'm enjoying my stay.

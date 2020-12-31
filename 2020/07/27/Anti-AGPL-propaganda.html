@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>The falsehoods of anti-AGPL propaganda</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  The falsehoods of anti-AGPL propaganda
+  <small>
+    <span class="date">July 27, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Google is well-known for <a href="https://opensource.google/docs/using/agpl-policy/">forbidding the use of</a> software
+using the <a href="https://www.gnu.org/licenses/agpl-3.0.en.html">GNU Affero General Public License</a>, commonly known as &ldquo;AGPL&rdquo;.
+Google is also well-known for being the subject of cargo-culting by fad
+startups. Unfortunately, this means that they are susceptible to what is
+ultimately anti-AGPL propaganda from Google, with little to no basis in fact.</p>
+<p><em>Obligatory: I&rsquo;m not a lawyer; this is for informational purposes only.</em></p>
+<p>In truth, the terms of the AGPL are pretty easy to comply with. The basic
+obligations of the AGPL which set it apart from other licenses are as follows:</p>
+<ul>
+<li>Any derivative works of AGPL-licensed software must also use the AGPL.</li>
+<li>Any users of such software are entitled to the source code under the terms of
+the AGPL, including users accessing it over the network such as with their web
+browser or via an API or internet protocol.</li>
+</ul>
+<p>If you&rsquo;re using AGPL-licensed software like a database engine or <a href="https://sr.ht/~sircmpwn/sourcehut/">my own
+AGPL-licensed works</a>, and you haven&rsquo;t made any changes to the source
+code, all you have to do is provide a link to the upstream source code
+somewhere, and if users ask for it, direct them there. If you <em>have</em> modified
+the software, you simply have to publish your modifications. The easiest way to
+do this is to send it as a patch upstream, but you could use something as simple
+as providing a tarball to your users.</p>
+<p>The nuances are detailed and cover many edge cases to prevent abuse. But in
+general, just publish your modifications under the same AGPL terms and you&rsquo;ll
+be good to go. The license is usually present in the source code as a <code>COPYING</code>
+or <code>LICENSE</code> file, so if you just tar up your modified source code and drop a
+link on your website, that&rsquo;s good enough. If you want to go the extra mile and
+express your gratitude to the original software developers, consider submitting
+your changes for upstream inclusion. Generally, the feedback you&rsquo;ll receive will
+help to make your changes better for your use-case, too; and submitting your
+work upstream will prevent your copy from diverging from upstream.</p>
+<p>That&rsquo;s pretty easy, right? I&rsquo;m positive that your business has to deal with much
+more onerous contracts than the AGPL. Then why does Google make a fuss about it?</p>
+<p><a href="https://opensource.google/docs/using/agpl-policy/">The Google page about the AGPL</a> details inaccurate (but
+common<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>) misconceptions about the obligations of the AGPL that don&rsquo;t follow
+from the text. Google states that if, for example, Google Maps used PostGIS as
+its data store, and PostGIS used the AGPL, Google would be required to release
+the Google Maps code. This is not true. They would be required to release <em>their
+PostGIS patches</em> in this situation. AGPL does not extend the GPL in that it
+makes the Internet count as a form of linking which creates a derivative work,
+as Google implies, but rather that it makes anyone who uses the software via
+the Internet entitled to its source code. It does not update the &ldquo;what counts
+as a &lsquo;derivative work&rsquo;&rdquo; algorithm, so to speak — it updates the &ldquo;what
+counts as &lsquo;distributing&rsquo; the software&rdquo; algorithm.</p>
+<p>The reason they spread these misconceptions is straightforward: they want to
+discourage people from using the AGPL, because they cannot productize such
+software effectively. Google wants to be able to incorporate FOSS software into
+their products and sell it to users without the obligation to release their
+derivative works. Google is an Internet company, and they offer Internet
+services. The original GPL doesn&rsquo;t threaten their scheme because their software
+is accessed over the Internet, not distributed to end-users directly.</p>
+<p>By discouraging the use of AGPL in the broader community, Google hopes to create
+a larger set of free- and open-source software that they can take for their own
+needs without any obligations to upstream. Ask yourself: why is documentation of
+internal-facing decisions like what software licenses to use being published in
+a public place? The answer is straightforward: to influence the public. This is
+propaganda.</p>
+<p>There&rsquo;s a bizarre idea that software companies which eschew the AGPL in favor of
+something like MIT are doing so specifically because they want companies &ldquo;like
+Google<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>&rdquo; to pay for their software, and they know that they have no chance if
+they use AGPL. In truth, Google was never going to buy your software. If you
+don&rsquo;t use the AGPL, they&rsquo;re just going to take your software and give nothing
+back. If you do use the AGPL, they&rsquo;re just going to develop a solution in-house.
+There&rsquo;s no outcome where Google pays you.</p>
+<p>Don&rsquo;t be afraid to use the AGPL, and don&rsquo;t be afraid to use software which uses
+the AGPL. The obligations are not especially onerous or difficult, despite what
+Google would have you believe. The license isn&rsquo;t that long — read it and
+see for yourself.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Likely common <em>because of this page</em>. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>By the way, there are no more than 10 companies world-wide which are &ldquo;like Google&rdquo; by any measure. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

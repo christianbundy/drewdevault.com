@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Writing a Wayland Compositor, Part 1: Hello wlroots</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Writing a Wayland Compositor, Part 1: Hello wlroots
+  <small>
+    <span class="date">February 17, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>This is the first in a series of <em>many</em> articles I&rsquo;m writing on the subject of
+building a functional Wayland compositor from scratch. As you may know, I am the
+lead maintainer of <a href="https://github.com/swaywm/sway">sway</a>, a reasonably popular
+Wayland compositor. Along with many other talented developers, we&rsquo;ve been
+working on <a href="https://github.com/swaywm/wlroots">wlroots</a> over the past few
+months. This is a powerful tool for creating new Wayland compositors, but it is
+very dense and difficult to understand. Do not despair! The intention of these
+articles is to make you understand and feel comfortable using it.</p>
+<p>Before we dive in, a quick note: the wlroots team is starting a crowdfunding
+campaign today to fund travel for each of our core contributors to meet in
+person and work for two weeks on a hackathon. Please consider contributing to
+<a href="https://www.indiegogo.com/projects/sway-hackathon-software/x/1059863">the campaign</a>!</p>
+<p>You <strong>must</strong> read and comprehend my earlier article, <a href="/2017/06/10/Introduction-to-Wayland.html">An introduction to
+Wayland</a>, before attempting to
+understand this series of blog posts, as I will be relying on concepts and
+terminology introduced there to speed things up. Some background in OpenGL is
+helpful, but not required. A good understanding of C is mandatory. If you have
+any questions about any of the articles in this series, please reach out to me
+directly via <a href="mailto:sir@cmpwn.com">sir@cmpwn.com</a> or to the wlroots team at
+<a href="http://webchat.freenode.net/?channels=sway-devel&amp;uio=d4">#sway-devel on irc.freenode.net</a>.</p>
+<p>During this series of articles, the compositor we&rsquo;re building will live on
+GitHub: <a href="https://github.com/SirCmpwn/mcwayface">Wayland McWayface</a>. Each article
+in this series will be presented as a breakdown of a single commit between zero
+and a fully functional Wayland compositor. The commit for this article is
+<a href="https://github.com/SirCmpwn/mcwayland/commit/f89092e">f89092e</a>.
+I&rsquo;m only going to explain the important parts - I suggest you review
+the entire commit separately.</p>
+<p>Let&rsquo;s get started. First, I&rsquo;m going to define a struct for holding our
+compositor&rsquo;s state:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"><span class="gi">+struct mcw_server {
+</span><span class="gi">+       struct wl_display *wl_display;
+</span><span class="gi">+       struct wl_event_loop *wl_event_loop;
+</span><span class="gi">+};
+</span></code></pre></div><p>Note: mcw is short for McWayface. We&rsquo;ll be using this acronym throughout the
+article series. We&rsquo;ll set one of these aside and initialize the Wayland display
+for it<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"> int main(int argc, char **argv) {
+<span class="gi">+       struct mcw_server server;
+</span><span class="gi">+
+</span><span class="gi">+       server.wl_display = wl_display_create();
+</span><span class="gi">+       assert(server.wl_display);
+</span><span class="gi">+       server.wl_event_loop = wl_display_get_event_loop(server.wl_display);
+</span><span class="gi">+       assert(server.wl_event_loop);
+</span><span class="gi"></span>        return 0;
+ }
+</code></pre></div><p>The Wayland display gives us a number of things, but for now all we care about
+is the event loop. This event loop is deeply integrated into wlroots, and is
+used for things like dispatching signals across the application, being notified
+when data is available on various file descriptors, and so on.</p>
+<p>Next, we need to create the backend:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"> struct mcw_server {
+        struct wl_display *wl_display;
+        struct wl_event_loop *wl_event_loop;
+ 
+<span class="gi">+       struct wlr_backend *backend;
+</span><span class="gi"></span> };
+</code></pre></div><p>The <strong>backend</strong> is our first wlroots concept. The backend is responsible for
+abstracting the low level <em>input</em> and <em>output</em> implementations from you. Each
+backend can generate zero or more input devices (such as mice, keyboards, etc)
+and zero or more output devices (such as monitors on your desk). Backends have
+nothing to do with Wayland - their purpose is to help you with the <em>other</em> APIs
+you need to use as a Wayland compositor. There are various backends with various
+purposes:</p>
+<ul>
+<li>The <strong>drm</strong> backend utilizes the Linux DRM subsystem to render directly to
+your physical displays.</li>
+<li>The <strong>libinput</strong> backend utilizes libinput to enumerate and control physical
+input devices.</li>
+<li>The <strong>wayland</strong> backend creates &ldquo;outputs&rdquo; as windows on another running
+Wayland compositors, allowing you to nest compositors. Useful for debugging.</li>
+<li>The <strong>x11</strong> backend is similar to the Wayland backend, but opens an x11 window
+on an x11 server rather than a Wayland window on a Wayland server.</li>
+</ul>
+<p>Another important backend is the <strong>multi</strong> backend, which allows you to
+initialize several backends at once and aggregate their input and output
+devices. This is necessary, for example, to utilize both drm and libinput
+simultaneously.</p>
+<p>wlroots provides a helper function for automatically choosing the most
+appropriate backend based on the user&rsquo;s environment:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff">        server.wl_event_loop = wl_display_get_event_loop(server.wl_display);
+        assert(server.wl_event_loop);
+ 
+<span class="gi">+       server.backend = wlr_backend_autocreate(server.wl_display);
+</span><span class="gi">+       assert(server.backend);
+</span><span class="gi"></span>        return 0;
+ }
+</code></pre></div><p>I would generally suggest using either the Wayland or X11 backends during
+development, especially before we have a way of exiting the compositor. If you
+call <code>wlr_backend_autocreate</code> from a running Wayland or X11 session, the
+respective backends will be automatically chosen.</p>
+<p>We can now start the backend and enter the Wayland event loop:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"><span class="gi">+       if (!wlr_backend_start(server.backend)) {
+</span><span class="gi">+               fprintf(stderr, &#34;Failed to start backend\n&#34;);
+</span><span class="gi">+               wl_display_destroy(server.wl_display);
+</span><span class="gi">+               return 1;
+</span><span class="gi">+       }
+</span><span class="gi">+
+</span><span class="gi">+       wl_display_run(server.wl_display);
+</span><span class="gi">+       wl_display_destroy(server.wl_display);
+</span><span class="gi"></span>        return 0;
+</code></pre></div><p>If you run your compositor at this point, you should see the backend start up
+and&hellip; do nothing. It&rsquo;ll open a window if you run from a running Wayland or X11
+server. If you run it on DRM, it&rsquo;ll probably do very little and you won&rsquo;t even
+be able to switch to another TTY to kill it.</p>
+<p>In order to render something, we need to know about the outputs we can render
+on. The backend provides a <strong>wl_signal</strong> that notifies us when it gets a new
+output. This will happen on startup and as any outputs are hotplugged at
+runtime.</p>
+<p>Let&rsquo;s add this to our server struct:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"> struct mcw_server {
+        struct wl_display *wl_display;
+        struct wl_event_loop *wl_event_loop;
+ 
+        struct wlr_backend *backend;
+<span class="gi">+
+</span><span class="gi">+       struct wl_listener new_output;
+</span><span class="gi">+
+</span><span class="gi">+       struct wl_list outputs; // mcw_output::link
+</span><span class="gi"></span> };
+</code></pre></div><p>This adds a <code>wl_listeners</code> which is signalled when new outputs are added. We
+also add a <code>wl_list</code> (which is just a linked list provided by libwayland-server)
+which we&rsquo;ll later store some state in. To be notified, we must use
+<code>wl_signal_add</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff">        assert(server.backend);
+ 
+<span class="gi">+       wl_list_init(&amp;server.outputs);
+</span><span class="gi">+
+</span><span class="gi">+       server.new_output.notify = new_output_notify;
+</span><span class="gi">+       wl_signal_add(&amp;server.backend-&gt;events.new_output, &amp;server.new_output);
+</span><span class="gi"></span> 
+        if (!wlr_backend_start(server.backend)) {
+</code></pre></div><p>We specify here the function to be notified, <code>new_output_notify</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"><span class="gi">+static void new_output_notify(struct wl_listener *listener, void *data) {
+</span><span class="gi">+       struct mcw_server *server = wl_container_of(
+</span><span class="gi">+                       listener, server, new_output);
+</span><span class="gi">+       struct wlr_output *wlr_output = data;
+</span><span class="gi">+
+</span><span class="gi">+       if (!wl_list_empty(&amp;wlr_output-&gt;modes)) {
+</span><span class="gi">+               struct wlr_output_mode *mode =
+</span><span class="gi">+                       wl_container_of(wlr_output-&gt;modes.prev, mode, link);
+</span><span class="gi">+               wlr_output_set_mode(wlr_output, mode);
+</span><span class="gi">+       }
+</span><span class="gi">+
+</span><span class="gi">+       struct mcw_output *output = calloc(1, sizeof(struct mcw_output));
+</span><span class="gi">+       clock_gettime(CLOCK_MONOTONIC, &amp;output-&gt;last_frame);
+</span><span class="gi">+       output-&gt;server = server;
+</span><span class="gi">+       output-&gt;wlr_output = wlr_output;
+</span><span class="gi">+       wl_list_insert(&amp;server-&gt;outputs, &amp;output-&gt;link);
+</span><span class="gi">+}
+</span></code></pre></div><p>This is a little bit complicated! This function has several roles when dealing
+with the incoming <code>wlr_output</code>. When the signal is raised, a pointer to the
+listener that was signaled is passed in, as well as the <code>wlr_output</code> which was
+created. <code>wl_container_of</code> uses some <code>offsetof</code>-based magic to get the
+<code>mcw_server</code> reference from the listener pointer, and we cast <code>data</code> to the
+actual type, <code>wlr_output</code>.</p>
+<p>The next thing we have to do is set the <strong>output mode</strong>. Some backends (notably
+x11 and Wayland) do not support modes, but they are necessary for DRM. Output
+modes specify a size and refresh rate supported by the output, such as
+<code>1920x1080@60Hz</code>. The body of this if statement just chooses the last one (which
+is usually the highest resolution and refresh rate) and applies it to the output
+with <code>wlr_output_set_mode</code>. We <em>must</em> set the output mode in order to render to
+it.</p>
+<p>Then, we set up some state for us to keep track of this output with in our
+compositor. I added this struct definition at the top of the file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"><span class="gi">+struct mcw_output {
+</span><span class="gi">+       struct wlr_output *wlr_output;
+</span><span class="gi">+       struct mcw_server *server;
+</span><span class="gi">+       struct timespec last_frame;
+</span><span class="gi">+
+</span><span class="gi">+       struct wl_list link;
+</span><span class="gi">+};
+</span></code></pre></div><p>This will be the structure we use to store any state we have for this output
+that is specific to our compositor&rsquo;s needs. We include a reference to the
+<code>wlr_output</code>, a reference to the <code>mcw_server</code> that owns this output, and the
+time of the last frame, which will be useful later. We also set aside a
+<code>wl_list</code>, which is used by libwayland for linked lists.</p>
+<p>Finally, we add this output to the server&rsquo;s list of outputs.</p>
+<p>We could use this now, but it would leak memory. We also need to handle output
+<em>removal</em>, with a signal provided by wlr_output. We add the listener to the
+mcw_output struct:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"> struct mcw_output {
+        struct wlr_output *wlr_output;
+        struct mcw_server *server;
+        struct timespec last_frame;
+<span class="gi">+
+</span><span class="gi">+       struct wl_listener destroy;
+</span><span class="gi"></span> 
+        struct wl_list link;
+ };
+</code></pre></div><p>Then we hook it up when the output is added:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff">         wl_list_insert(&amp;server-&gt;outputs, &amp;output-&gt;link);
+
+<span class="gi">+        output-&gt;destroy.notify = output_destroy_notify;
+</span><span class="gi">+        wl_signal_add(&amp;wlr_output-&gt;events.destroy, &amp;output-&gt;destroy);
+</span><span class="gi"></span> }
+</code></pre></div><p>This will call our output_destroy_notify function to handle cleanup when the
+output is unplugged or otherwise removed from wlroots. Our handler looks like
+this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"><span class="gi">+static void output_destroy_notify(struct wl_listener *listener, void *data) {
+</span><span class="gi">+        struct mcw_output *output = wl_container_of(listener, output, destroy);
+</span><span class="gi">+        wl_list_remove(&amp;output-&gt;link);
+</span><span class="gi">+        wl_list_remove(&amp;output-&gt;destroy.link);
+</span><span class="gi">+        wl_list_remove(&amp;output-&gt;frame.link);
+</span><span class="gi">+        free(output);
+</span><span class="gi">+}
+</span></code></pre></div><p>This one should be pretty self-explanatory.</p>
+<p>So, we now have a reference to the output. However, we are still not rendering
+anything - if you run the compositor again you&rsquo;ll notice the same behavior. In
+order to render things, we have to listen for the <strong>frame signal</strong>. Depending on
+the selected mode, the output can only receive new frames at a certain rate. We
+keep track of this for you in wlroots, and emit the frame signal when it&rsquo;s time
+to draw a new frame.</p>
+<p>Let&rsquo;s add a listener to the <code>mcw_output</code> struct for this purpose:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"> struct mcw_output {
+        struct wlr_output *wlr_output;
+        struct mcw_server *server;
+ 
+        struct wl_listener destroy;
+<span class="gi">+       struct wl_listener frame;
+</span><span class="gi"></span> 
+        struct wl_list link;
+ };
+</code></pre></div><p>We can then extend <code>new_output_notify</code> to register the listener to the frame
+signal:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff">        output-&gt;destroy.notify = output_destroy_notify;
+        wl_signal_add(&amp;wlr_output-&gt;events.destroy, &amp;output-&gt;destroy);
+<span class="gi">+       output-&gt;frame.notify = output_frame_notify;
+</span><span class="gi">+       wl_signal_add(&amp;wlr_output-&gt;events.frame, &amp;output-&gt;frame);
+</span><span class="gi"></span> }
+</code></pre></div><p>Now, whenever an output is ready for a new frame, <code>output_frame_notify</code> will be
+called. We still need to write this function, though. Let&rsquo;s start with the
+basics:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"><span class="gi">+static void output_frame_notify(struct wl_listener *listener, void *data) {
+</span><span class="gi">+       struct mcw_output *output = wl_container_of(listener, output, frame);
+</span><span class="gi">+       struct wlr_output *wlr_output = data;
+</span><span class="gi">+}
+</span></code></pre></div><p>In order to render anything here, we need to first obtain a wlr_renderer<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.
+We can obtain one from the backend:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"> static void output_frame_notify(struct wl_listener *listener, void *data) {
+        struct mcw_output *output = wl_container_of(listener, output, frame);
+        struct wlr_output *wlr_output = data;
+<span class="gi">+       struct wlr_renderer *renderer = wlr_backend_get_renderer(
+</span><span class="gi">+                       wlr_output-&gt;backend);
+</span><span class="gi"></span>}
+</code></pre></div><p>We can now take advantage of this renderer to draw something on the output.</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"> static void output_frame_notify(struct wl_listener *listener, void *data) {
+        struct mcw_output *output = wl_container_of(listener, output, frame);
+        struct wlr_output *wlr_output = data;
+        struct wlr_renderer *renderer = wlr_backend_get_renderer(
+                        wlr_output-&gt;backend);
+<span class="gi">+
+</span><span class="gi">+       wlr_output_make_current(wlr_output, NULL);
+</span><span class="gi">+       wlr_renderer_begin(renderer, wlr_output);
+</span><span class="gi">+
+</span><span class="gi">+       float color[4] = {1.0, 0, 0, 1.0};
+</span><span class="gi">+       wlr_renderer_clear(renderer, color);
+</span><span class="gi">+
+</span><span class="gi">+       wlr_output_swap_buffers(wlr_output, NULL, NULL);
+</span><span class="gi">+       wlr_renderer_end(renderer);
+</span><span class="gi"></span> }
+</code></pre></div><p>Calling <code>wlr_output_make_current</code> makes the output&rsquo;s OpenGL context &ldquo;current&rdquo;,
+and from here you can use OpenGL calls to render to the output&rsquo;s buffer. We call
+<code>wlr_renderer_begin</code> to configure some sane OpenGL defaults for us<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
+<p>At this point we can start rendering. We&rsquo;ll expand more on what you can
+do with <code>wlr_renderer</code> later, but for now we&rsquo;ll be satisified with clearing the
+output to a solid red color.</p>
+<p>When we&rsquo;re done rendering, we call <code>wlr_output_swap_buffers</code> to swap the
+output&rsquo;s front and back buffers, committing what we&rsquo;ve rendered to the actual
+screen. We call <code>wlr_renderer_end</code> to clean up the OpenGL context and we&rsquo;re
+done. Running our compositor now should show you a solid red screen!</p>
+<hr>
+<p>This concludes today&rsquo;s article. If you take a look at <a href="https://github.com/SirCmpwn/mcwayland/commit/f89092e">the
+commit</a> that this article
+describes, you&rsquo;ll see that I took it a little further with some code that clears
+the display to a different color every frame. Feel free to experiment with
+similar changes!</p>
+<p>Over the next two articles, we&rsquo;ll finish wiring up the Wayland server and render
+a Wayland client on screen. Please look forward to it!</p>
+<p style="text-align: right">
+    Next &mdash;
+    <a href="/2018/02/22/Writing-a-wayland-compositor-part-2.html">
+        Part 2: Rigging up the server
+    </a>
+</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>It&rsquo;s entirely possible to utilize a wlroots backend to make applications which are not Wayland compositors. However, we require a wayland display anyway because the event loop is necessary for a lot of wlroots internals. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>wlr_renderer is optional. When you call wlr_output_make_current, the OpenGL context is made current and from here you can use any approach you prefer. wlr_renderer is provided to help compositors with simple rendering requirements. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>Namely: the viewport and blend mode. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

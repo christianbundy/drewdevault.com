@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>philosophy on Drew DeVault&#39;s blog</title>
+    <link>./tags/philosophy.html</link>
+    <description>Recent content in philosophy on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 06 Feb 2020 00:00:00 +0000</lastBuildDate><atom:link href="./tags/philosophy/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Dependencies and maintainers</title>
+      <link>./2020/02/06/Dependencies-and-maintainers.html</link>
+      <pubDate>Thu, 06 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/02/06/Dependencies-and-maintainers.html</guid>
+      <description>I&amp;rsquo;m 34,018 feet over the Atlantic at the moment, on my way home from FOSDEM. It was as always a lovely event, with far too many events of interest for any single person to consume. One of the few talks I was able to attend1 left a persistent worm of thought in my brain. This talk was put on by representatives of Microsoft and GitHub and discusses whether or not there is a sustainability problem in open source (link).</description>
+    </item>
+    
+    <item>
+      <title>A philosophy of project governance</title>
+      <link>./2020/01/17/Effective-project-governance.html</link>
+      <pubDate>Fri, 17 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/01/17/Effective-project-governance.html</guid>
+      <description>I&amp;rsquo;ve been in the maintainer role for dozens of projects for a while now, and have moderated my fair share of conflicts. I&amp;rsquo;ve also been on the other side, many times, as a minor contributor watching or participating in conflict within other projects. Over the years, I&amp;rsquo;ve developed an approach to project governance which I believe is lightweight, effective, and inclusive.
+I hold the following axioms to be true:
+ Computer projects are organized by humans, creating a social system.</description>
+    </item>
+    
+    <item>
+      <title>Why Collabora really added Digital Restrictions Management to Weston</title>
+      <link>./2019/10/07/HDCP-in-Weston.html</link>
+      <pubDate>Mon, 07 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/10/07/HDCP-in-Weston.html</guid>
+      <description>A recent article from Collabora, Why HDCP support in Weston is a good thing, proports to offer a lot of insight into why HDCP - a Digital Restrictions Management (DRM) related technology - was added to Weston - a well known basic Wayland compositor which was once the reference compositor for Wayland. But this article is gaslighting you. There is one reason and one reason alone that explains why HDCP support landed in Weston.</description>
+    </item>
+    
+    <item>
+      <title>Don&#39;t sacrifice the right ideas to win the right words</title>
+      <link>./2019/09/17/The-wrong-words-but-the-right-ideas.html</link>
+      <pubDate>Tue, 17 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/09/17/The-wrong-words-but-the-right-ideas.html</guid>
+      <description>There is a difference between free software and open-source software. But you have to squint to see it. Software licenses which qualify for one title but not the other are exceptionally rare.
+A fascination with linguistics is common among hackers, and I encourage and participate in language hacking myself. Unfortunately, that seems to seep into the Free Software Foundation&amp;rsquo;s message a bit too much. Let&amp;rsquo;s see if any of this rings familiar:</description>
+    </item>
+    
+    <item>
+      <title>Absence of certain features in IRC considered a feature</title>
+      <link>./2019/07/01/Absence-of-features-in-IRC.html</link>
+      <pubDate>Mon, 01 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/07/01/Absence-of-features-in-IRC.html</guid>
+      <description>The other day a friend of mine (an oper on Freenode) wanted to talk about IRC compared to its peers, such as Matrix, Slack, Discord, etc. The ensuing discussion deserves summarization here. In short: I&amp;rsquo;m glad that IRC doesn&amp;rsquo;t have the features that are &amp;ldquo;showstoppers&amp;rdquo; for people choosing other platforms, and I&amp;rsquo;m worried that attempts to bring these showstopping &amp;ldquo;features&amp;rdquo; to IRC will worsen the platform for the people who use it now.</description>
+    </item>
+    
+    <item>
+      <title>My personal journey from MIT to GPL</title>
+      <link>./2019/06/13/My-journey-from-MIT-to-GPL.html</link>
+      <pubDate>Thu, 13 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/06/13/My-journey-from-MIT-to-GPL.html</guid>
+      <description>As I got started writing open source software, I generally preferred the MIT license. I actually made fun of the &amp;ldquo;copyleft&amp;rdquo; GPL licenses, on the grounds that they are less free. I still hold this opinion today: the GPL license is less free than the MIT license - but today, I believe this in a good way.
+If you haven&amp;rsquo;t yet, I suggest reading the MIT license - it&amp;rsquo;s very short.</description>
+    </item>
+    
+    <item>
+      <title>What is a fork, really, and how GitHub changed its meaning</title>
+      <link>./2019/05/24/What-is-a-fork.html</link>
+      <pubDate>Fri, 24 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/05/24/What-is-a-fork.html</guid>
+      <description>The fork button on GitHub - with the little number next to it for depositing dopamine into your brain - is a bit misleading. GitHub co-opted the meaning of &amp;ldquo;fork&amp;rdquo; to trick you into participating in their platform more. They did this in a well-intentioned way, for the sake of their pull requests feature, but ultimately this design is self-serving and causes some friction when contributors venture out of their GitHub sandbox and into the rest of the software development ecosystem.</description>
+    </item>
+    
+    <item>
+      <title>The &#34;shut up and get back to work&#34; coding style guide</title>
+      <link>./2019/04/29/Shut-up-and-get-back-to-work-style.html</link>
+      <pubDate>Mon, 29 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/04/29/Shut-up-and-get-back-to-work-style.html</guid>
+      <description>So you&amp;rsquo;re starting a new website, and you open the first CSS file. What style do you use? Well, you hate indenting with spaces passionately. You know tabs are right because they&amp;rsquo;re literally made for this, and they&amp;rsquo;re only one byte, and these god damn spaces people with their bloody spacebars&amp;hellip;
+Shut up and use spaces. That&amp;rsquo;s how CSS is written1. And you, mister web programmer, coming out of your shell and dipping your toes into the world of Real Programming, writing your first Golang program: use tabs, jerk.</description>
+    </item>
+    
+    <item>
+      <title>Choosing a VPN service is a serious decision</title>
+      <link>./2019/04/19/Your-VPN-is-a-serious-choice.html</link>
+      <pubDate>Fri, 19 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/04/19/Your-VPN-is-a-serious-choice.html</guid>
+      <description>There&amp;rsquo;s a disturbing trend in the past year or so of various VPN companies advertising to the general, non-technical public. It&amp;rsquo;s great that the general public is starting to become more aware of their privacy online, but I&amp;rsquo;m not a fan of these companies exploiting public paranoia to peddle their wares. Using a VPN in the first place has potentially grave consequences for your privacy - and can often be worse than not using one in the first place.</description>
+    </item>
+    
+    <item>
+      <title>NewPipe represents the best of FOSS</title>
+      <link>./2019/04/02/NewPipe-represents-the-best-of-FOSS.html</link>
+      <pubDate>Tue, 02 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/04/02/NewPipe-represents-the-best-of-FOSS.html</guid>
+      <description>NewPipe is a free and open-source Android application for browsing &amp;amp; watching YouTube. In my opinion, NewPipe is a perfect case-study in why free &amp;amp; open source software is great and how our values differ from proprietary software in important ways. There&amp;rsquo;s one simple reason: it&amp;rsquo;s better than the proprietary YouTube app, in every conceivable way, for free.
+NewPipe is better because it&amp;rsquo;s user-centric software. It exists to make its users lives better, not to enrich its overseers.</description>
+    </item>
+    
+    <item>
+      <title>Rust is not a good C replacement</title>
+      <link>./2019/03/25/Rust-is-not-a-good-C-replacement.html</link>
+      <pubDate>Mon, 25 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/03/25/Rust-is-not-a-good-C-replacement.html</guid>
+      <description>I have a saying that summarizes my opinion of Rust compared to Go: &amp;ldquo;Go is the result of C programmers designing a new programming language, and Rust is the result of C++ programmers designing a new programming language&amp;rdquo;. This isn&amp;rsquo;t just a metaphor - Go was designed by plan9 alumni, an operating system written in C and the source of inspiration for many of Go&amp;rsquo;s features, and Rust was designed by the folks at Mozilla - whose flagship product is one of the largest C++ codebases in the world.</description>
+    </item>
+    
+    <item>
+      <title>Sourcehut&#39;s spartan approach to web design</title>
+      <link>./2019/03/04/sourcehut-design.html</link>
+      <pubDate>Mon, 04 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/03/04/sourcehut-design.html</guid>
+      <description>Sourcehut is known for its brutalist design, with its mostly shades-of-gray appearance, conservative color usage, and minimal distractions throughout. This article aims to share some insights into the philosophy that guides this design, both for the curious reader and for the new contributor to the open-source project.
+The most important principle is that sr.ht is an engineering tool first and foremost, and when you&amp;rsquo;re there it&amp;rsquo;s probably because you&amp;rsquo;re in engineering mode.</description>
+    </item>
+    
+    <item>
+      <title>Tips for a disciplined git workflow</title>
+      <link>./2019/02/25/Using-git-with-discipline.html</link>
+      <pubDate>Mon, 25 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/02/25/Using-git-with-discipline.html</guid>
+      <description>Basic git usage involves typing a few stock commands to &amp;ldquo;sync everyone up&amp;rdquo;. Many people who are frustrated with git become so because they never progress beyond this surface-level understanding of how it works. However, mastering git is easily worth your time. How much of your day is spent using git? I would guess that there are many tools in your belt that you use half as often and have spent twice the time studying.</description>
+    </item>
+    
+    <item>
+      <title>Why I use old hardware</title>
+      <link>./2019/01/23/Why-I-use-old-hardware.html</link>
+      <pubDate>Wed, 23 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/01/23/Why-I-use-old-hardware.html</guid>
+      <description>Recently I was making sure my main laptop is ready for travel1, which mostly just entails syncing up the latest version of my music collection. This laptop is a Thinkpad X200, which turns 11 years old in July and is my main workstation away from home (though I bring a second monitor and an external keyboard for long trips). This laptop is a great piece of hardware. 100% of the hardware is supported by the upstream Linux kernel, including the usual offenders like WiFi and Bluetooth.</description>
+    </item>
+    
+    <item>
+      <title>Patches welcome</title>
+      <link>./2019/01/01/Patches-welcome.html</link>
+      <pubDate>Tue, 01 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/01/01/Patches-welcome.html</guid>
+      <description>Happy new year! This is always a weird &amp;ldquo;holiday&amp;rdquo; for me, since all of the fun happened last night. Today is just kind of&amp;hellip; I guess a chance for everyone to sober up before work tomorrow? It does tend to invite a sense of reflection and is the ideal time to plan for the year ahead. One of my goals in 2019 is to change more people&amp;rsquo;s thinking about the open source community and what it means to count among their number.</description>
+    </item>
+    
+    <item>
+      <title>It&#39;s not okay to pretend your software is open source</title>
+      <link>./2018/10/30/Its-not-okay-to-pretend-youre-open-source.html</link>
+      <pubDate>Tue, 30 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/10/30/Its-not-okay-to-pretend-youre-open-source.html</guid>
+      <description>Unfortunately, I find myself writing about the Commons Clause again. For those not in the know, the Commons Clause is an addendum designed to be added to free software licenses. The restrictions it imposes (you cannot sell the software) makes the resulting franken-license nonfree. I&amp;rsquo;m not going to link to the project which brought this subject back into the discussion - they don&amp;rsquo;t deserve the referral - but the continued proliferation of software using the Commons Clause gives me reason to speak out against it some more.</description>
+    </item>
+    
+    <item>
+      <title>Don&#39;t sign a CLA</title>
+      <link>./2018/10/05/Dont-sign-a-CLA.html</link>
+      <pubDate>Fri, 05 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/10/05/Dont-sign-a-CLA.html</guid>
+      <description>A large minority of open-source projects come with a CLA, or Contributor License Agreement, and require you to sign one before they&amp;rsquo;ll merge your patch. These agreements typically ask you to go above and beyond the rights you afford the project by contributing under the license the software is distributed with. And you should never sign one.
+Free and open source software licenses grant explicit freedoms to three groups: the maintainers, the users, and the contributors.</description>
+    </item>
+    
+    <item>
+      <title>Conservative web development</title>
+      <link>./2018/09/04/Conservative-web-development.html</link>
+      <pubDate>Tue, 04 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/09/04/Conservative-web-development.html</guid>
+      <description>Today I turned off my ad blocker, enabled JavaScript, opened my network monitor, and clicked the first link on Hacker News - a New York Times article. It started by downloading a megabyte of data as it rendered the page over the course of eight full seconds. The page opens with an advertisement 281 pixels tall, placed before even the title of the article. As I scrolled down, more and more requests were made, downloading a total of 2.</description>
+    </item>
+    
+    <item>
+      <title>The Commons Clause will destroy open source</title>
+      <link>./2018/08/22/Commons-clause-will-destroy-open-source.html</link>
+      <pubDate>Wed, 22 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/08/22/Commons-clause-will-destroy-open-source.html</guid>
+      <description>An alarmist title, I know, but it&amp;rsquo;s true. If the Commons clause were to be adopted by all open source projects, they would cease to be open source1, and therefore the Commons clause is trying to destroy open source. When this first appeared I spoke out about it in discussion threads around the net, but didn&amp;rsquo;t think anyone would take it seriously. Well, yesterday, some parts of Redis became proprietary software.</description>
+    </item>
+    
+    <item>
+      <title>Git is already federated &amp; decentralized</title>
+      <link>./2018/07/23/Git-is-already-distributed.html</link>
+      <pubDate>Mon, 23 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/07/23/Git-is-already-distributed.html</guid>
+      <description>There have always been murmurs about &amp;ldquo;replacing GitHub with something decentralized!&amp;rdquo;, but in the wake of the Microsoft acquisition these murmurs have become conversations. In particular, this blog post is a direct response to forge-net (formerly known as GitPub). They want to federate and decentralize git using ActivityPub, the same technology leveraged by Mastodon and PeerTube. But get this: git is already federated and decentralized!
+I already spoke at length about how a large minority of the git community uses email for collaboration in my previous article on the subject.</description>
+    </item>
+    
+    <item>
+      <title>Simple, correct, fast: in that order</title>
+      <link>./2018/07/09/Simple-correct-fast.html</link>
+      <pubDate>Mon, 09 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/07/09/Simple-correct-fast.html</guid>
+      <description>The single most important quality in a piece of software is simplicity. It&amp;rsquo;s more important than doing the task you set out to achieve. It&amp;rsquo;s more important than performance. The reason is straightforward: if your solution is not simple, it will not be correct or fast.
+Given enough time, you&amp;rsquo;ll find that all software which solves sufficiently complex problems is going to (1) have bugs and (2) have performance problems. Software with bugs is incorrect.</description>
+    </item>
+    
+    <item>
+      <title>The advantages of an email-driven git workflow</title>
+      <link>./2018/07/02/Email-driven-git.html</link>
+      <pubDate>Mon, 02 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/07/02/Email-driven-git.html</guid>
+      <description>git 2.18.0 has been released, and with it my first contribution to git has shipped! My patch was for a git feature which remains disappointingly obscure: git send-email. I want to introduce my readers to this feature and speak to the benefits of using an email-driven git workflow - the workflow git was originally designed for.
+Email isn&amp;rsquo;t as sexy as GitHub (and its imitators), but it has several advantages over the latter.</description>
+    </item>
+    
+    <item>
+      <title>Google embraces, extends, and extinguishes</title>
+      <link>./2018/05/03/Google-embraces-extends-extinguishes.html</link>
+      <pubDate>Thu, 03 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/05/03/Google-embraces-extends-extinguishes.html</guid>
+      <description>Microsoft infamously coined the euphemism &amp;ldquo;embrace, extend, extinguish&amp;rdquo; to describe their strategy for disrupting markets dominated by open standards. These days, Microsoft seems to have turned the other leaf, contributing to a huge amount of open source and supporting open standards, and is becoming a good citizen of the technology community. It&amp;rsquo;s time to turn our concerns to Google.
+Google famously &amp;ldquo;embraced&amp;rdquo; email on April Fool&amp;rsquo;s day, 2004, which is of course based on an open standard and federates with the rest of the world.</description>
+    </item>
+    
+    <item>
+      <title>Achtung! Decentralize, decentralize, decentralize!</title>
+      <link>./2018/03/24/Decentralize-decentralize-decentralize.html</link>
+      <pubDate>Sat, 24 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/03/24/Decentralize-decentralize-decentralize.html</guid>
+      <description>I can hardly believe it, but the media is finally putting Facebook&amp;rsquo;s feet to the fire! No longer is it just the weird paranoid kids shouting at everyone to stop giving all of their information to these companies. We need to take this bull by the horns and drive it in a productive direction, and for that reason, it&amp;rsquo;s time to talk about decentralization, federation, and open source.
+This article has been translated into Russian by Get Colorings.</description>
+    </item>
+    
+    <item>
+      <title>Hack everything without fear</title>
+      <link>./2018/03/17/Hack-everything-without-fear.html</link>
+      <pubDate>Sat, 17 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/03/17/Hack-everything-without-fear.html</guid>
+      <description>We live in a golden age of open source, and it can sometimes be easy to forget the privileges that this affords us. I&amp;rsquo;m writing this article with vim, in a terminal emulator called urxvt, listening to music with mpv, in a Sway desktop session, on the Linux kernel. Supporting this are libraries like glibc or musl, harfbuzz, and mesa. I also have the support of the AMDGPU video driver, libinput and udev, alsa and pulseaudio.</description>
+    </item>
+    
+    <item>
+      <title>Learn about your package manager</title>
+      <link>./2018/01/10/Learn-your-package-manager.html</link>
+      <pubDate>Wed, 10 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/01/10/Learn-your-package-manager.html</guid>
+      <description>Tools like virtualenv, rbenv, and to a lesser extent npm and pip, are occasionally useful in development but encourage bad practices in production. Many people forget that their distro already has a package manager! And there&amp;rsquo;s more&amp;ndash; you, the user, can write packages for it!
+Your distro&amp;rsquo;s package repositories probably already have a lot of your dependencies, and can conveniently update your software alongside the rest of your system. On the whole you can expect your distro packages to be much better citizens on your system than a language-specific package manager will be.</description>
+    </item>
+    
+    <item>
+      <title>Firefox is on a slippery slope</title>
+      <link>./2017/12/16/Firefox-is-on-a-slippery-slope.html</link>
+      <pubDate>Sat, 16 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/12/16/Firefox-is-on-a-slippery-slope.html</guid>
+      <description>For a long time, it was just setting the default search provider to Google in exchange for a beefy stipend. Later, paid links in your new tab page were added. Then, a proprietary service, Pocket, was bundled into the browser - not as an addon, but a hardcoded feature. In the past few days, we&amp;rsquo;ve discovered an advertisement in the form of browser extension was sideloaded into user browsers. Whoever is leading these decisions at Mozilla needs to be stopped.</description>
+    </item>
+    
+    <item>
+      <title>Portability matters</title>
+      <link>./2017/11/13/Portability-matters.html</link>
+      <pubDate>Mon, 13 Nov 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/11/13/Portability-matters.html</guid>
+      <description>There are many kinds of &amp;ldquo;portability&amp;rdquo; in software. Portability refers to the relative ease of &amp;ldquo;porting&amp;rdquo; a piece of software to another system. That platform might be another operating system, another CPU architecture, another web browser, another filesystem&amp;hellip; and so on. More portable software uses the limited subset of interfaces that are common between systems, and less portable software leverages interfaces specific to a particular system.
+Some people think that portability isn&amp;rsquo;t very important, or don&amp;rsquo;t understand the degree to which it&amp;rsquo;s important.</description>
+    </item>
+    
+    <item>
+      <title>Killing ants with nuclear weapons</title>
+      <link>./2017/09/08/Complicated.html</link>
+      <pubDate>Fri, 08 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/09/08/Complicated.html</guid>
+      <description>Complexity is quickly becoming an epidemic. In this developer&amp;rsquo;s opinion, complexity is the ultimate enemy - the final boss - of good software design. Complicated software generally has complicated bugs. Simple software generally has simple bugs. It&amp;rsquo;s as easy as that.
+It&amp;rsquo;s for this reason that I strongly dislike many of the tools and architectures that have been proliferating over the past few years, particularly in web development. When I look at a tool like Gulp, I wonder if its success is largely attributable to people not bothering to learn how Makefiles work.</description>
+    </item>
+    
+    <item>
+      <title>Principles for C programming</title>
+      <link>./2017/03/15/How-I-learned-to-stop-worrying-and-love-C.html</link>
+      <pubDate>Wed, 15 Mar 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/03/15/How-I-learned-to-stop-worrying-and-love-C.html</guid>
+      <description>In the words of Doug Gwyn, &amp;ldquo;Unix was not designed to stop you from doing stupid things, because that would also stop you from doing clever things&amp;rdquo;. C is a very powerful tool, but it is to be used with care and discipline. Learning this discipline is well worth the effort, because C is one of the best programming languages ever made. A disciplined C programmer will&amp;hellip;
+Prefer maintainability. Do not be clever where cleverness is not required.</description>
+    </item>
+    
+    <item>
+      <title>Actually, you CAN do it</title>
+      <link>./2017/01/06/Actually-you-CAN-do-it.html</link>
+      <pubDate>Fri, 06 Jan 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/01/06/Actually-you-CAN-do-it.html</guid>
+      <description>I maintain a lot of open source projects. In order to do so, I have to effectively manage my time. Most of my projects follow this philosophy: if you want something changed, send a patch. If you are running into an annoying bug, fix it and send a patch. If you want a new feature, implement it and send a patch. It&amp;rsquo;s definitely a good idea to talk about it beforehand on the issue tracker or IRC, but don&amp;rsquo;t make the mistake of thinking this processes ends with someone else doing it for you.</description>
+    </item>
+    
+    <item>
+      <title>Using the right tool for the job</title>
+      <link>./2016/09/17/Use-the-right-tool.html</link>
+      <pubDate>Sat, 17 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/09/17/Use-the-right-tool.html</guid>
+      <description>One of the most important choices you&amp;rsquo;ll make for the software you write is what you write it in, what frameworks you use, the design methodologies to subscribe to, and so on. This choice doesn&amp;rsquo;t seem to get the respect it&amp;rsquo;s due. These are some of the only choices you&amp;rsquo;ll make that you cannot change. Or, at least, these choices are among the most difficult ones to change.
+People often question why TrueCraft is written in C# next to projects like Sway in C, alongside KnightOS in Assembly or sr.</description>
+    </item>
+    
+    <item>
+      <title>What motivates the authors of the software you use?</title>
+      <link>./2016/09/09/What-motivates-the-authors-of-the-software-you-use.html</link>
+      <pubDate>Fri, 09 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/09/09/What-motivates-the-authors-of-the-software-you-use.html</guid>
+      <description>We face an important choice in our lives as technophiles, hackers, geeks: the choice between proprietary software and free/open source software. What platforms we choose to use are important. We have a choice between Windows, OS X, and Linux (not to mention the several less popular choices). We choose between Android or iOS. We choose hardware that requires nonfree drivers or ones that don&amp;rsquo;t. We choose to store our data in someone else&amp;rsquo;s cloud or in our own.</description>
+    </item>
+    
+  </channel>
+</rss>

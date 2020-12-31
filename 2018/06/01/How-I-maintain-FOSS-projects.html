@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>How I maintain FOSS projects</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  How I maintain FOSS projects
+  <small>
+    <span class="date">June 1, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Today&rsquo;s is another blog post which has been on my to-write list for a while. I
+have hesitated a bit to write about this, because I&rsquo;m certain that my approach
+isn&rsquo;t perfect. I think it&rsquo;s pretty good, though, and people who work with me in
+FOSS agreed after a quick survey. So! Let&rsquo;s at least put it out there and
+discuss it.</p>
+<p>There are a few central principles I use to guide my maintainership work:</p>
+<ol>
+<li>Everyone is a volunteer and should be treated as such.</li>
+<li>One patch is worth a thousand bug reports.</li>
+<li>Empower people to do what they enjoy and are good at.</li>
+</ol>
+<p>The first point is very important. My open source projects are not the work of a
+profitable organization which publishes open source software as a means of
+giving back. Each of these projects is built and maintained entirely by
+volunteers. Acknowledging this is important for keeping people interested in
+working on the project - you can never expect someone to volunteer for work they
+aren&rsquo;t enjoying<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. I am always grateful for any level of involvement a person
+wants to have in the project.</p>
+<p>Because everyone is a volunteer, I encourage people to work on their own
+agendas, on their own schedule and at their own pace. None of our projects are
+in a hurry, so if someone is starting to get burnt out, they should have no
+reservations about taking a break for as long as they wish. I&rsquo;d rather have
+something done slowly, correctly, and by a contributor who is enjoying their
+work than quickly and by a contributor who is burnt out and stressed. No one
+should ever be stressed out because of their involvement in the project. Some of
+it is unavoidable - especially where politics is involved - but I don&rsquo;t hold
+grudges against anyone who steps away and I try to shoulder the brunt of the
+bullshit myself.</p>
+<p>The second principle is closely related to the first. If a bug does not affect
+someone who works on the project and the problem doesn&rsquo;t interest anyone who
+works on the project, it&rsquo;s probably not going to get fixed. I would much rather
+help someone familiarize themselves with the codebase and tooling necessary for
+them to solve their own problems and send a patch, even if it takes ten times
+longer than fixing the bug myself. I have never found a user who, even if they
+aren&rsquo;t comfortable with programming or the specific technologies in use, has
+been unable to solve a problem which they were willing to invest time into and
+ask questions about.</p>
+<p>This principle often leads to conflict with users whose bugs don&rsquo;t get fixed,
+but I stick to it. I would rather lose every user who is unwilling to attempt a
+patch than invest the resources of my contributors into work they&rsquo;re
+uninterested in. In the long term, the health of the project is far better if I
+always have developers engaged in and enjoying their work on it than if I lose
+users who are upset by my approach.</p>
+<p>These first two principles don&rsquo;t affect my day-to-day open source work so much
+as they set the tone for it. The third principle, however, constitutes most of
+my job as a maintainer, and it&rsquo;s with it that I add the most value. My main role
+is to empower people who contribute to do work they enjoy, which benefits the
+project, and which keeps them interested in coming back to do more.</p>
+<p>Finding things people enjoy working on is the main task in this role. Once
+people have made a few contributions, I can get an idea of how they like to work
+and what they&rsquo;re good at, and help them find things to do which play to their
+strengths. Supporting a contributors potential is important as well, and if
+someone expresses interest in certain kinds of work or I think they show promise
+in an area, it&rsquo;s my responsibility to help them find work to nurture these
+skills and connect them with good mentors to help.</p>
+<p>This starts to play in another major responsibility I have as a maintainer,
+which is facilitating effective communication throughout the project. As people
+grow in the project they generally become effective at managing communication
+themselves, but new contributors appear all the time. A major responsibility as
+a maintainer is connecting new contributors to domain experts in a problem, or
+to users who can reproduce problems or are willing to test their patches.</p>
+<p>I&rsquo;m also responsible for keeping up with each contributor&rsquo;s growth in the
+project. For those who are good at and enjoy having responsibility in the
+project, I try to help them find it. As contributors gain a better understanding
+of the code, they&rsquo;re trusted to handle large features with less handholding and
+perform more complex work<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>. Often contributors are given opportunities to
+become better code reviewers, and usually get merge rights once they&rsquo;re good at
+it. Things like commit access are a never a function of rank or status, but of
+enabling people to do the things that they&rsquo;re good at.</p>
+<p>It&rsquo;s also useful to remember that your projects are not the only game in town. I
+frequently encourage people who contribute to contribute to other projects as
+well, and I personally try to find ways to contribute back to their own projects
+(though not as much as I&rsquo;d often like to). I offer support as a sysadmin to many
+projects started by contributors to my projects and I send patches whenever I
+can. This pays directly back to the project in the form of contributors with
+deeper and more diverse experience. It&rsquo;s also fun to take a break from working
+on the same stuff all the time!</p>
+<p>There&rsquo;s also some work that someone&rsquo;s just gotta do, and that someone is usually
+me. I have to be a sysadmin for the websites, build infrastructure, and so on.
+If there are finances, I have to manage them. I provide some kind of vision for
+the project and decide what work is in scope. There&rsquo;s also some boring stuff
+like preparing changelogs and release notes and shipping new versions, or
+liaising with distros on packages. I also end up being responsible for any
+marketing.</p>
+<hr>
+<p>Getting and supporting contributors is the single most important thing you can
+do for your project as a maintainer. I often get asked how I&rsquo;m as productive as
+I seem to be. While I can&rsquo;t deny that I can write a lot of code, it&rsquo;s peanuts
+compared to the impact made by other contributors. I get a lot of credit for
+sway, but in reality I&rsquo;ve only written 1-3 sway commits per week in the past few
+months. For this reason, the best approach focuses on the contributors, to whom
+I owe a great debt of gratitude.</p>
+<p>I&rsquo;m still learning, too! I speak to contributors about my approach from time to
+time and ask for feedback, and I definitely make mistakes. I hope that I&rsquo;ll
+receive more feedback soon after some of them read this blog post, too. My
+approach will continue to grow over time (hopefully for the better) and I hope
+our work will enjoy success as a result.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Some people do work they don&rsquo;t enjoy out of gratitude to the project, but this is not sustainable and I discourage it. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Though I always encourage people to work on the things they&rsquo;re interested in, I sometimes have to <em>discourage</em> people from biting off more than they can chew. Then I help them gradually ramp up their skills and trust among the team until they can take on those tasks. Usually this goes pretty quick, though, and a couple of bugs caused by inexperience is a small price to pay for the <em>gain</em> in experience the contributor gets by taking on hard or important tasks. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Portability matters</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Portability matters
+  <small>
+    <span class="date">November 13, 2017</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>There are many kinds of &ldquo;portability&rdquo; in software. Portability refers to the
+relative ease of &ldquo;porting&rdquo; a piece of software to another system. That
+platform might be another operating system, another CPU architecture, another
+web browser, another filesystem&hellip; and so on. More portable software uses the
+limited subset of interfaces that are common between systems, and less portable
+software leverages interfaces specific to a particular system.</p>
+<p>Some people think that portability isn&rsquo;t very important, or don&rsquo;t understand the
+degree to which it&rsquo;s important. Some people might call their software portable
+if it works on Windows and macOS - they&rsquo;re wrong. They might call their software
+portable if it works on Windows, macOS, and Linux - but they&rsquo;re wrong, too.
+Supporting multiple systems does not necessarily make your software portable.
+What makes your software portable is <em>standards</em>.</p>
+<p>The most important standard for software portability is POSIX, or the <strong>Portable
+Operating System Interface</strong>. Significant subsets of this standard are supported
+by many, many operating systems, including:</p>
+<ul>
+<li>Linux</li>
+<li>*BSD</li>
+<li>macOS</li>
+<li>Minix</li>
+<li>Solaris</li>
+<li>BeOS</li>
+<li>Haiku</li>
+<li>AIX</li>
+</ul>
+<p>I <a href="https://en.wikipedia.org/wiki/POSIX#POSIX-oriented_operating_systems">could go
+on</a>.
+Through these operating systems, you&rsquo;re able to run POSIX compatible code on a
+large number of CPU architectures as well, such as:</p>
+<ul>
+<li>i386</li>
+<li>amd64</li>
+<li>ARM</li>
+<li>MIPS</li>
+<li>PowerPC</li>
+<li>sparc</li>
+<li>ia64</li>
+<li>VAX</li>
+</ul>
+<p>Again, I could go on. Here&rsquo;s the point: by supporting POSIX, your software runs
+on basically every system. <em>That&rsquo;s</em> what it means to be portable - standards.
+So why is it important to support POSIX?</p>
+<p>First of all, if you use POSIX then your software runs on just about anything,
+so lots of users will be available to you and it will work in a variety of
+situations. You get lots of platforms for free (or at least cheap). But more
+importantly, <em>new platforms</em> get your software for free, too.</p>
+<p>The current market leaders are not the end-all-be-all of operating system
+design - far from it. What they have in their advantage is working well enough
+and being incubent. Windows, Linux, and macOS are still popular for the same
+reason that legislator you don&rsquo;t like keeps getting elected! However, new
+operating systems have a fighting chance thanks to POSIX. All you have to do to
+make your OS viable is implement POSIX and you will immediately open up
+hundreds, if not thousands, of potential applications. Portability is important
+for innovation.</p>
+<p>The same applies to other kinds of portability. Limiting yourself to standard
+browser features gives new browsers a chance. Implementing standard networking
+protocols allows you to interop with other platforms. I&rsquo;d argue that failing to
+do this is <em>unethical</em> - it&rsquo;s just another form of vendor lock-in. This is why
+Windows does not support POSIX.</p>
+<p>This is also why I question niche programming languages like Rust when they
+claim to be suited to systems programming or even kernel development. That&rsquo;s
+simply not true when they only run on a small handful of operating systems and
+CPU architectures. C runs on <em>literally</em> everything.</p>
+<p>In conclusion: use standard interfaces for your software. That guy who wants to
+bring new life to that old VAX will thank you. The authors of
+<a href="https://servo.org/">servo</a> thank you. <em>You</em> will thank you when your
+circumstances change in 5 years.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

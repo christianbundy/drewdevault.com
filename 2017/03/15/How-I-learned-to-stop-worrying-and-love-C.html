@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Principles for C programming</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Principles for C programming
+  <small>
+    <span class="date">March 15, 2017</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>In the words of Doug Gwyn, &ldquo;Unix was not designed to stop you from doing stupid
+things, because that would also stop you from doing clever things&rdquo;. C is a very
+powerful tool, but it is to be used with care and discipline. Learning this
+discipline is well worth the effort, because C is one of the best programming
+languages ever made. A disciplined C programmer will&hellip;</p>
+<p><strong>Prefer maintainability</strong>. Do not be clever where cleverness is not required.
+Instead, seek out the simplest and most understandable solution that meets the
+requirements. Most concerns, including performance, are secondary to
+maintainability. You should have a performance budget for your code, and you
+should be comfortable spending it.</p>
+<p>As you become more proficient with the language and learn about more features
+you can take advantage of, you should also be learning when not to use them.
+It&rsquo;s more important that a novice could understand your code than it is to use
+some interesting way of solving the problem. Ideally, a novice will understand
+your code <em>and</em> learn something from it. Write code as if the person maintaining
+it was you, circa last year.</p>
+<p><strong>Avoid magic</strong>. Do not use macros<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. Do not use a typedef to hide a pointer or
+avoid writing &ldquo;struct&rdquo;. Avoid writing complex abstractions. Keep your build
+system simple and transparent. Don&rsquo;t use stupid hacky crap just because it&rsquo;s a
+cool way of solving the problem. The underlying behavior of your code should be
+apparent even without context.</p>
+<p>One of C&rsquo;s greatest advantages is its transparency and simplicity. This should
+be embraced, not subverted. But in the fine C tradition of giving yourself
+enough rope to hang yourself with, you can use it for magical purposes. You
+must not do this. Be a muggle.</p>
+<p><strong>Recognize and avoid dangerous patterns</strong>. Do not use fixed size buffers with
+variable sized data - always calculate how much space you&rsquo;ll need and allocate
+it. Read the man pages for functions you use and handle their failure modes.
+Immediately convert unsafe user input into sanitized C structures. If you later
+have to present this data to the user, keep it in C structures until the last
+possible moment. Learn of and use extra care around sensitive functions like
+strcat.</p>
+<p>Writing C is sometimes like handling a gun. Guns are important tools, but
+accidents with them can be very bad. You treat guns with care: you don&rsquo;t point
+them at anything you love, you exercise good trigger discipline, and you treat
+it like it&rsquo;s always loaded. And like guns are useful for making holes in things,
+C is useful for writing kernels with.</p>
+<p><strong>Take care organizing the code</strong>. Never put code into a header. Never use the
+<code>inline</code> keyword. Put separate concerns in separate files. Use static functions
+liberally to organize your logic. Use a coding style that gives everything
+enough breathing room to be easy on the eyes. Use single letter variable names
+when their purpose is self-evident and descriptive names when it&rsquo;s not, and
+avoid neither.</p>
+<p>I like to organize my code into directories that implement some group of
+functions, and give each function its own file. This file will often contain
+lots of static functions, but they all serve to organize the behavior this file
+is responsible for implementing. Write up a header to give others access to
+this module. And use the Linux kernel coding style, god dammit.</p>
+<p><strong>Use only standard features</strong>. Do not assume the platform is Linux. Do not
+assume the compiler is gcc. Do not assume the libc is glibc. Do not assume the
+architecture is x86. Do not assume the coreutils are GNU. Do not define
+_GNU_SOURCE.</p>
+<p>If you must use platform-specific features, describe an interface for it,
+then write platform-specific support code separately. Under no circumstances
+should you ever use gcc extensions or glibc extensions. GNU is a blight on this
+Earth, do not let it infect your code.</p>
+<p><strong>Use a disciplined workflow</strong>. Have a disciplined approach to version control,
+too. Write thoughtful commit messages - briefly explain the change in the first
+line, and add justification for it in the extended commit message. Work in
+feature branches with clearly defined goals, and do not include changes that
+don&rsquo;t serve that goal. Do not be afraid to rebase and edit your branch&rsquo;s history
+so that it presents your changes clearly.</p>
+<p>When you have to return to your code later, you will be thankful for the
+detailed commit message you wrote. Others who interact with your code will be
+thankful for this as well. When you see some stupid code, it&rsquo;s nice to know what
+the bastard was thinking at the time, especially when the bastard in question
+was you.</p>
+<p><strong>Do strict testing and reviews</strong>. Identify the different possible code paths
+that your changes may take. Test each of them for the correct behavior. Give it
+incorrect input. Give it inputs that could &ldquo;never happen&rdquo;. Pay special attention
+to error-prone patterns. Look for places to simplify the code and make the
+processes clearer.</p>
+<p>Next, give your changes to another human to review. This human should apply the
+same process and sign off on your changes. Review with discipline as well,
+taking all of the same steps. Review like it&rsquo;ll be your ass on the line if
+there&rsquo;s a problem with this code.</p>
+<p><strong>Learn from mistakes</strong>. First, fix the bug. Then, fix the real bug: your
+process allowed this mistake to happen. Bring your code reviewer into the
+discussion - this is their fault, too. Critically examine the process of
+writing, reviewing, and deploying this code, and seek out the root cause.</p>
+<p>The solution might be simple, like adding strcat to the list of functions that
+should trigger your &ldquo;review this code carefully&rdquo; reflex. It might be employing
+static analysis so a computer can detect this problem for you. Perhaps the code
+needs to be refactored so it&rsquo;s simpler and easier to spot errors in. Failing to
+reflect on how to avoid future fuck-ups would be the real fuck-up here.</p>
+<hr>
+<p>It&rsquo;s important to remember that rules are made to be broken. There may be cases
+where things that are discouraged should be used, and things that are encouraged
+disregarded. You should strive to make such cases the exception, not the norm,
+and carefully justify them when they happen.</p>
+<p>C is the shit. I love it, and I hope more people can learn to see it the way I
+do. Good luck!</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Defining constants with them is fine, though <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

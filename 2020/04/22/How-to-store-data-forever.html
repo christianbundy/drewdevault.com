@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>How to store data forever</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  How to store data forever
+  <small>
+    <span class="date">April 22, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>As someone who has been often maligned by the disappearance of my data for
+various reasons — companies going under, hard drive failure, etc —
+and as someone who is responsible for the safekeeping of other people&rsquo;s data,
+I&rsquo;ve put a lot of thought into solutions for long-term data retention.</p>
+<p>There are two kinds of long-term storage, with different concerns: cold storage
+and hot storage. The former is like a hard drive in your safe — it stores
+your data, but you&rsquo;re not actively using it or putting wear on the storage
+medium. By contrast, hot storage is storage which is available immediately and
+undergoing frequent reads and writes.</p>
+<h2 id="what-storage-medium-to-use">What storage medium to use?</h2>
+<p>There are some bad ways to do it. The worst way I can think of is to store
+it on a microSD card. These fail <em>a lot</em>. I couldn&rsquo;t find any hard data, but
+anecdotally, 4 out of 5 microSD cards I&rsquo;ve used have experienced failures
+resulting in permanent data loss. Low volume writes, such as from a digital
+camera, are unlikely to cause failure. However, microSD cards have a tendency to
+get hot with prolonged writes, and they&rsquo;ll quickly leave their safe operating
+temperature and start to accumulate damage. Nearly all microSD cards will let
+you perform writes fast enough to drive up the temperature beyond the operating
+limits — after all, writes per second is a marketable feature — so
+if you want to safely move lots of data onto or off of a microSD card, you need
+to monitor the temperature and throttle your read/write operations.</p>
+<p>A more reliable solution is to store the data on a hard drive<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. However, hard
+drives are rated for a limited number of read/write cycles, and can be expected
+to fail eventually. Backblaze publishes some great articles on <a href="https://www.backblaze.com/blog/hard-drive-stats-for-2019/">hard drive
+failure rates</a> across
+their fleet. According to them, the average annual failure rate of hard drives
+is almost 2%. Of course, the exact rate will vary with the frequency of use and
+storage conditions. Even in cold storage, the shelf life of a magnetic platter
+is not indefinite.</p>
+<p>There are other solutions, like optical media, tape drives, or more novel
+mediums, like the <a href="https://en.wikipedia.org/wiki/Rosetta_Project">Rosetta Disk</a>.
+For most readers, a hard drive will be the best balance of practical and
+reliable. For serious long-term storage, if expense isn&rsquo;t a concern, I would
+also recommend hot storage over cold storage because it introduces the
+possibility of active monitoring.</p>
+<h2 id="redundancy-with-raid">Redundancy with RAID</h2>
+<p>One solution to this is redundancy — storing the same data across multiple
+hard drives. For cold storage, this is often as simple as copying the data onto
+a second hard drive, like an external backup HDD. Other solutions exist for hot
+storage. The most common standard is <a href="https://en.wikipedia.org/wiki/RAID">RAID</a>, which offers different
+features with different numbers of hard drives. With two hard drives (RAID1), for
+example, it utilizes mirroring, which writes the same data to both disks. RAID
+gets more creative with three or more hard drives, utilizing <em>parity</em>, which
+allows it to reconstruct the contents of failed hard drives from still-online
+drives. The basic idea relies on the XOR operation. Let&rsquo;s say you write the
+following byte to drive A: <code>0b11100111</code>, and to drive B: <code>0b10101100</code>. By XORing
+these values together:</p>
+<pre><code>  11100111 A
+^ 10101100 B
+= 01001011 C
+</code></pre>
+<p>We obtain the value to write to drive C. If any of these three drives fail, we
+can XOR the remaining two values again to obtain the third.</p>
+<pre><code>  11100111 A
+^ 01001011 C
+= 10101100 B
+
+  10101100 B
+^ 01001011 C
+= 11100111 A
+</code></pre>
+<p>This allows any drive to fail while still being able to recover its contents,
+and the recovery can be performed online. However, it&rsquo;s often not that simple.
+Drive failure can dramatically reduce the performance of the array while it&rsquo;s
+being rebuilt — the disks are going to be seeking constantly to find the
+parity data to rebuild the failed disk, and any attempts to read from the disk
+that&rsquo;s being rebuilt will require computing the recovered value on the fly. This
+can be improved upon by using lots of drives and multiple levels of redundancy,
+but it is still likely to have an impact on the availability of your data if not
+carefully planned for.</p>
+<p>You should also be monitoring your drives and preparing for their failure in
+advance.  Failing disks can show signs of it in advance — degraded
+performance, or via S.M.A.R.T reports. Learn the tools for monitoring your
+storage medium, such as smartmontools, and set it up to report failures to you
+(and <em>test</em> the mechanisms by which the failures are reported to you).</p>
+<h3 id="other-raid-failure-modes">Other RAID failure modes</h3>
+<p>There are other common ways a RAID can fail that result in permanent data loss.
+One example is using hardware RAID — there was an argument to be made for
+them at one point, but these days hardware RAID is <em>almost always</em> a mistake.
+Most operating systems have software RAID implementations which can achieve the
+same results without a dedicated RAID card. With hardware RAID, if the RAID card
+itself fails (and they often do), you might have to find the exact same card to
+be able to read from your disks again. You&rsquo;ll be paying for new hardware, which
+might be expensive or out of production, and waiting for it to arrive before you
+can start recovering data. With software RAID, the hard drives are portable
+between machines and you can always interpret the data with general purpose
+software.</p>
+<p>Another common failure is <em>cascading</em> drive failures. RAID can tolerate partial
+drive failure thanks to parity and mirroring, but if the failures start to pile
+up, you can suffer permanent data loss. Many a sad administrator has been in
+panic mode, recovering a RAID from a disk failure, and at their lowest
+moment&hellip; another disk fails. Then another. They&rsquo;ve suddenly lost their data,
+and the challenge of recovering what remains has become ten times harder. When
+you&rsquo;ve been distributing read and write operations consistently across all of
+your drives over the lifetime of the hardware, they&rsquo;ve been receiving a similar
+level of wear, and failing together is not uncommon.</p>
+<p>Often, failures like this can be attributed to using many hard drives from the
+same batch. One strategy I recommend to avoid this scenario is to use drives
+from a mix of vendors, model numbers, and so on. Using a RAID improves
+performance by distributing reads and writes across drives, using the time one
+drive is busy to utilize an alternate. Accordingly, any differences in the
+performance characteristics of different kinds of drives will be smoothed out in
+the wash.</p>
+<h2 id="zfs">ZFS</h2>
+<p>RAID is complicated, and getting it right is difficult. You don&rsquo;t want to wait
+until your drives are failing to learn about a gap in your understanding of
+RAID. For this reason, I recommend ZFS to most. It automatically makes good
+decisions for you with respect to mirroring and parity, and gracefully handles
+rebuilds, sudden power loss, and other failures. It also has features which are
+helpful for other failure modes, like snapshots.</p>
+<p>Set up Zed to email you reports from ZFS. Zed has a debug mode, which will send
+you emails even for working disks — I recommend leaving this on, so that
+their conspicuous absence might alert you to a problem with the monitoring
+mechanism. Set up a cronjob to do monthly scrubs and review the Zed reports when
+they arrive. ZFS snapshots are cheap - set up a cronjob to take one every 5
+minutes, perhaps with <a href="https://github.com/zfsonlinux/zfs-auto-snapshot">zfs-auto-snapshot</a>.</p>
+<h2 id="human-failures-and-existential-threats">Human failures and existential threats</h2>
+<p>Even if you&rsquo;ve addressed hardware failure, you&rsquo;re not done yet. There are other
+ways still in which your storage may fail. Maybe your server fans fail and burn
+out all of your hard drives at once. Or, your datacenter could suffer a total
+existence failure — what if a fire burns down the building?</p>
+<p>There&rsquo;s also the problem of human failure. What if you accidentally <code>rm -rf / *</code>
+the server? Your RAID array will faithfully remove the data from all of the hard
+drives for you. What if you send the sysop out to the datacenter to decommission
+a machine, and no one notices that they decommissioned the wrong one until it&rsquo;s
+too late?</p>
+<p>This is where off-site backups come into play. For this purpose, I recommend
+<a href="https://www.borgbackup.org/">Borg backup</a>. It has sophisticated features for compression and
+encryption, and allows you to mount any version of your backups as a filesystem
+to recover the data from. Set this up on a cronjob as well for as frequently as
+you feel the need to make backups, and send them off-site to another location,
+which itself should have storage facilities following the rest of the
+recommendations from this article. Set up another cronjob to run <code>borg check</code>
+and send you the results on a schedule, so that their conspicuous absence may
+indicate that something fishy is going on. I also use <a href="https://prometheus.io/">Prometheus</a> with
+<a href="https://github.com/prometheus/pushgateway">Pushgateway</a> to make a note every time that a backup is run, and
+set up an alarm which goes off if the backup age exceeds 48 hours. I also have
+periodic test alarms, so that the alert manager&rsquo;s own failures are noticed.</p>
+<h2 id="are-you-prepared-for-the-failure">Are you prepared for the failure?</h2>
+<p>When your disks are failing and everything is on fire and the sky is falling,
+this is the worst time to be your first rodeo. You should have <em>practiced</em> these
+problems before they became problems. Do training with anyone expected to deal
+with failures. Yank out a hard drive and tell them to fix it. Have someone in
+sales come yell at them partway through because the website is unbearably slow
+while the RAID is rebuilding and the company is losing $100 per minute as a
+result of the outage.</p>
+<p>Periodically produce a working system from your backups. This proves (1) the
+backups are still working, (2) the backups have coverage over everything which
+would need to be restored, and (3) you know how to restore them. Bonus: if
+you&rsquo;re confident in your backups, you should be able to replace the production
+system with the restored one and allow service to continue as normal.</p>
+<h2 id="actually-storing-data-forever">Actually storing data <em>forever</em></h2>
+<p>Let&rsquo;s say you&rsquo;ve managed to keep your data around. But will you still know how
+to interpret that data in the future? Is it in a file format which requires
+specialized software to use? Will that software still be relevant in the future?
+Is that software open-source, so you can update it yourself? Will it still
+compile and run correctly on newer operating systems and hardware? Will the
+storage medium still be compatible with new computers?</p>
+<p>Who is going to be around to watch the monitoring systems you&rsquo;ve put in place?
+Who&rsquo;s going to replace the failing hard drives after you&rsquo;re gone? How will they
+be paid? Will the dataset still be comprehensible after 500 years of evolution
+of written language? The dataset requires constant maintenance to remain intact,
+but also to remain useful.</p>
+<p>And ultimately, there is one factor to long-term data retention that you cannot
+control: future generations will decide what data is worth keeping — not
+us.</p>
+<p>In summary: no matter what, definitely don&rsquo;t do this:</p>
+<p><img src="https://l.sr.ht/ig3R.jpg" alt="Picture of a SATA card for RAIDing 10 microSD cards together"></p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Or SSDs, which I will refer to interchangeably with HDDs in this article. They have their own considerations, but we&rsquo;ll get to that. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

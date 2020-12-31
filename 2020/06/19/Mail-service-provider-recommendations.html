@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Email service provider recommendations</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Email service provider recommendations
+  <small>
+    <span class="date">June 19, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Email is important to my daily workflow, and I&rsquo;ve built many tools which
+encourage productive use of it for software development. As such, I&rsquo;m often
+asked for advice on choosing a good email service provider. Personally, I run
+my own mail servers, but about a year ago I signed up for and evaluated many
+different service providers available today so that I could make informed
+recommendations to people. Here are my top picks, as well as the criteria by
+which they were evaluated.</p>
+<p>Unfortunately, almost all mail providers fail to meet my criteria.  As such, I
+can only recommend two: Migadu and mailbox.org.</p>
+<h1 id="1-migadu">#1: Migadu</h1>
+<p><a href="https://www.migadu.com/">Migadu</a> is my go-to recommendation
+for a mail service provider.</p>
+<p><strong>Advantages</strong></p>
+<ul>
+<li>Migadu is a small company with strong values and no outside capital (i.e.
+no profit-motivated external influence). Email support and a human being
+answers, and their leadership is accessible if you have questions or feedback.</li>
+<li>Their pricing is based on bandwidth usage, and does not rely on artificial
+scarcity like limited domain names or mailboxes.</li>
+<li>Has lots of features for your postmaster - you can treat it as a managed mail
+server for your organization.</li>
+</ul>
+<p><strong>Disadvantages</strong></p>
+<ul>
+<li>They have suffered from some outages in the past. The global mail system is
+tolerant of such outages - you don&rsquo;t have to worry about messages being lost
+if they were sent during an outage. Still, being unable to access your mail is
+a problem.</li>
+<li>If you are on a trial account, they will put an advertisement into your email
+signature. I don&rsquo;t think that it&rsquo;s ever appropriate for a mail service
+provider to edit your outgoing emails for any reason, and certainly not to
+advertise.</li>
+</ul>
+<p>Full disclosure: SourceHut and Migadu agreed to a consulting arrangement to
+build their <a href="https://git.sr.ht/~migadu/alps">new webmail system</a>, which should
+be going into production soon. However, I had evaluated and started recommending
+Migadu prior to the start of this project, and I believe that Migadu fares well
+under the criteria I give at the end of this post.</p>
+<h1 id="2-mailboxorg">#2: mailbox.org</h1>
+<p><a href="https://mailbox.org/en/">Mailbox.org</a> may be desirable if you wish to have a
+more curated experience, and less hands-on access to postmaster-specific
+features.</p>
+<p><strong>Advantages</strong></p>
+<ul>
+<li>Excellent first-class support for PGP, and many other strong security and
+privacy features are available.</li>
+<li>Was able to speak to the CEO directly to discuss my concerns and feedback, and
+have my questions answered. Raised some bugs and they were fixed in short
+order.</li>
+</ul>
+<p><strong>Disadvantages</strong></p>
+<ul>
+<li>The interface is a little bit too JavaScript heavy for my tastes, and suffer
+from some bugs and lack of polish.</li>
+<li>They are a German company serving mostly German customers - German text leaks
+into the UI and documentation in some places.</li>
+<li>Completing a Google captcha is required to sign up.</li>
+</ul>
+<h1 id="others">Others</h1>
+<p>Evaluated but not recommended: disroot, fastmail, posteo.de, poste.io,
+protonmail, tutanota, riseup, cock.li, teknik, runbox, megacorp mail (gmail,
+outlook, etc).</p>
+<h1 id="criteria-for-a-good-mail-service-provider">Criteria for a good mail service provider</h1>
+<p>The following criteria are objective and non-negotiable:</p>
+<ol>
+<li>Support for open standards including IMAP and SMTP</li>
+<li>Support for users who wish to bring their own domain</li>
+</ol>
+<p>This is necessary to preserve the user&rsquo;s ownership of their data by making it
+accessible over open and standardized protocols, and their right to move to
+another service provider by not fixing their identity to a domain name
+controlled by the email provider. It is for these reasons that Posteo,
+ProtonMail, and Tutanota are not considered suitable.</p>
+<p>The remaining criteria are subjective:</p>
+<ol>
+<li>Is the business conducted ethically? Are their incentives aligned with their
+customers, or with their investors?</li>
+<li>Is it sustainable? Can I expect them to be around in 10 years? 20? 30?</li>
+<li>Do they make unfounded claims about security or privacy, or develop
+techniques which ultimately rely on trusting them instead of supporting or
+improving standards which rely on encryption?<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></li>
+<li>If they make claims about privacy or security, do they explain the
+limitations and trade-offs, or do they let you believe it&rsquo;s infallible?</li>
+<li>Do you trust them with your personal data? What if they&rsquo;re compelled by law
+enforcement? What is their government like?<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></li>
+</ol>
+<p>Bonus points:</p>
+<ul>
+<li>What is their relationship with open source?</li>
+<li>Can I sign up without an existing email address? Is there a chicken and egg
+problem here?<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></li>
+<li>How well do they handle plaintext email? Do they meet the criteria for
+recommended clients at
+<a href="https://useplaintext.email/#implementation-recommendations">useplaintext.email</a>?</li>
+</ul>
+<p>If you represent a mail service provider which you believe meets this criteria,
+please <a href="mailto:sir@cmpwn.com">send me an email</a>.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>This also rules out ProtonMail and Tutanota, doubly damning them, especially because it provides an excuse for skipping IMAP and SMTP, which conveniently enables vendor lock-in. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>This rules out Fastmail because of their government (Australia)&rsquo;s hostile and subversive laws regarding encryption. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>Alarmingly rare, this one. It seems to be either this, or a captcha like mailbox.org does. I would be interested in seeing the use of client-side proof of work, or requiring someone to enter their payment details and successfully complete a charge instead. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

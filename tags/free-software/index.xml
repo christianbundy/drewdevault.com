@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>free software on Drew DeVault&#39;s blog</title>
+    <link>./tags/free-software.html</link>
+    <description>Recent content in free software on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 27 Jul 2020 00:00:00 +0000</lastBuildDate><atom:link href="./tags/free-software/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The falsehoods of anti-AGPL propaganda</title>
+      <link>./2020/07/27/Anti-AGPL-propaganda.html</link>
+      <pubDate>Mon, 27 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/07/27/Anti-AGPL-propaganda.html</guid>
+      <description>Google is well-known for forbidding the use of software using the GNU Affero General Public License, commonly known as &amp;ldquo;AGPL&amp;rdquo;. Google is also well-known for being the subject of cargo-culting by fad startups. Unfortunately, this means that they are susceptible to what is ultimately anti-AGPL propaganda from Google, with little to no basis in fact.
+Obligatory: I&amp;rsquo;m not a lawyer; this is for informational purposes only.
+In truth, the terms of the AGPL are pretty easy to comply with.</description>
+    </item>
+    
+    <item>
+      <title>Dependencies and maintainers</title>
+      <link>./2020/02/06/Dependencies-and-maintainers.html</link>
+      <pubDate>Thu, 06 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/02/06/Dependencies-and-maintainers.html</guid>
+      <description>I&amp;rsquo;m 34,018 feet over the Atlantic at the moment, on my way home from FOSDEM. It was as always a lovely event, with far too many events of interest for any single person to consume. One of the few talks I was able to attend1 left a persistent worm of thought in my brain. This talk was put on by representatives of Microsoft and GitHub and discusses whether or not there is a sustainability problem in open source (link).</description>
+    </item>
+    
+    <item>
+      <title>FOSS contributor tracks</title>
+      <link>./2019/07/29/FOSS-contributor-tracks.html</link>
+      <pubDate>Mon, 29 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/07/29/FOSS-contributor-tracks.html</guid>
+      <description>Just like many companies have different advancement tracks for their employees (for example, a management track and an engineering track), similar concepts exist in free software projects. One of the roles of a maintainer is to help contributors develop into the roles which best suit them. I&amp;rsquo;d like to explain what this means to me in my role as a maintainer of several projects, though I should mention upfront that I&amp;rsquo;m just some guy and, while I can explain what has and hasn&amp;rsquo;t worked for me, I can&amp;rsquo;t claim to have all of the answers.</description>
+    </item>
+    
+    <item>
+      <title>My personal journey from MIT to GPL</title>
+      <link>./2019/06/13/My-journey-from-MIT-to-GPL.html</link>
+      <pubDate>Thu, 13 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/06/13/My-journey-from-MIT-to-GPL.html</guid>
+      <description>As I got started writing open source software, I generally preferred the MIT license. I actually made fun of the &amp;ldquo;copyleft&amp;rdquo; GPL licenses, on the grounds that they are less free. I still hold this opinion today: the GPL license is less free than the MIT license - but today, I believe this in a good way.
+If you haven&amp;rsquo;t yet, I suggest reading the MIT license - it&amp;rsquo;s very short.</description>
+    </item>
+    
+    <item>
+      <title>What is a fork, really, and how GitHub changed its meaning</title>
+      <link>./2019/05/24/What-is-a-fork.html</link>
+      <pubDate>Fri, 24 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/05/24/What-is-a-fork.html</guid>
+      <description>The fork button on GitHub - with the little number next to it for depositing dopamine into your brain - is a bit misleading. GitHub co-opted the meaning of &amp;ldquo;fork&amp;rdquo; to trick you into participating in their platform more. They did this in a well-intentioned way, for the sake of their pull requests feature, but ultimately this design is self-serving and causes some friction when contributors venture out of their GitHub sandbox and into the rest of the software development ecosystem.</description>
+    </item>
+    
+    <item>
+      <title>NewPipe represents the best of FOSS</title>
+      <link>./2019/04/02/NewPipe-represents-the-best-of-FOSS.html</link>
+      <pubDate>Tue, 02 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/04/02/NewPipe-represents-the-best-of-FOSS.html</guid>
+      <description>NewPipe is a free and open-source Android application for browsing &amp;amp; watching YouTube. In my opinion, NewPipe is a perfect case-study in why free &amp;amp; open source software is great and how our values differ from proprietary software in important ways. There&amp;rsquo;s one simple reason: it&amp;rsquo;s better than the proprietary YouTube app, in every conceivable way, for free.
+NewPipe is better because it&amp;rsquo;s user-centric software. It exists to make its users lives better, not to enrich its overseers.</description>
+    </item>
+    
+    <item>
+      <title>I&#39;m going to work full-time on free software</title>
+      <link>./2019/01/15/Im-doing-FOSS-full-time.html</link>
+      <pubDate>Tue, 15 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/01/15/Im-doing-FOSS-full-time.html</guid>
+      <description>Sorry for posting two articles so close to each other - but this is important! As I&amp;rsquo;m certain many of you know, I maintain a large collection of free software projects, including sway, wlroots, sr.ht, scdoc, aerc, and many, many more. I contribute to more still, working on projects like Alpine Linux, mrsh, musl libc, and anything else I can. Until now, I&amp;rsquo;ve been working on these in my spare time, but just under a year ago I wrote &amp;ldquo;The path to sustainably working on FOSS full-time&amp;rdquo; laying out my future plans.</description>
+    </item>
+    
+    <item>
+      <title>Patches welcome</title>
+      <link>./2019/01/01/Patches-welcome.html</link>
+      <pubDate>Tue, 01 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/01/01/Patches-welcome.html</guid>
+      <description>Happy new year! This is always a weird &amp;ldquo;holiday&amp;rdquo; for me, since all of the fun happened last night. Today is just kind of&amp;hellip; I guess a chance for everyone to sober up before work tomorrow? It does tend to invite a sense of reflection and is the ideal time to plan for the year ahead. One of my goals in 2019 is to change more people&amp;rsquo;s thinking about the open source community and what it means to count among their number.</description>
+    </item>
+    
+    <item>
+      <title>How to abandon a FLOSS project</title>
+      <link>./2018/12/04/How-to-abandon-a-FLOSS-project.html</link>
+      <pubDate>Tue, 04 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/12/04/How-to-abandon-a-FLOSS-project.html</guid>
+      <description>It&amp;rsquo;s no secret that maintaining free and open source software is often a burdensome and thankless job. I empathise with maintainers who lost interest in a project, became demotivated by the endless demands of users, or are no longer blessed with enough free time. Whatever the reason, FLOSS work is volunteer work, and you&amp;rsquo;re free to stop volunteering at any time.
+In my opinion, there are two good ways to abandon a project: the fork it option and the hand-off option.</description>
+    </item>
+    
+    <item>
+      <title>It&#39;s not okay to pretend your software is open source</title>
+      <link>./2018/10/30/Its-not-okay-to-pretend-youre-open-source.html</link>
+      <pubDate>Tue, 30 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/10/30/Its-not-okay-to-pretend-youre-open-source.html</guid>
+      <description>Unfortunately, I find myself writing about the Commons Clause again. For those not in the know, the Commons Clause is an addendum designed to be added to free software licenses. The restrictions it imposes (you cannot sell the software) makes the resulting franken-license nonfree. I&amp;rsquo;m not going to link to the project which brought this subject back into the discussion - they don&amp;rsquo;t deserve the referral - but the continued proliferation of software using the Commons Clause gives me reason to speak out against it some more.</description>
+    </item>
+    
+    <item>
+      <title>Don&#39;t sign a CLA</title>
+      <link>./2018/10/05/Dont-sign-a-CLA.html</link>
+      <pubDate>Fri, 05 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/10/05/Dont-sign-a-CLA.html</guid>
+      <description>A large minority of open-source projects come with a CLA, or Contributor License Agreement, and require you to sign one before they&amp;rsquo;ll merge your patch. These agreements typically ask you to go above and beyond the rights you afford the project by contributing under the license the software is distributed with. And you should never sign one.
+Free and open source software licenses grant explicit freedoms to three groups: the maintainers, the users, and the contributors.</description>
+    </item>
+    
+    <item>
+      <title>The Commons Clause will destroy open source</title>
+      <link>./2018/08/22/Commons-clause-will-destroy-open-source.html</link>
+      <pubDate>Wed, 22 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/08/22/Commons-clause-will-destroy-open-source.html</guid>
+      <description>An alarmist title, I know, but it&amp;rsquo;s true. If the Commons clause were to be adopted by all open source projects, they would cease to be open source1, and therefore the Commons clause is trying to destroy open source. When this first appeared I spoke out about it in discussion threads around the net, but didn&amp;rsquo;t think anyone would take it seriously. Well, yesterday, some parts of Redis became proprietary software.</description>
+    </item>
+    
+    <item>
+      <title>How I maintain FOSS projects</title>
+      <link>./2018/06/01/How-I-maintain-FOSS-projects.html</link>
+      <pubDate>Fri, 01 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/06/01/How-I-maintain-FOSS-projects.html</guid>
+      <description>Today&amp;rsquo;s is another blog post which has been on my to-write list for a while. I have hesitated a bit to write about this, because I&amp;rsquo;m certain that my approach isn&amp;rsquo;t perfect. I think it&amp;rsquo;s pretty good, though, and people who work with me in FOSS agreed after a quick survey. So! Let&amp;rsquo;s at least put it out there and discuss it.
+There are a few central principles I use to guide my maintainership work:</description>
+    </item>
+    
+    <item>
+      <title>The path to sustainably working on FOSS full-time</title>
+      <link>./2018/02/24/The-road-to-sustainable-FOSS.html</link>
+      <pubDate>Sat, 24 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/02/24/The-road-to-sustainable-FOSS.html</guid>
+      <description>This is an article I didn&amp;rsquo;t think I&amp;rsquo;d be writing any time soon. I&amp;rsquo;ve aspired to work full-time on my free and open source software projects for a long time now, but I have never expected that it could work. However, as of this week, I finally have enough recurring donation revenue to break even on FOSS, and I&amp;rsquo;ve started to put the extra cash away. I needed to set the next donation goal and ran the numbers to figure out what it takes to work on FOSS full-time.</description>
+    </item>
+    
+    <item>
+      <title>What motivates the authors of the software you use?</title>
+      <link>./2016/09/09/What-motivates-the-authors-of-the-software-you-use.html</link>
+      <pubDate>Fri, 09 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/09/09/What-motivates-the-authors-of-the-software-you-use.html</guid>
+      <description>We face an important choice in our lives as technophiles, hackers, geeks: the choice between proprietary software and free/open source software. What platforms we choose to use are important. We have a choice between Windows, OS X, and Linux (not to mention the several less popular choices). We choose between Android or iOS. We choose hardware that requires nonfree drivers or ones that don&amp;rsquo;t. We choose to store our data in someone else&amp;rsquo;s cloud or in our own.</description>
+    </item>
+    
+    <item>
+      <title>Please don&#39;t use Slack for FOSS projects</title>
+      <link>./2015/11/01/Please-stop-using-slack.html</link>
+      <pubDate>Sun, 01 Nov 2015 00:00:00 +0000</pubDate>
+      
+      <guid>./2015/11/01/Please-stop-using-slack.html</guid>
+      <description>I&amp;rsquo;ve noticed that more and more projects are using things like Slack as the chat medium for their open source projects. In the past couple of days alone, I&amp;rsquo;ve been directed to Slack for Babel and Bootstrap. I&amp;rsquo;d like to try and curb this phenomenon before it takes off any more.
+Problems with Slack Slack&amp;hellip;
+ is closed source has only one client (update: errata at the bottom of this article) is a walled garden requires users to have a different tab open for each project they want to be involved in requires that Heroku hack to get open registration  The last one is a real stinker.</description>
+    </item>
+    
+  </channel>
+</rss>

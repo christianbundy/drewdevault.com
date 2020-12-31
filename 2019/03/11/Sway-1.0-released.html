@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Announcing the release of sway 1.0</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Announcing the release of sway 1.0
+  <small>
+    <span class="date">March 11, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>1,315 days after I started the <a href="https://swaywm.org">sway</a> project, it&rsquo;s finally
+time for <a href="https://github.com/swaywm/sway/releases/tag/1.0">sway 1.0</a>! I had no
+idea at the time how much work I was in for, or how many talented people would
+join and support the project with me. In order to complete this project, we have
+had to rewrite the entire Linux desktop nearly from scratch. Nearly 300 people
+worked together, together writing over 9,000 commits and almost 100,000 lines of
+code, to bring you this release.</p>
+<p><small class="text-muted">Sway is an i3-compatible Wayland desktop for Linux and FreeBSD</small></p>
+<p>1.0 is the first stable release of sway and represents a consistent, flexible,
+and powerful desktop environment for Linux and FreeBSD. We hope you&rsquo;ll enjoy it!
+If the last sway release you used was 0.15 or earlier, you&rsquo;re in for a shock.
+0.15 was a buggy, frustrating desktop to use, but sway 1.0 has been completely
+overhauled and represents a much more capable desktop. It&rsquo;s almost impossible to
+summarize all of the changes which makes 1.0 great. Sway 1.0 adds a huge variety
+of features which were sorely missed on 0.x, improves performance in every
+respect, offers a more faithful implementation of Wayland, and exists as a
+positive political force in the Wayland ecosystem pushing for standardization
+and cooperation among Wayland projects.</p>
+<p>When planning the future of sway, we realized that the Wayland ecosystem was
+sorely in need of a stable &amp; flexible common base library to encapsulate all of
+the difficult and complex facets of building a desktop. To this end, I decided
+we would build <a href="https://github.com/swaywm/wlroots">wlroots</a>. It&rsquo;s been a
+smashing success. This project has become very important to the Linux desktop
+ecosystem, and the benefits we reap from it have been shared with the community
+at large. <a href="https://github.com/swaywm/wlroots/wiki/Projects-which-use-wlroots">Dozens of projects</a> are using it today, and soon you&rsquo;ll
+find it underneath most Linux desktops, on your phone, in your VR environment,
+and more. Its influence extends beyond its borders as well, as we develop and
+push for standards throughout Wayland.</p>
+<p>Through this work we have also helped to build a broader ecosystem of tools
+built on interoperable standards which you may find useful in your new sway 1.0
+desktop. Here are a few of my favorites - each of which is compatible with many
+Wayland compositors:</p>
+<ul>
+<li><a href="https://github.com/swaywm/swayidle">swayidle</a>: idle management daemon</li>
+<li><a href="https://github.com/swaywm/swaylock">swaylock</a>: lock screen</li>
+<li><a href="https://github.com/emersion/mako">mako</a>: notification daemon</li>
+<li><a href="https://github.com/emersion/grim">grim</a>: screenshot tool</li>
+<li><a href="https://github.com/emersion/slurp">slurp</a>: interactive region selection</li>
+<li><a href="https://github.com/ammen99/wf-recorder">wf-recorder</a>: video capture tool</li>
+<li><a href="https://github.com/Alexays/Waybar">waybar</a>: alternative panel</li>
+<li><a href="https://source.puri.sm/Librem5/virtboard">virtboard</a>: on-screen keyboard</li>
+<li><a href="https://github.com/bugaevc/wl-clipboard">wl-clipboard</a>: xclip replacement</li>
+<li><a href="https://github.com/xyproto/wallutils">wallutils</a>: fancy wallpaper manager</li>
+</ul>
+<hr>
+<p>None of this would be possible without the support of sway&rsquo;s and wlroots'
+talented contributors. Hundreds of people worked together on this. I&rsquo;d like to
+give special thanks to our core contributors: Brian Ashworth, Ian Fan, Ryan
+Dwyer, Scott Anderson, and Simon Ser. Thanks are also in order for those who
+have helped wlroots fit into the broader ecosystem - thanks to Purism for their
+help on wlroots, KDE &amp; Canonical for their help on protocol standardization. I
+also owe thanks to all of the other projects which use wlroots, particularly
+including Way Cooler, Wayfire, and Waymonad, who all have made substantial
+contributions to wlroots in their pursit of the best Wayland desktop.</p>
+<p>I&rsquo;d also of course like to thank all of the users who have donated to support
+my work, which I now do full-time, which has had and I hope will continue to
+have a positive impact on the project and those around it. Please consider
+<a href="https://drewdevault.com/donate">donating</a> to support the future of sway &amp;
+wlroots if you haven&rsquo;t yet.</p>
+<p>Though sway today is already stable and powerful, we&rsquo;re not done yet. We plan to
+continue improving performance &amp; stability, adding useful desktop features,
+taking advantage of better hardware, and bringing sway to more users. Here&rsquo;s
+some of what we have planned for future releases:</p>
+<ul>
+<li>Better Wayland-native tools for internationalized input methods like CJK</li>
+<li>Better accessibility tools including improved screen reader support,
+high-contrast mode, a magnifying glass tool, and so on</li>
+<li>Integration with xdg-portal &amp; pipewire for interoperable screen capture</li>
+<li>Improved touch screen support for use on the <a href="https://puri.sm/products/librem-5/">Librem
+5</a> and on
+<a href="https://postmarketos.org/">postmarketOS</a></li>
+<li>Better support for drawing tablets and additional hardware</li>
+<li>Sandboxing and security features</li>
+</ul>
+<p>As with all sway features, we intend to have the best-in-class implementations
+of these features and set the bar as high as we can for everyone else. We&rsquo;re
+looking forward to your continued support!</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

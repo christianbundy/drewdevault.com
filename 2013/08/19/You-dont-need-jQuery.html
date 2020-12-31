@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>You don&#39;t need jQuery</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  You don&#39;t need jQuery
+  <small>
+    <span class="date">August 19, 2013</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>It&rsquo;s true. You really don&rsquo;t need jQuery. Modern web browsers can do most of what you want from jQuery,
+without jQuery.</p>
+<p>For example, take <a href="https://mediacru.sh">MediaCrush</a>. It&rsquo;s a website I spent some time working on with a friend.
+It&rsquo;s actually quite sophisticated - drag-and-drop uploading, uploading via a hidden form, events wired up to
+links and dynamically generated content, and ajax requests/file uploads, the whole she-bang. It does all of
+that without jQuery. It&rsquo;s <a href="https://github.com/MediaCrush/MediaCrush">open source</a>, if you&rsquo;re looking for a good
+example of how all of this can be used in the wild.</p>
+<p>Let&rsquo;s walk through some of the things you like jQuery for, and I&rsquo;ll show you how to do it without.</p>
+<h2 id="document-querying-with-css-selectors">Document Querying with CSS Selectors</h2>
+<p>You like jQuery for selecting content. I don&rsquo;t blame you - it&rsquo;s really cool. Here&rsquo;s some code using jQuery:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;div.article p&#39;</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">);</span>
+</code></pre></div><p>Now, here&rsquo;s how you can do it on vanilla JS:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="kd">var</span> <span class="nx">items</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span><span class="s1">&#39;div.article p&#39;</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">);</span>
+</code></pre></div><p>Documentation: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document.querySelectorAll">querySelectorAll</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/API/element.classList">classList</a></p>
+<p>This is, of course, a little more verbose. However, it&rsquo;s probably a lot simpler than you expected. Works in
+IE 8 and newer - except for classList, which works in IE 10 and newer. You can instead use className, which is
+a little less flexible, but still pretty easy to work with.</p>
+<h2 id="ajax">Ajax</h2>
+<p>You want to make requests in JavaScript. This is how you POST with jQuery:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="nx">$</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/path/to/endpoint&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="nx">parameter</span><span class="o">:</span> <span class="nx">value</span>
+    <span class="nx">otherParameter</span><span class="o">:</span> <span class="nx">otherValue</span>
+<span class="p">},</span>
+<span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div><p>Here&rsquo;s the same code, without jQuery:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span> <span class="c1">// A little deceptively named
+</span><span class="c1"></span><span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;/path/to/endpoint&#39;</span><span class="p">);</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">responseText</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="kd">var</span> <span class="nx">formData</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
+<span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;parameter&#39;</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+<span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;otherParameter&#39;</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">formData</span><span class="p">);</span>
+</code></pre></div><p>Documentation: <a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest">XMLHttpRequest</a></p>
+<p>Also a bit more verbose than jQuery, but much simpler than you might&rsquo;ve expected. Now here&rsquo;s the real kicker:
+It works in IE 7, and IE 5 with a little effort. IE actually pioneered XHR.</p>
+<h2 id="animations">Animations</h2>
+<p>This is where it starts to get more subjective and breaks backwards compatability. Here&rsquo;s my opinion on the
+matter of transitions: dropping legacy browser support for fancy animations is acceptable. I don&rsquo;t think it&rsquo;s
+a problem if your website isn&rsquo;t pretty and animated on older browsers. Keep that in mind as we move on.</p>
+<p>I want to animate the opacity of a <code>.foobar</code> when you hover over it. With jQuery:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.foobar&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;mouseenter&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">animate</span><span class="p">({</span>
+        <span class="nx">opacity</span><span class="o">:</span> <span class="mf">0.5</span>
+    <span class="p">},</span> <span class="mi">2000</span><span class="p">);</span>
+<span class="p">}).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;mouseleave&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">animate</span><span class="p">({</span>
+        <span class="nx">opacity</span><span class="o">:</span> <span class="mi">1</span>
+    <span class="p">},</span> <span class="mi">2000</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div><p>Without jQuery, I wouldn&rsquo;t do this in Javascript. I&rsquo;d use the magic of CSS animations:</p>
+<div class="highlight"><pre class="chroma"><code class="language-css" data-lang="css"><span class="p">.</span><span class="nc">foobar</span> <span class="p">{</span>
+    <span class="k">transition</span><span class="p">:</span> <span class="k">opacity</span> <span class="mi">2</span><span class="kt">s</span> <span class="kc">linear</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="p">.</span><span class="nc">foobar</span><span class="p">:</span><span class="nd">hover</span> <span class="p">{</span>
+    <span class="k">opacity</span><span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p class="foobar">Hover over this text</p>
+<style>.foobar{transition:opacity 2s linear;font-weight:bold;}.foobar:hover{opacity:0.5;}</style>
+<p>Documentation: <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_CSS_animations">CSS animations</a></p>
+<p>Much better, eh? Works in IE 10+. You can do much more complicated animations with CSS, but I can&rsquo;t think of
+a good demo, so that&rsquo;s an exercise left to the reader.</p>
+<h2 id="tree-traversal">Tree traversal</h2>
+<p>jQuery lets you navigate a tree pretty easily. Let&rsquo;s say you want to find the container of a button and remove
+all .foobar elements underneath it, upon clicking the button.</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#mybutton&#39;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">parent</span><span class="p">().</span><span class="nx">children</span><span class="p">(</span><span class="s1">&#39;.foobar&#39;</span><span class="p">).</span><span class="nx">remove</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div><p>Nice and succinct. I&rsquo;m sure you can tell the theme so far - the main advantage of jQuery is a less verbose
+syntax. Here&rsquo;s how it&rsquo;s done without jQuery:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;mybutton&#39;</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">foobars</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">parentElement</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span><span class="s1">&#39;.foobar&#39;</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">foobars</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">parentElement</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="nx">foobars</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+<span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</code></pre></div><p>A little wordier, but not so bad. Works in IE 9+ (8+ if you don&rsquo;t use addEventListener).</p>
+<h2 id="in-conclusion">In conclusion</h2>
+<p>jQuery is, of course, based on JavaScript, and as a result, anything jQuery can do can be done without jQuery.
+Feel free to <a href="mailto:sir@cmpwn.com">ask me</a> if you&rsquo;re curious about how I&rsquo;d do something else without jQuery.</p>
+<p>I feel like adding jQuery is one of the first things a web developer does to their shiny new website. It just
+isn&rsquo;t really necessary in this day and age. That extra request, 91kb, and load time are probably negligible,
+but it&rsquo;s still a little less clean than it could be. There&rsquo;s no need to go back and rid all of your projects of
+jQuery, but I&rsquo;d suggest that for your next one, you try to do without. Keep MDN open in the next tab over and
+I&rsquo;m sure you&rsquo;ll get through it fine.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

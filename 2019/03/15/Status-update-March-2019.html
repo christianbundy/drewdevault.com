@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Status update, March 2019</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Status update, March 2019
+  <small>
+    <span class="date">March 15, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>My todo list is getting completed at a pace it&rsquo;s never seen before, and growing
+at a new pace, too. This full-time FOSS gig is really killing it! As the good
+weather finally starts to roll in, it&rsquo;s time for March&rsquo;s status update. Note: I
+posted updates <a href="https://www.patreon.com/sircmpwn/posts">on Patreon</a> before, but will start posting here
+instead. This medium doesn&rsquo;t depend on a proprietary service, allows for richer
+content, and is useful for my supporters who support my work via other donation
+platforms.</p>
+<p>Sway 1.0 has been released! <img style="display: inline; height: 1.2rem"
+src="/img/party.png" /> I wrote a <a href="/2019/03/11/Sway-1.0-released.html">detailed
+write-up</a> on the release and our future
+plans separately, which I encourage you to read if you haven&rsquo;t already. However,
+I do have some additional progress to share outside of the big sway 1.0 news.
+In the last update, I mentioned that I got a Librem 5 devkit from Guido
+Günther<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> at FOSDEM. My plans were to get this up and running with sway and
+start improving touch support, and I&rsquo;ve accomplished both:</p>
+<p><img src="https://sr.ht/fGxf.jpg" alt="A picture of a Librem5 devkit running pmOS and sway"></p>
+<p>As you can see, I also got <a href="https://postmarketos.org/">postmarketOS</a> running,
+and I love it - I hope to work with them a lot in the future. The <a href="https://github.com/swaywm/sway/pull/3711">first
+patch</a> for improving touch support in
+sway has landed and I&rsquo;ll be writing more in the future. I also sent some patches
+to Purism&rsquo;s <a href="https://source.puri.sm/Librem5/virtboard">virtboard</a> project, an
+on-screen keyboard, making it more useful for Sway users. I hope to make an OSK
+of my own at some point, with multiple layouts, CJK support, and client-aware
+autocompletion, in the future. Until then, an improved virtboard is a nice
+stop-gap :) I&rsquo;ve also been working on wlroots a bit, including <a href="https://github.com/swaywm/wlroots/pull/1578">a patch adding
+remote desktop support</a>.</p>
+<p>In other Wayland news, I&rsquo;ve also taken a part time contract to build a module
+integrating wlroots with the <a href="https://godotengine.org/">Godot game engine</a>:
+<a href="https://git.sr.ht/~sircmpwn/gdwlroots">gdwlroots</a>. The long-term goal is to
+build a VR compositor based on Godot and develop standards for Wayland
+applications to have 3D content. 100% of this work is free software (MIT
+licensed) and will bring improvements to both the wlroots and Godot ecosystems.
+Next week I&rsquo;ll be starting work on adding a Wayland backend to Godot so that
+Godot-based games can run on Wayland compositors directly. Here&rsquo;s an example
+compositor running on Godot:</p>
+<p>&lt;video
+src=&ldquo;<a href="https://sr.ht/9bV-.webm%22">https://sr.ht/9bV-.webm&quot;</a>
+autoplay muted loop controls
+style=&ldquo;max-width: 100%;&rdquo;</p>
+<blockquote>
+</video>
+</blockquote>
+<p>I&rsquo;ve also made some significant progress on
+<a href="https://git.sr.ht/~sircmpwn/aerc2">aerc2</a>. I have fleshed out the command
+subsystem, rigged up keybindings, and implemented the message list, and along
+with it all of the asynchronous communication between the UI thread, network
+thread, and mail server. I think at this point most of the unknowns are solved
+with aerc2, and the rest just remains to be implemented. I&rsquo;m glad I chose to
+rewrite it from C, though my love for C still runs deep. The Go ecosystem is
+much better suited to the complex problems and dependency tree of software like
+aerc, plus has a nice concurrency model for aerc&rsquo;s async design.<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> The next
+major problem to address is the embedded terminal emulator, which I hope to
+start working on soon.</p>
+<script
+  id="asciicast-pafXXANiWHY9MOH2yXdVHHJRd"
+  src="https://asciinema.org/a/pafXXANiWHY9MOH2yXdVHHJRd.js" async
+></script>
+<p>aerc2&rsquo;s progress is a great example of my marginalized projects
+becoming my side projects, as my side projects become my full-time job, and thus
+all of them are developing at a substantially improved pace. The productivity
+increase is pretty crazy. I&rsquo;m really thankful to everyone who&rsquo;s supporting my
+work, and excited to keep building crazy cool software thanks to you.</p>
+<p>I was meaning to work on RISC-V this month, but I&rsquo;ve been a little bit
+distracted by everything else. However, there has been some discussion about how
+to approach upstreaming and I&rsquo;m planning on tackling this next week. I also
+spent some time putting together a custom 1U I can install in my datacenter for
+a more permanent RISC-V setup. Some of this is working towards getting RISC-V
+ready for builds.sr.ht users to take advantage of - that relay is for cutting
+power to the board to force a reboot when it misbehaves - but a lot of this is
+also useful for my own purposes in porting musl &amp; Alpine Linux.</p>
+<p><img src="https://sr.ht/M7me.jpg" alt="Picture of a 1U chassis with a bunch of custom components within"></p>
+<p>One problem I&rsquo;m still trying to solve is the microSD card. I don&rsquo;t want to run
+untrusted builds.sr.ht code when that microSD card is plugged in. I&rsquo;ve been
+working on some prototyping (breaking out the old soldering iron) to make a
+microSD&hellip; thing, which I can plug into this and physically cut VCC to the
+microSD card with that relay I have rigged up. This is pretty hard, and my
+initial attempts were unsuccessful. If anyone knowledgable about this has ideas,
+please get in touch.</p>
+<p>Outside of RISC-V, I have been contributing to Alpine Linux a lot more lately in
+general. I adopted the sway &amp; wlroots packages, have been working on improved
+PyQt support, cleaning up Python packages, clearing out the nonfree MongoDB
+packages, and more. I also added a bunch of new packages for miscellaneous
+stuff, including alacritty, font-noto-cjk, nethack, and Simon Ser&rsquo;s
+<a href="https://github.com/emersion/go-dkim">go-dkim</a> milter. Most importantly,
+however, I&rsquo;ve started
+<a href="https://wiki.alpinelinux.org/wiki/Python_package_policies">planning</a> and
+<a href="https://lists.alpinelinux.org/alpine-devel/6465.html">discussing</a> a Python
+overhaul project in aports with the Alpine team, which will including cleaning
+up all of the Python patches and starting on Python 2 removal. I depend a lot on
+Alpine and its Python support, so I&rsquo;m excited to be working on these
+improvements!</p>
+<p>I have some Sourcehut news as well. Like usual, there&rsquo;ll be a detailed
+Sourcehut-specific update posted to the
+<a href="https://lists.sr.ht/~sircmpwn/sr.ht-announce">sr.ht-announce</a> mailing list
+later on. With Ludovic Chabant&rsquo;s help, there have been continued improvements to
+Mercurial support, notably adding builds.sr.ht integration as of yesterday.
+Thanks Ludovic! We&rsquo;ve also been talking to some NetBSD folks who may be
+interested in using Sourcehut to host the NetBSD code once they finish their
+CVS-&gt;Hg migration, and we&rsquo;ve been improving the performance for large
+repositories during their experiments on sr.ht.</p>
+<p>There&rsquo;s a bunch more going on with Sourcehut - paste.sr.ht, APIs, a command line
+interface for those APIs, webhooks, and more still - check out the email on
+sr.ht-announce later. That&rsquo;s all I have for you today. Thank you for your
+support, and until next time!</p>
+<small class="text-muted">
+This work was possible thanks to users who support me financially. Please
+consider <a href="/donate">donating to my work</a> or <a
+href="https://sourcehut.org">buying a sourcehut.org subscription</a>. Thank you!
+</small>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>A Purism employee that works closely with wlroots on the Librem 5 <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>&ldquo;aerc&rdquo; stands for &ldquo;asynchronous email reading client&rdquo;, after all. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

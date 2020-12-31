@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ops on Drew DeVault&#39;s blog</title>
+    <link>./tags/ops.html</link>
+    <description>Recent content in ops on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 13 Jan 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/ops/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Backups &amp; redundancy at sr.ht</title>
+      <link>./2019/01/13/Backups-and-redundancy-at-sr.ht.html</link>
+      <pubDate>Sun, 13 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/01/13/Backups-and-redundancy-at-sr.ht.html</guid>
+      <description>sr.ht1 is 100% open source and I encourage people to install it on their own infrastructure, especially if they&amp;rsquo;ll be sending patches upstream. However, I am equally thrilled to host sr.ht for you on the &amp;ldquo;official&amp;rdquo; instance, and most users find this useful because the maintenance burden is non-trivial. Today I&amp;rsquo;ll give you an idea of what your subscription fee pays for. In this first post on ops at sr.ht, I&amp;rsquo;ll talk about backups and redundancy.</description>
+    </item>
+    
+  </channel>
+</rss>

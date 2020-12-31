@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Why I chose Flask to build sr.ht&#39;s mini-services</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Why I chose Flask to build sr.ht&#39;s mini-services
+  <small>
+    <span class="date">January 30, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p><a href="https://sr.ht">sr.ht</a> is a large, production-scale suite of web applications (I
+call them &ldquo;mini-services&rdquo;, as they strike a balance between microservices and
+monolithic applications) which are built in Python with
+<a href="http://flask.pocoo.org/">Flask</a>. David Lord, one of the maintainers of Flask,
+reached out to me when he heard about sr.ht and saw that it was built with
+Flask. At his urging, I&rsquo;d like to share the rationale behind the decision and
+how it&rsquo;s turned out in the long run.</p>
+<p>I have a long history of writing web applications with Flask, so much so that I
+think I&rsquo;ve lost count of them by now - at least 15, if not 20. Flask&rsquo;s
+simplicity and flexibility is what keeps bringing me back. Frameworks like
+Django or Rails are much different: they are the kitchen sink, and then some. I
+generally don&rsquo;t need the whole kitchen sink, and if I were given it, I would
+want to change some details. Flask is nice because it gives you the basics and
+lets you build what you need on top of it, and you&rsquo;re never working around a
+cookie-cutter system which doesn&rsquo;t cut your cookies in quite the way you need.</p>
+<p>In sr.ht&rsquo;s case in particular, though, I have chosen to extend Flask with <a href="https://git.sr.ht/~sircmpwn/core.sr.ht">a new
+module</a> common to all sr.ht projects. After all, each service of
+sr.ht has a lot in common with the rest. Some of the things that live in this
+core module are:</p>
+<ul>
+<li>Shared jinja2 templates and stylesheets</li>
+<li>Shared rigging for <a href="https://www.sqlalchemy.org/">SQLAlchemy</a> (ORM)</li>
+<li>Shared rigging for <a href="https://alembic.sqlalchemy.org/en/latest/">Alembic</a></li>
+<li><a href="https://git.sr.ht/~sircmpwn/core.sr.ht/tree/master/srht/validation.py">A little validation module</a> I&rsquo;m very proud of</li>
+<li>API behavior, webhooks, OAuth, etc, which are consistent throughout sr.ht</li>
+</ul>
+<p>The mini-service-oriented architecture allows sr.ht services to be deployed
+ala-carte for users who only need a fraction of what we offer. This design
+requires a lot of custom code to integrate all of the services with each other -
+for example, all of the services use a single shared config file, which contains
+both shared config options and service-specific configuration. sr.ht also uses a
+novel approach to authentication, in which both user logins and API
+authentication is delegated to an external service, meta.sr.ht, requiring
+further custom code still. core.sr.ht additionally provides common SQLAlchemy
+mixins for things like user tables, which have many common properties, but for
+each service may have service-specific columns as well.</p>
+<p>Django provides their own ORM, their own authentication, their own models, and
+more. In order to meet the design constraints of sr.ht, I&rsquo;d have spent twice as
+long ripping out the rest of Django&rsquo;s bits and fixing anything that broke in the
+resulting mess. With Flask, these bits were never written for me in the first
+place, which gives me the freedom to implement this design greenfield. Flask is
+small and what code it does bring to the table is highly pluggable.</p>
+<p>Though it&rsquo;s well suited to many of my needs, I don&rsquo;t think Flask is perfect. A
+few things I dislike about it:</p>
+<ul>
+<li>First-class <a href="http://jinja.pocoo.org/">jinja2</a> support is probably out of
+scope.</li>
+<li>flask.Flask and flask.Blueprint should be the same thing.</li>
+<li>I&rsquo;m not a fan of Flask&rsquo;s approach to configuration. I have a better(?) config
+module that I drag around to all of my projects.</li>
+</ul>
+<p>And to summarize the good:</p>
+<ul>
+<li>It provides a nice no-nonsense interface for requests, responses, and routing.</li>
+<li>It has a lot of nice hooks for adding your own middleware.</li>
+<li>It doesn&rsquo;t do much more than that, which means you&rsquo;re free to choose and
+compose other tools to make up the difference.</li>
+</ul>
+<p>I think that on the whole it&rsquo;s quite good. There are frameworks which are
+smaller still - but I think Flask hits a sweet spot. If you&rsquo;re making a
+monolithic web app and can live within the on-rails Django experience, you might
+want to use it. But if you are making smaller apps or need to rig things up in a
+unique way - something I find myself doing almost every time - Flask is probably
+for you.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

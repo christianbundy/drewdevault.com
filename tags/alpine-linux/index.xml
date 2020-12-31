@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>alpine linux on Drew DeVault&#39;s blog</title>
+    <link>./tags/alpine-linux.html</link>
+    <description>Recent content in alpine linux on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 20 Dec 2018 00:00:00 +0000</lastBuildDate><atom:link href="./tags/alpine-linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Porting Alpine Linux to RISC-V</title>
+      <link>./2018/12/20/Porting-Alpine-Linux-to-RISC-V.html</link>
+      <pubDate>Thu, 20 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/12/20/Porting-Alpine-Linux-to-RISC-V.html</guid>
+      <description>I recently received my HiFive Unleashed, after several excruciating months of waiting, and it&amp;rsquo;s incredibly cool. For those unaware, the HiFive Unleashed is the first consumer-facing Linux-capable RISC-V hardware. For anyone who&amp;rsquo;s still lost, RISC-V is an open, royalty-free instruction set architecture, and the HiFive is an open CPU implementing it. And here it is on my dining room table:
+This board is cool. I&amp;rsquo;m working on making this hardware available to builds.</description>
+    </item>
+    
+  </channel>
+</rss>

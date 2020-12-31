@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>sway on Drew DeVault&#39;s blog</title>
+    <link>./tags/sway.html</link>
+    <description>Recent content in sway on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 11 Mar 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/sway/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Announcing the release of sway 1.0</title>
+      <link>./2019/03/11/Sway-1.0-released.html</link>
+      <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/03/11/Sway-1.0-released.html</guid>
+      <description>1,315 days after I started the sway project, it&amp;rsquo;s finally time for sway 1.0! I had no idea at the time how much work I was in for, or how many talented people would join and support the project with me. In order to complete this project, we have had to rewrite the entire Linux desktop nearly from scratch. Nearly 300 people worked together, together writing over 9,000 commits and almost 100,000 lines of code, to bring you this release.</description>
+    </item>
+    
+    <item>
+      <title>Sway 1.0-beta.1 release highlights</title>
+      <link>./2018/10/20/Sway-1.0-highlights.html</link>
+      <pubDate>Sat, 20 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/10/20/Sway-1.0-highlights.html</guid>
+      <description>1,173 days ago, I wrote sway&amp;rsquo;s initial commit, and 8,269 commits followed1, written by hundreds of contributors. What started as a side project became the most fully featured and stable Wayland desktop available, and drove the development of what has become the dominant solution for building Wayland compositors - wlroots, now the basis of 10 Wayland compositors.
+Sway 1.0-beta.1 was just released and is 100% compatible with the i3 X11 window manager.</description>
+    </item>
+    
+    <item>
+      <title>Sway &amp; wlroots at XDC 2018</title>
+      <link>./2018/09/30/Sway-wlroots-at-XDC-2018.html</link>
+      <pubDate>Sun, 30 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/09/30/Sway-wlroots-at-XDC-2018.html</guid>
+      <description>Just got my first full night of sleep after the return flight from Spain after attending XDC 2018. It was a lot of fun! I attended along with four other major wlroots contributors. Joining me were Simon Ser (emersion) (a volunteer) and Scott Anderson (ascent12) of Collabora, who work on both wlroots and sway. ongy works on wlroots, hsroots, and waymonad, and joined us on behalf of IGEL. Finally, we were joined by Guido Günther (agx) of Purism, who works with us on wlroots and on the Librem 5.</description>
+    </item>
+    
+    <item>
+      <title>Why did we replace wlc?</title>
+      <link>./2018/05/27/Why-rewrite-wlc.html</link>
+      <pubDate>Sun, 27 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/05/27/Why-rewrite-wlc.html</guid>
+      <description>For a little over a year, I&amp;rsquo;ve been working with a bunch of talented C developers to build a replacement for the wlc library. The result is wlroots, and we&amp;rsquo;re still working on completing it and updating our software to use it. The conventional wisdom suggests that rewriting your code from scratch is almost never the right idea. So why did we do it, and how is it working out? I have spoken a little about this in the past, but we&amp;rsquo;ll answer this question in detail today.</description>
+    </item>
+    
+    <item>
+      <title>Sway reporting in from KDE&#39;s Berlin development sprint</title>
+      <link>./2018/04/28/KDE-Sprint-retrospective.html</link>
+      <pubDate>Sat, 28 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/04/28/KDE-Sprint-retrospective.html</guid>
+      <description>I&amp;rsquo;m writing to you from an airplane on my way back to Philadelphia, after spending a week in Berlin working with the KDE team. It was great to meet those folks and work with them for a while. It&amp;rsquo;ll take me some time to get the taste of C++ out of my mouth, though! In all seriousness, it was a very productive week and I feel like we have learned a lot about each other&amp;rsquo;s projects and have a strengthened interest in collaborating more in the future.</description>
+    </item>
+    
+    <item>
+      <title>Sway and client side decorations</title>
+      <link>./2018/01/27/Sway-and-client-side-decorations.html</link>
+      <pubDate>Sat, 27 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/01/27/Sway-and-client-side-decorations.html</guid>
+      <description>You may have recently seen an article from GNOME on the subject of client side decorations (CSD) titled Introducing the CSD Initiative. It states some invalid assumptions which I want to clarify, and I want to tell you Sway&amp;rsquo;s stance on the subject. I also speak for the rest of the projects involved in wlroots on this matter, including Way Cooler, waymonad, and bspwc.
+The subject of which party is responsible for window decorations on Wayland (the client or the server) has been a subject of much debate.</description>
+    </item>
+    
+    <item>
+      <title>The future of Wayland, and sway&#39;s role in it</title>
+      <link>./2017/10/09/Future-of-sway.html</link>
+      <pubDate>Mon, 09 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/10/09/Future-of-sway.html</guid>
+      <description>Today I&amp;rsquo;ve released sway 0.15-rc1, the first release candidate for the final 0.x release of sway. That&amp;rsquo;s right - after sway 0.15 will be sway 1.0. After today, no new features are being added to sway until we complete the migration to our new plumbing library, wlroots. This has been a long time coming, and I would love to introduce you to wlroots and tell you what to expect from sway 1.</description>
+    </item>
+    
+    <item>
+      <title>State of Sway August 2017</title>
+      <link>./2017/08/09/State-of-Sway-August-2017.html</link>
+      <pubDate>Wed, 09 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/08/09/State-of-Sway-August-2017.html</guid>
+      <description>Is it already time to write another one of these? Phew, time flies. Sway marches ever forward. Sway 0.14.0 was recently released, adding much asked-after support for tray icons and fixing some long-standing bugs. As usual, we already have some exciting features slated for 0.15.0 as well, notably some cool improvements to clipboard support. Look forward to it!
+Today Sway has 24,123 lines of C (and 4,489 lines of header files) written by 94 authors across 2,345 commits.</description>
+    </item>
+    
+    <item>
+      <title>State of Sway April 2017</title>
+      <link>./2017/04/29/State-of-sway-April-2017.html</link>
+      <pubDate>Sat, 29 Apr 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/04/29/State-of-sway-April-2017.html</guid>
+      <description>Development on Sway continues. I thought we would have slowed down a lot more by now, but every release still comes with new features - Sway 0.12 added redshift support and binary space partitioning layouts. Sway 0.13.0 is coming soon and includes, among other things, nvidia proprietary driver support. We already have some interesting features slated for Sway 0.14.0, too!
+Today Sway has 21,446 lines of C (and 4,261 lines of header files) written by 81 authors across 2,263 commits.</description>
+    </item>
+    
+    <item>
+      <title>State of Sway December 2016 - secure your Wayland desktop, get paid to work on Sway</title>
+      <link>./2016/12/27/State-of-sway.html</link>
+      <pubDate>Tue, 27 Dec 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/12/27/State-of-sway.html</guid>
+      <description>Earlier today I released sway 0.11, which (along with lots of the usual new features and bug fixes) introduces support for security policies that can help realize the promise of a secure Wayland desktop. We also just started a bounty program that lets you sponsor the things you want done and rewards contributors for working on them.
+Today sway has 19,371 lines of C (and 3,761 lines of header files) written by 70 authors across 2,067 commits.</description>
+    </item>
+    
+    <item>
+      <title>Sway 0.9 &amp; One year of Sway</title>
+      <link>./2016/08/02/Sway-0.9-in-retro.html</link>
+      <pubDate>Tue, 02 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/08/02/Sway-0.9-in-retro.html</guid>
+      <description>Today marks one year since the initial commit of Sway. Over the year since, we&amp;rsquo;ve written 1,823 commits by 54 authors, totalling 16,601 lines of C (and 1,866 lines of header files). This was written over the course of 515 pull requests and 300 issues. Today, most i3 features are supported. In fact, as of last week, all of the features from the i3 configuration I used before I started working on Sway are now supported by Sway.</description>
+    </item>
+    
+    <item>
+      <title>State of Sway - April 2016</title>
+      <link>./2016/04/20/State-of-sway-April-2016.html</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/04/20/State-of-sway-April-2016.html</guid>
+      <description>Since the previous State of Sway, we have accomplished quite a bit. We are now shipping versioned releases of sway, which include support for window borders, input device configuration, more new features, and many bug fixes and stability improvements. I&amp;rsquo;m also happy to say that Sway 0.5 has landed in the Arch Linux community repository and I&amp;rsquo;m starting to hear rumors of it landing in other Linux distros as well. Here&amp;rsquo;s a quick rundown of what&amp;rsquo;s happened in the past four months:</description>
+    </item>
+    
+    <item>
+      <title>State of Sway - December 2015</title>
+      <link>./2015/12/20/State-of-sway-December-2015.html</link>
+      <pubDate>Sun, 20 Dec 2015 00:00:00 +0000</pubDate>
+      
+      <guid>./2015/12/20/State-of-sway-December-2015.html</guid>
+      <description>I wrote sway&amp;rsquo;s initial commit 4 months ago, on August 4th. At the time of writing, there are now 1,070 commits from 29 different authors, totalling 10,682 lines of C (and 1,176 lines of header files). This has been done over the course of 256 pull requests and 118 issues. Of the 73 i3 features we&amp;rsquo;re tracking, 51 are now supported, and I&amp;rsquo;ve been using sway as my daily driver for a while now.</description>
+    </item>
+    
+  </channel>
+</rss>

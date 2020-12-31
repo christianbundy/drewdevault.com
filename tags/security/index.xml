@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>security on Drew DeVault&#39;s blog</title>
+    <link>./tags/security.html</link>
+    <description>Recent content in security on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 11 May 2017 00:00:00 +0000</lastBuildDate><atom:link href="./tags/security/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Rotating passwords in bulk in the wake of security events</title>
+      <link>./2017/05/11/Rotating-passwords.html</link>
+      <pubDate>Thu, 11 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/05/11/Rotating-passwords.html</guid>
+      <description>I&amp;rsquo;ve been putting this post off for a while. Do you remember the CloudFlare security problem that happened a few months ago? This is the one that disclosed huge amounts of sensitive information for huge numbers websites. When this happened, your accounts on thousands of websites were potentially compromised.
+Updating passwords for all of these services at once was a major source of frustration for users. Updating a single password can take 5 minutes, and changing dozens of them might take hours.</description>
+    </item>
+    
+    <item>
+      <title>MSG_PEEK is pretty common, CVE-2016-10229 is worse than you think</title>
+      <link>./2017/04/13/MSG_PEEK-is-more-common-than-you-think-CVE-2016-10229.html</link>
+      <pubDate>Thu, 13 Apr 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/04/13/MSG_PEEK-is-more-common-than-you-think-CVE-2016-10229.html</guid>
+      <description>I heard about CVE-2016-10229 earlier today. In a nutshell, it allows for arbitrary code execution via UDP traffic if userspace programs are using MSG_PEEK in their recv calls. I quickly updated my kernels and rebooted any boxes where necessary, but when I read the discussions on this matter I saw people downplaying this issue by claiming MSG_PEEK is an obscure feature.
+I don&amp;rsquo;t want to be a fear monger and I&amp;rsquo;m by no means a security expert but I suspect that this is a deeply incorrect conclusion.</description>
+    </item>
+    
+  </channel>
+</rss>

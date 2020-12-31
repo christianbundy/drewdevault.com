@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Introduction to POSIX shell</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Introduction to POSIX shell
+  <small>
+    <span class="date">February 5, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>What the heck is the POSIX shell anyway? Well, the POSIX (the Portable Operating
+System Interface) shell is the standard Unix shell - standard meaning it was
+formally defined and shipped in a published standard. This makes shell scripts
+written for it portable, something no other shell can lay claim to. The POSIX
+shell is basically a formalized version of the venerable Bourne shell, and on
+your system it lives at <code>/bin/sh</code>, unless you&rsquo;re one of the unlucky masses for
+whom this is a symlink to bash.</p>
+<h2 id="why-use-posix-shell">Why use POSIX shell?</h2>
+<p>The &ldquo;Bourne Again shell&rdquo;, aka bash, is not standardized. Its grammar,
+features, and behavior aren&rsquo;t formally written up anywhere, and only one
+implementation of bash exists. Without a standard, bash is defined <em>by</em> its
+implementation. POSIX shell, on the other hand, has many competing
+implementations on many different operating systems - all of which are
+compatible with each other because they conform to the standard.</p>
+<p>Any shell that utilizes features specific to Bash are not portable, which means
+you cannot take them with you to any other system. Many Linux-based systems do
+not use Bash or GNU coreutils. Outside of Linux, pretty much everyone but Hurd
+does <em>not</em> ship GNU tools, including bash<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. On any of these systems, scripts
+using &ldquo;bashisms&rdquo; will not work.</p>
+<p>This is bad if your users wish to utilize your software anywhere other than
+GNU/Linux. If your build tooling utilizes bashisms, your software will not build
+on anything but GNU/Linux. If you ship runtime scripts that use bashisms, your
+software will not <em>run</em> on anything but GNU/Linux. The case for sticking to
+POSIX shell in shipping software is compelling, but I argue that you should
+stick to POSIX shell for your personal scripts, too. You might not care now, but
+when you feel like flirting with other Unicies you&rsquo;ll thank me when all of your
+scripts work.</p>
+<p>One place where POSIX shell does <em>not</em> shine is for interactive use - a place
+where I think bash sucks, too. Any shell you want to use for your day-to-day
+command line work is okay in my book. I use fish. Use whatever you like
+interactively, but stick to POSIX sh for your scripts.</p>
+<h2 id="how-do-i-use-posix-shell">How do I use POSIX shell?</h2>
+<p>At the top of your scripts, put <code>#!/bin/sh</code>. You don&rsquo;t have to worry about using
+<code>env</code> here like you might have been trained to do with bash: <code>/bin/sh</code> is the
+standardized location for the POSIX shell, and any standards-conforming system
+will either put it there or make your script work anyway.<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></p>
+<p>The next step is to avoid bashisms. There are many, but here are a few that
+might trip you up:</p>
+<ul>
+<li><code>[[ condition ]]</code> does not work; use <code>[ condition ]</code></li>
+<li>Arrays do not work; <a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_06_05">use IFS</a></li>
+<li>Local variables do not work; use a subshell</li>
+</ul>
+<p>The easiest way to learn about POSIX shell is to <a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html">read the
+standard</a> -
+it&rsquo;s not too dry and shorter than you think.</p>
+<h2 id="using-standard-coreutils">Using standard coreutils</h2>
+<p>The last step to writing portable scripts is to use portable tools. Your system
+may have GNU coreutils installed, which provides tools like <code>grep</code> and <code>cut</code>.
+Unfortunately, GNU has extended these tools with its own non-portable flags and
+tools. It&rsquo;s important that you avoid these.</p>
+<p>One dead giveaway of a non-portable flag is long flags, e.g. <code>grep --file=FILE</code>
+as opposed to <code>grep -f</code>. The POSIX standard only defines the <code>getopt</code> function -
+not the proprietary GNU <code>getopt_long</code> function that&rsquo;s used to interpret long
+options. As a result, no long flags are standardized. You might worry that this
+will make your scripts difficult to understand, but I think that on the whole it
+will not. Shell scripts are already pretty alien and require some knowledge to
+understand. Is knowledge of what the magic word <code>grep</code> means much different
+from knowledge of what <code>grep -E</code> means?</p>
+<p>I also like that short flags allow you to make more concise command lines. Which
+is better: <code>ps --all --format=user --without-tty</code>, or <code>ps -aux</code>? If you are
+inclined to think the former, do you also prefer <code>function(a, b, c) { return a + b + c; }</code> over <code>(a, b, c) =&gt; a + b + c</code>?  Conciseness matters, and POSIX shell
+supports comments if necessary!</p>
+<p>Some tips for using short flags:</p>
+<ul>
+<li>They can be collapsed: <code>cmd -a -b -c</code> is equivalent to <code>cmd -abc</code></li>
+<li>If they take additional arguments, either a space or no separation is
+acceptable: <code>cmd -f&quot;hello world&quot;</code> or <code>cmd -f &quot;hello world&quot;</code></li>
+</ul>
+<p>A good reference for learning about standardized commands is, once again, <a href="http://pubs.opengroup.org/onlinepubs/9699919799/">the
+standard</a>. From this page,
+search for the command you want, or navigate through &ldquo;Shell &amp; Utilities&rdquo; -&gt;
+&ldquo;Utilities&rdquo; for a list. If you have <code>man-pages</code> installed, you will also find
+POSIX man pages installed on your system with the <code>p</code> postfix, such as <code>man 1p grep</code>. Note: at the time of writing, the POSIX man pages do not use dashes if
+your locale is UTF-8, which makes searching for flags with <code>/</code> difficult. Use
+<code>env LC_ALL=POSIX man 1p grep</code> if you need to search for flags, and I&rsquo;ll speak
+to the maintainer of man-pages about this.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>A reader points out that macOS ships an ancient version of bash. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><em>2018-05-15 correction</em>: <code>#!/bin/sh</code> is unfortunately not standardized by POSIX. However, I still recommend its use, as most operating systems will place it there. The portable way to invoke shell scripts is <code>sh path/to/script</code>. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

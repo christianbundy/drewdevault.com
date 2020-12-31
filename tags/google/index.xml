@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>google on Drew DeVault&#39;s blog</title>
+    <link>./tags/google.html</link>
+    <description>Recent content in google on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 03 May 2018 00:00:00 +0000</lastBuildDate><atom:link href="./tags/google/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Google embraces, extends, and extinguishes</title>
+      <link>./2018/05/03/Google-embraces-extends-extinguishes.html</link>
+      <pubDate>Thu, 03 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/05/03/Google-embraces-extends-extinguishes.html</guid>
+      <description>Microsoft infamously coined the euphemism &amp;ldquo;embrace, extend, extinguish&amp;rdquo; to describe their strategy for disrupting markets dominated by open standards. These days, Microsoft seems to have turned the other leaf, contributing to a huge amount of open source and supporting open standards, and is becoming a good citizen of the technology community. It&amp;rsquo;s time to turn our concerns to Google.
+Google famously &amp;ldquo;embraced&amp;rdquo; email on April Fool&amp;rsquo;s day, 2004, which is of course based on an open standard and federates with the rest of the world.</description>
+    </item>
+    
+    <item>
+      <title>Getting on without Google</title>
+      <link>./2016/11/16/Getting-on-without-Google.html</link>
+      <pubDate>Wed, 16 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/11/16/Getting-on-without-Google.html</guid>
+      <description>I used Google for a long time, but have waned myself off of it over the past few years, and I finally deleted my account a little over a month ago. I feel so much better about my privacy now that I&amp;rsquo;ve removed Google from the equation, and self hosting my things affords me a lot of flexibility and useful customizations.
+mail.cmpwn.com This one was the most difficult and time consuming to set up, but it was very worth it.</description>
+    </item>
+    
+  </channel>
+</rss>

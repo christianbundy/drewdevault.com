@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>osu on Drew DeVault&#39;s blog</title>
+    <link>./tags/osu.html</link>
+    <description>Recent content in osu on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 14 Jun 2015 00:00:00 +0000</lastBuildDate><atom:link href="./tags/osu/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>osu!web - WebGL &amp; Web Audio</title>
+      <link>./2015/06/14/osuweb.html</link>
+      <pubDate>Sun, 14 Jun 2015 00:00:00 +0000</pubDate>
+      
+      <guid>./2015/06/14/osuweb.html</guid>
+      <description>I&amp;rsquo;ve taken a liking to a video game called osu! over the past few months. It&amp;rsquo;s a rhythm game where you use move your mouse to circles that appear with the beat, and click (or press a key) at the right time. It looks something like this:
+ The key of this game is that the &amp;ldquo;beatmaps&amp;rdquo; (a song plus notes to hit) are user-submitted. There are thousands of them, and the difficulty curve is very long - I&amp;rsquo;ve been playing for 10 months and I&amp;rsquo;m only maybe 70% of the way up the difficulty curve.</description>
+    </item>
+    
+  </channel>
+</rss>

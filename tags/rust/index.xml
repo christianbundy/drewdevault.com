@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>rust on Drew DeVault&#39;s blog</title>
+    <link>./tags/rust.html</link>
+    <description>Recent content in rust on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 25 Mar 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/rust/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Rust is not a good C replacement</title>
+      <link>./2019/03/25/Rust-is-not-a-good-C-replacement.html</link>
+      <pubDate>Mon, 25 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/03/25/Rust-is-not-a-good-C-replacement.html</guid>
+      <description>I have a saying that summarizes my opinion of Rust compared to Go: &amp;ldquo;Go is the result of C programmers designing a new programming language, and Rust is the result of C++ programmers designing a new programming language&amp;rdquo;. This isn&amp;rsquo;t just a metaphor - Go was designed by plan9 alumni, an operating system written in C and the source of inspiration for many of Go&amp;rsquo;s features, and Rust was designed by the folks at Mozilla - whose flagship product is one of the largest C++ codebases in the world.</description>
+    </item>
+    
+  </channel>
+</rss>

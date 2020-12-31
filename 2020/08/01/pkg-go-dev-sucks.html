@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>pkg.go.dev is more concerned with Google&#39;s interests than good engineering</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  pkg.go.dev is more concerned with Google&#39;s interests than good engineering
+  <small>
+    <span class="date">August 1, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>pkg.go.dev sucks. It&rsquo;s certainly <em>prettier</em> than godoc.org, but under the
+covers, it&rsquo;s a failure of engineering characteristic of the Google approach.</p>
+<p>Go is a <em>pretty good</em> programming language. I have long held that this is not
+attributable to Google&rsquo;s stewardship, but rather to a small number of language
+designers and a clear line of influences which is drawn entirely from outside of
+Google — mostly from Bell Labs. pkg.go.dev provides renewed support for my
+argument: it has all the hallmarks of Google crapware and none of the
+deliberate, good engineering work that went into Go&rsquo;s design.</p>
+<p>It was apparent from the start that this is what it would be. pkg.go.dev was
+launched as a closed-source product,
+<a href="https://blog.golang.org/pkg.go.dev-2020">justified</a> by pointing out that
+godoc.org is too complex to run on an intranet, and pkg.go.dev has the same
+problem. There are many problems to take apart in this explanation: the
+assumption that the only reason an open source platform is desirable is for
+running it on your intranet; the unstated assumption that such complexity
+is necessary or agreeable in the first place; and the
+<a href="https://github.com/golang/go/issues/25443">systemic</a> <a href="https://github.com/golang/go/issues/30029">erosion</a>
+of the existing (and simple!) tools which <em>could</em> have been used for this
+purpose prior to this change. The attitude towards open source was only changed
+following pkg.go.dev&rsquo;s harsh reception by the community.</p>
+<p>But this attitude <em>did</em> change, and it is open-source now<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, so let&rsquo;s give
+them credit for that. The good intentions are spoilt by the fact that pkg.go.dev
+fetches the list of modules from <a href="https://proxy.golang.org/">proxy.golang.org</a>:
+a closed-source proxy through which all of your go module fetches are being
+routed and tracked (oh, you didn&rsquo;t know? They never told you, after all).
+Anyway, enough of the gross disregard for the values of open source and user
+privacy; I <em>do</em> have some technical problems to talk about.</p>
+<p>One concern comes from a blatant failure to comprehend the fundamentally
+decentralized nature of git hosting. Thankfully, git.sr.ht is supported now<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>
+— but only <em>the</em> git.sr.ht, i.e. the hosted instance, not the software.
+pkg.go.dev hard-codes a list of centralized git hosting services, and completely
+disregards the idea of git hosting as <em>software</em> rather than as a <em>platform</em>.
+Any GitLab instance other than gitlab.com (such as
+<a href="https://gitlab.freedesktop.org">gitlab.freedesktop.org</a> or
+<a href="https://salsa.debian.org/public">salsa.debian.org</a>); any
+<a href="https://gogs.io/">Gogs</a> or <a href="https://gitea.io/en-us/">Gitea</a> like
+<a href="https://codeberg.org">Codeberg</a>; cgit instances like
+<a href="https://git.kernel.org/">git.kernel.org</a>; none of these are going to work
+unless every host is added and the list is kept up-to-date manually. Your
+intranet instance of cgit? Not a chance.</p>
+<p>They were also given an opportunity here to fix a long-standing problem with Go
+package discovery, namely that it requires every downstream git repository host
+has to (1) provide a web interface and (2) include <em>Go-specific</em> meta tags in
+the HTML. The hubris to impose your <em>programming language</em>&rsquo;s needs onto a
+language-agnostic version control system! I asked: they have no interest in the
+better-engineered — but more worksome — approach of pursing a
+language agnostic design.</p>
+<p>The worldview of the developers is whack, the new site introduces dozens of
+regressions, and all it really improves upon is the visual style — which
+could trivially have been done to godoc.org. The goal is shipping a shiny new
+product — not engineering a good solution. This is typical of Google&rsquo;s
+engineering ethos in general. pkg.go.dev sucks, and is added the large (and
+growing) body of evidence that Google is bad for Go.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Setting aside the fact that the production pkg.go.dev site is amended with closed-source patches. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>The GitHub comment explaining the change of heart included a link to a Google Groups discussion which requires you to log in with a Google account in order to <em>read</em>.<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> If you go the long way around and do some guesswork searching the archives yourself, you <a href="https://groups.google.com/d/msg/golang-dev/mfiPCtJ1BGU/ibeimu3WEgAJ">can find it</a> without logging in. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>Commenting on Go patches also requires a Google account, by the way. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p>But not hg.sr.ht! <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

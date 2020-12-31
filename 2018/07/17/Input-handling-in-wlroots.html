@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Input handling in wlroots</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Input handling in wlroots
+  <small>
+    <span class="date">July 17, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I&rsquo;ve said before that wlroots is a &ldquo;batteries not included&rdquo; kind of library, and
+one of the places where that is most apparent is with our approach to input
+handling. We implemented a very hands-off design for input, in order to support
+many use-cases: desktop input, phones with and without USB-OTG HIDs plugged in,
+multiple mice bound to a single cursor, multiple keyboards per seat, simulated
+input from fake input devices, on-screen keyboards, input which is processed by
+the compositor but not sent to clients&hellip; we support all of these use-cases and
+even more. However, the drawback of our powerful design is that it&rsquo;s confusing.
+Very confusing.</p>
+<p>Let&rsquo;s begin by forgetting about the Wayland part entirely. After all, wlroots is
+flexible enough that you can use it without writing a Wayland compositor at all!
+It can be used in a similar fashion to tools like GLFW and SDL, to abstract
+low-level input (via e.g. libinput) and graphical output (via e.g. DRM). Let&rsquo;s
+start here, simply getting input events from wlroots in the first place.</p>
+<p>One of the fundamental building blocks of wlroots is the <code>wlr_backend</code>,
+which is a resource that abstracts the underlying hardware and exposes a
+consistent API for outputs and input devices. Outputs have been discussed
+elsewhere, so let&rsquo;s focus just on input devices. Each backend provides an
+event: <a href="https://github.com/swaywm/wlroots/blob/4984ea49eeaa292d66be9e535d93a4d8185f3e18/include/wlr/backend.h#L17"><code>wlr_backend.events.new_input</code></a>. The signal is called with a
+reference to a <a href="https://github.com/swaywm/wlroots/blob/4984ea49eeaa292d66be9e535d93a4d8185f3e18/include/wlr/types/wlr_input_device.h"><code>wlr_input_device</code></a> each time a new input
+device appears on the backend - for example, when you plug a mouse into your
+computer when using the libinput backend.</p>
+<p>The input device can be one of five types, appropriately identified by the
+<code>type</code> field. The types are:</p>
+<ul>
+<li><code>WLR_INPUT_DEVICE_KEYBOARD</code></li>
+<li><code>WLR_INPUT_DEVICE_POINTER</code></li>
+<li><code>WLR_INPUT_DEVICE_TOUCH</code></li>
+<li><code>WLR_INPUT_DEVICE_TABLET_TOOL</code></li>
+<li><code>WLR_INPUT_DEVICE_TABLET_PAD</code></li>
+</ul>
+<p>The type indicates which member of the anonymous union is valid. If
+<code>wlr_input_device-&gt;type == WLR_INPUT_DEVICE_KEYBOARD</code>, then
+<code>wlr_input_device-&gt;keyboard</code> is a valid pointer to a
+<a href="https://github.com/swaywm/wlroots/blob/4984ea49eeaa292d66be9e535d93a4d8185f3e18/include/wlr/types/wlr_keyboard.h"><code>wlr_keyboard</code></a>.</p>
+<p>Let&rsquo;s examine the wlr keyboard more closely now. The keyboard struct also
+provides its own events, like <code>key</code> and <code>keymap</code>. If you want to process input
+from this keyboard, you need to set up an <a href="https://xkbcommon.org/doc/current/">xkbcommon</a> context for
+ingesting the raw scancodes emitted by the <code>key</code> event and converting them to
+Unicode and keysyms (e.g. &ldquo;Up&rdquo;) with an XKB keymap. Most of the wlroots examples
+<a href="https://github.com/swaywm/wlroots/blob/4984ea49eeaa292d66be9e535d93a4d8185f3e18/examples/simple.c#L114">implement this</a> if you&rsquo;re looking for a simple reference.</p>
+<p>When these events are sent, we just let you process them as you please. They do
+not automatically get propagated to any Wayland clients. Communicating these
+events to the clients is your responsibility, though we provide you tools to
+help - we&rsquo;ll get into that shortly. You don&rsquo;t even have to source the input you
+give to Wayland clients from a <code>wlr_input_device</code>, you can just as easily make
+them up or get them from the network or anywhere else.</p>
+<p>Before we get into details on how to send events to clients, let&rsquo;s examine the
+other components in your compositor&rsquo;s input code. First, let&rsquo;s talk about the
+cursor.</p>
+<p>We provide the <a href="https://github.com/swaywm/wlroots/blob/4984ea49eeaa292d66be9e535d93a4d8185f3e18/include/wlr/types/wlr_pointer.h"><code>wlr_pointer</code></a> abstraction for getting events from
+a &ldquo;pointer&rdquo; device, like a mouse. However, because batteries are not included,
+you will find that we only tell you what the pointer device is doing - we don&rsquo;t
+act on it. If you want to, for example, display a cursor image <img
+src="https://sr.ht/hf39.png" style="display: inline; margin: 0; padding: 0;" />
+on screen which moves around when the mouse does, you need to wire this up
+yourself. We have tools which can help.</p>
+<p>First, let&rsquo;s talk about getting the cursor image to show. You can source the
+image from anywhere you want, but you will probably want to leverage
+<a href="https://github.com/swaywm/wlroots/blob/master/include/wlr/xcursor.h"><code>wlr_xcursor</code></a>. This is a small wlroots module (forked from the
+<code>wayland-cursor</code> library used by Wayland clients) which can read Xcursor themes,
+the kind your user will already have installed on their system. Loading up a
+cursor theme and getting the pixels from it is pretty straightforward. But what
+should you do with those pixels?</p>
+<p>Well, now we have to introduce hardware cursors. Many backends support
+&ldquo;hardware&rdquo; cursors, which is a feature provided by your low-level graphics stack
+(e.g. GPU drivers) for rendering a cursor on the screen. Hardware cursors are
+composited by the GPU, which means you can move the cursor around without
+re-drawing the things underneath it. This is the most energy- and CPU-efficient
+way of drawing your cursor, and you can do it with
+<a href="https://github.com/swaywm/wlroots/blob/4984ea49eeaa292d66be9e535d93a4d8185f3e18/include/wlr/types/wlr_output.h#L179-L190"><code>wlr_output_cursor_set_image</code></a>, specifying which <code>wlr_output</code>
+you want it to appear on and at what coordinates. Not all configurations support
+hardware cursors, but <code>wlr_output</code> automatically falls back to software cursors
+if need be.</p>
+<p>Now you have all of the pieces to show a cursor on screen that moves with the
+mouse. You can store some X and Y coordinates somewhere, grab an image from an
+Xcursor theme, and throw it at your <code>wlr_output</code>, then process input events and
+move it around. Then&hellip; you need to consider multiple outputs. And you need to
+make sure that it can&rsquo;t be moved outside of an output. And you need to let the
+user move it around with a drawing tablet or touch screen as well. And&hellip; well,
+it&rsquo;s about to get complicated. That&rsquo;s where our next tool comes in!</p>
+<p><a href="https://github.com/swaywm/wlroots/blob/4984ea49eeaa292d66be9e535d93a4d8185f3e18/include/wlr/types/wlr_cursor.h"><code>wlr_cursor</code></a> is how wlroots saves you from some of this work. It
+can display a cursor image on-screen, tie it to multiple input devices,
+constrain it to your outputs and move it across multiple displays. It can also
+map input from certain devices to certain outputs or regions of the output
+layout, change the geometry of inputs from a drawing tablet, and more.</p>
+<p>To use <code>wlr_cursor</code>, you should create one (<code>wlr_cursor_create</code>) and as the
+backend emits <code>new_input</code> events, bind them to the cursor with
+<code>wlr_cursor_attach_input_device</code>. <code>wlr_cursor</code> then raises aggregated events
+from all of its devices, which you can catch and handle accordingly - usually
+calling a function like <code>wlr_cursor_move</code> and propagating the event to Wayland
+clients. You also need to attach a <a href="https://github.com/swaywm/wlroots/blob/master/include/wlr/types/wlr_output_layout.h"><code>wlr_output_layout</code></a> to
+the cursor, so it knows how to constrain the cursor movement and can handle
+hardware cursors for you.</p>
+<p>Aside: the <code>wlr_output_layout</code> module allows you to configure an arrangement of
+<code>wlr_output</code>s in physical space. Its function is fairly straightforward and
+largely unrelated to our topic - I suggest reading through the header and asking
+questions if you need help. Once you make one of these and hand it to a
+<code>wlr_cursor</code>, you have a cursor on-screen which moves around when you provide
+input and correctly moves throughout a multi-display setup.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></p>
+<p>Okay, now that we have all of those pieces in place, we can finally start talking
+about sending input events to Wayland clients! Before we get into how <em>wlroots</em>
+does it, let&rsquo;s talk about how <em>Wayland</em> does it in general.</p>
+<p>The top-level resource which manages input for a Wayland client is the
+<code>wl_seat</code>. One seat, in rough terms, maps to a single set of input devices used
+by a user (a user who is presumably sitting at a seat in front of their
+computer). A seat can have up to one keyboard, pointer, touch device, or drawing
+tablet each. Each of these devices can then <em>enter</em> or <em>leave</em> any of the
+client&rsquo;s surfaces at the compositor&rsquo;s orders.</p>
+<p>When you bind to a <code>wl_seat</code>&rsquo;s <code>wl_keyboard</code> and <code>wl_keyboard.enter</code> is raised
+on a surface, it means your surface has keyboard focus. The compositor will
+follow-up with (or will have already sent) a <code>wl_keyboard.keymap</code> signal to let
+you know the layout of this keyboard (e.g. <code>us-intl</code>, <code>de</code>, <code>ru</code>, etc) in the
+form of an xkbcommon keymap (the same format we were using with <code>wlr_keyboard</code>
+earlier - hint hint). Some number of <code>key</code> and <code>modifier</code> events will likely
+follow as the user taps away.</p>
+<p>When you bind to a <code>wl_seat</code>&rsquo;s <code>wl_pointer</code> and <code>wl_pointer.enter</code> is raised, it
+means a pointer has moved over one of your surfaces. Note that this can be an
+entirely separate occasion from receiving keyboard focus. The client is then
+expected to provide a cursor image to display (at the moment, Wayland <em>requires</em>
+client side cursors. They have to do the whole Xcursor dance we did on the
+wlroots side earlier, too. We have some plans to correct this&hellip;). Some number
+of <code>motion</code> and <code>button</code> events will likely follow as the user wiggles their
+mouse and clicks your windows.</p>
+<p>So, how does a wlroots-based compositor facilitate these interactions? With
+<a href="https://github.com/swaywm/wlroots/blob/4984ea49eeaa292d66be9e535d93a4d8185f3e18/include/wlr/types/wlr_seat.h"><code>wlr_seat</code></a>, our abstraction on top of <code>wl_seat</code>. This implements the
+whole <code>wl_seat</code> state machine, but again leaves it to you to tweak the knobs as
+you wish. You need to decide how your compositor is going to deal with focus -
+KDE, Sway, the Librem5 phone UI, an in-vehicle infotainment system; all of these
+will have a different approach to focus.</p>
+<p>wlroots doesn&rsquo;t render client surfaces for you, and doesn&rsquo;t know where you put
+them. Once you figure out where they go, you need to notice when the
+<code>wlr_cursor</code> is moved over it and call <code>wlr_seat_pointer_notify_enter</code> with the
+pointer&rsquo;s coordinates relative to the surface it entered, along with any
+appropriate <code>motion</code> or <code>button</code> events through the relevant <code>wlr_seat</code>
+functions. The client will also likely send you a cursor image to display - this
+is done with the <code>wlr_seat.events.request_set_cursor</code> event.</p>
+<p>When you decide that a surface should receive keyboard focus, call
+<code>wlr_seat_keyboard_notify_enter</code>. <code>wlr_seat</code> will automatically handle removing
+focus from whatever had it last, and will also grab the keymap and send it to
+the client for you, assuming you configured it with <code>wlr_keyboard_set_keymap</code>&hellip;
+you did, right? <code>wlr_seat</code> also semi-transparently deals with grabs, the sort of
+situation where a client wants to keep keyboard focus for longer than it
+normally would, to deal with a context menu or something.</p>
+<p>Touch events are similar and should be self-explanatory when you read the
+header. Drawing tablet events are a bit different - they&rsquo;re not actually
+specified by the core Wayland protocol. Instead, we rig these up with the
+<a href="https://cgit.freedesktop.org/wayland/wayland-protocols/tree/unstable/tablet/tablet-unstable-v2.xml">tablet</a> protocol extension and <a href="https://github.com/swaywm/wlroots/blob/7f20ab644347b11fd8242beaf7a6fe42c910d014/include/wlr/types/wlr_tablet_v2.h">wlr_tablet</a>. It
+works in much the same way, but you have to explicitly configure it for a
+<code>wlr_seat</code> by calling <code>wlr_tablet_create</code> yourself.</p>
+<p>So, in short, if you wiggle your mouse, here&rsquo;s what happens:</p>
+<ol>
+<li>Before you wiggled your mouse, the <code>libinput</code> backend noticed it was plugged
+in and raised a <code>new_input</code> event.</li>
+<li>Your compositor attached the resulting <code>wlr_pointer</code> to its <code>wlr_cursor</code>,
+which it had prepared earlier by looking up an appropriate cursor theme and
+letting it know about the display layout.</li>
+<li>The <code>wlr_pointer</code> bubbled up a <code>motion</code> event, which was caught by
+<code>wlr_cursor</code> and bubbled up to your compositor.</li>
+<li>Your compositor called <code>wlr_cursor_move</code> to apply the resulting motion,
+constrained by the output layout, which in turn caused the cursor image on
+your display to move.</li>
+<li>Your compositor then looked around to see if the pointer had moved over any
+new surfaces. Since wlroots doesn&rsquo;t handle rendering or know where anything
+is displayed, this was a rather introspective question.</li>
+<li>You <em>did</em> wiggle it over a new surface, so the compositor called
+<code>wlr_seat_notify_pointer_enter</code> after translating the pointer coordinates to
+surface-local space. It sent a <code>wlr_seat_notify_pointer_motion</code> for good
+measure.</li>
+<li>The client noticed the pointer entered it and sent back a cursor image to
+show. The compositor was informed of this via
+<code>wlr_seat.events.request_set_cursor</code>.</li>
+<li>The compositor handled the client&rsquo;s cursor image to <code>wlr_cursor</code>, throwing
+away all of that hard work loading up a cursor theme just for a client-side
+cursor to come in and ruin it.</li>
+</ol>
+<p>And there you have it, that&rsquo;s how input works in wlroots. It&rsquo;s really fucking
+complicated, isn&rsquo;t it? I think this article puts on display both the incredible
+advantages and serious drawbacks of wlroots. Because you have to plug all of
+these pieces together yourself, you are afforded an <em>enormous</em> amount of
+flexibility. However, you have to do a lot of work and understand a whole lot of
+different pieces to get there. Libraries like
+<a href="https://github.com/Cloudef/wlc">wlc</a> are much easier to use in this respect,
+but if you want to change even a small detail of this process with wlc you are
+unable to.</p>
+<p>If you have any questions about this article, please reach out to the developers
+hanging out in <a href="http://webchat.freenode.net/?channels=sway-devel&amp;uio=d4">#sway-devel on irc.freenode.net</a>. We know this is
+confusing, and we&rsquo;re happy to help.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>One more quick note: for multi-DPI setups, you need to provide the <code>wlr_cursor</code> with different cursor images, one for each scale present on the output layout. We have another tool for sourcing Xcursor images at multiple scale factors, check out <a href="https://github.com/swaywm/wlroots/blob/4984ea49eeaa292d66be9e535d93a4d8185f3e18/include/wlr/types/wlr_xcursor_manager.h"><code>wlr_xcursor_manager</code></a>. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Another thing <code>wlr_output_layout</code> is useful for, if you were wondering, is figuring out where to render windows in a multi-output arrangement, where some windows might span multiple outputs. Read the header! <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

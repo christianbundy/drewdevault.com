@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>How to write an IRC bot</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  How to write an IRC bot
+  <small>
+    <span class="date">March 10, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>My disdain for Slack and many other Silicon Valley chat clients is <a href="/2015/11/01/Please-stop-using-slack.html">well
+known</a>, as is my undying love for IRC.
+With Slack making the news lately after their recent decision to disable the IRC
+and XMPP gateways in a classic <a href="https://en.wikipedia.org/wiki/Embrace%2C_extend%2C_and_extinguish">Embrace Extend
+Extinguish</a>
+move, they&rsquo;ve been on my mind and I feel like writing about them more. Let&rsquo;s
+compare writing a bot for Slack with writing an IRC bot.</p>
+<p>First of all, let&rsquo;s summarize the process for making a Slack bot. Full details
+are available in <a href="https://api.slack.com/slack-apps">their documentation</a>. The
+basic steps are:</p>
+<ol>
+<li>Create a Slack account and &ldquo;workspace&rdquo; to host the bot (you may have already
+done this step). On the free plan you can have up to 10 &ldquo;integrations&rdquo; (aka
+bots). This includes all of the plug-n-play bots Slack can set up for you, so
+make sure you factor that into your count. Otherwise you&rsquo;ll be heading to the
+pricing page and making a case to whoever runs your budget.</li>
+<li>Create a &ldquo;Slack app&rdquo; through their web portal. The app will be tied to the
+company you work with now, and if you get fired you will lose the app. Make
+sure you make a separate organization if this is a concern!</li>
+<li>The recommended approach from here is to set up subscriptions to the &ldquo;Event
+API&rdquo;, which involves standing up a web server (with working SSL) on a
+consistent IP address (and don&rsquo;t forget to open up the firewall) to receive
+incoming notifications from Slack. You&rsquo;ll need to handle a proprietary
+challenge to verify your messages via some HTTP requests coming from Slack
+which gives you info to put into HTTP headers of your outgoing requests. The
+Slack docs refer to this completion of this process as &ldquo;triumphant success&rdquo;.</li>
+<li>Receive some JSON in a proprietary format via your HTTP server and use some
+more proprietary HTTP APIs to respond to it.</li>
+</ol>
+<p>Alternatively, instead of steps 3 and 4 you can use the &ldquo;Real Time Messaging&rdquo;
+API, which is a websocket-based protocol that starts with an HTTP request to
+Slack&rsquo;s authentication endpoint, then a follow-up HTTP request to open the
+WebSocket connection. Then you set up events in a similar fashion. Refer to the
+complicated table in the documentation breaking down which events work through
+which API.</p>
+<p>Alright, so that&rsquo;s the Slack way. How does the IRC way compare? IRC is an open
+standard, so to learn about it I can just read RFC 1459, which on my system is
+conveniently waiting to be read at <code>/usr/share/doc/rfc/txt/rfc1459.txt</code>. This
+means I can just read it locally, offline, in the text editor of my choice,
+rather than on some annoying website that calls authentication a &ldquo;triumphant
+success&rdquo; and complains about JavaScript being disabled.</p>
+<p>You don&rsquo;t have to read it right now, though. I can give you a summary here, like
+I gave for Slack. Let&rsquo;s start by not writing a bot at all - let&rsquo;s just manually
+throw some bits in the general direction of Freenode. Install netcat and run
+<code>nc irc.freenode.net 6667</code>, then type this into your terminal:</p>
+<pre><code>NICK joebloe
+USER joebloe 0.0.0.0 joe :Joe Bloe
+</code></pre><p>Hey, presto, you&rsquo;re connected to IRC! Type this in to join a channel:</p>
+<pre><code>JOIN #cmpwn
+</code></pre><p>Then type this to say hello:</p>
+<pre><code>PRIVMSG #cmpwn :Hi SirCmpwn, I'm here from your blog!
+</code></pre><p>IRC is one of the simplest protocols out there, and it&rsquo;s dead easy to write a
+bot for it. If your programming language can open a TCP socket (it can), then
+you can use it to write an IRC bot in 2 minutes, flat. That&rsquo;s not even to
+mention that there are IRC client libraries available for every programming
+language on every platform ever - I even <a href="https://github.com/SirCmpwn/ChatSharp">wrote one
+myself!</a> In fact, that guy is probably
+the fifth or sixth IRC library I&rsquo;ve written. They&rsquo;re so easy to write that I&rsquo;ve
+lost count.</p>
+<p>Slack is a walled garden. Their proprietary API is defined by them and only
+implemented by them. They can and will shut off parts you depend on (like the
+IRC+XMPP gateways that were just shut down). IRC is over 20 years old and
+software written for it then still works now. It&rsquo;s implemented by hundreds of
+clients, servers, and bots. Your CI supports it and GitHub can send commit
+notifications to it. It&rsquo;s ubiquitous and free. Use it!</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

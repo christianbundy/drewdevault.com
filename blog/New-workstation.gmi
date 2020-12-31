@@ -1,0 +1,30 @@
+After my latest status update, I was asked by a few people to go into some more detail about the nature of my new workstation. I had been using my older workstation for almost 10 years, and I had the following goals for the new one:
+
+* Smaller & more lightweight
+* Modest upgrades to the hardware
+* An opportunity to rework my software setup
+
+I ended up opting for a Mini-ITX build. The main limitation constraining my size choices were the fact that I wanted (1) at least 3 HDDs and one M.2 drive; and (2) an optical drive (I like to rip CDs). The case I picked for this is the Fractal Design Core 500, and I'm pretty pleased with it.
+
+Some parts I already had that went into the build were:
+
+* 3 8T HDDs and one 2T NVMe from the pile of drives
+* A spare AMD 580 GPU from the pile of GPUs
+* A spare RM850x PSU from the pile of PSUs^W^W^W^W^W(I only had one spare)
+* The optical drive from old workstation
+
+And the following parts I bought new:
+
+* Fractal Design Core 500 case
+* AMD Ryzen 7 3700X
+* 2x16G of RAM (CMK32GX4M2D3600C18)
+* Noctua NH-L9a-AM4 lower-profile CPU cooler
+* GIGABYTE B550I motherboard
+
+The result is a nice, compact build, with a surprising amount of airflow despite the small form-factor. I may replace the cooler with the stock one - it runs a bit hot now - but otherwise I'm satisfied with the hardware side of this build.
+
+I was still running Arch Linux on my old workstation (ugh!) and this was a good chance to upgrade to a nice Alpine Linux install. Getting full disk encryption working correctly was a bit more challenging than on previous attempts with Alpine, but I got it working without too much fuss.
+
+My root filesystem is on the NVMe, encrypted, and I set up a ZFS pool on the other 3 drives for /home and for an archive of important data from my old workstation. I could set this up easily enough, but neither WiFi nor Ethernet were working OOTB. I did most of the setup with a USB-ethernet adapter. Anyway, the necessary drivers had landed in the just-released Linux 5.9, but Alpine's linux-edge package was behind. This is fixed easily enough - I just built the newer kernel - but Alpine doesn't provide a zfs-edge package for this kernel, so I had to build that, too.
+
+So, there you have it. The new box is less than half the size & weight of the old one, catches up to modern hardware quite a bit, and gave me a good chance to re-provision my main workstation's software loadout.

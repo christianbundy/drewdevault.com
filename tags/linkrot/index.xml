@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>linkrot on Drew DeVault&#39;s blog</title>
+    <link>./tags/linkrot.html</link>
+    <description>Recent content in linkrot on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 19 Jun 2017 00:00:00 +0000</lastBuildDate><atom:link href="./tags/linkrot/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Archive it or you will miss it</title>
+      <link>./2017/06/19/Archive-it-or-miss-it.html</link>
+      <pubDate>Mon, 19 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/06/19/Archive-it-or-miss-it.html</guid>
+      <description>Let&amp;rsquo;s open with some quotes from the Wikipedia article on link rot:
+ In 2014, bookmarking site Pinboard&amp;rsquo;s owner Maciej Cegłowski reported a “pretty steady rate” of 5% link rot per year&amp;hellip; approximately 50% of the URLs in U.S. Supreme Court opinions no longer link to the original information&amp;hellip; (analysis of) more than 180,000 links from references in&amp;hellip; three major open access publishers&amp;hellip; found that overall 24.5% of links cited were no longer available.</description>
+    </item>
+    
+    <item>
+      <title>On the profitability of image hosting websites</title>
+      <link>./2014/10/10/The-profitability-of-online-services.html</link>
+      <pubDate>Fri, 10 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>./2014/10/10/The-profitability-of-online-services.html</guid>
+      <description>I&amp;rsquo;ve been doing a lot of thought about whether or not it&amp;rsquo;s even possible to both run a simple website and turn a profit from it and maintain a high quality of service. In particular, I&amp;rsquo;m thinking about image hosts, considering that I run one (a rather unprofitable one, too), but I would think that my thoughts on this matter apply to more kinds of websites. That being said, I&amp;rsquo;ll just talk about media hosting because that&amp;rsquo;s where I have tangible expertise.</description>
+    </item>
+    
+  </channel>
+</rss>

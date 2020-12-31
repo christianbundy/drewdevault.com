@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>What is a fork, really, and how GitHub changed its meaning</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  What is a fork, really, and how GitHub changed its meaning
+  <small>
+    <span class="date">May 24, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>The fork button on GitHub - with the little number next to it for depositing
+dopamine into your brain - is a bit misleading. GitHub co-opted the meaning of
+&ldquo;fork&rdquo; to trick you into participating in their platform more. They did this in
+a well-intentioned way, for the sake of their pull requests feature, but
+ultimately this design is self-serving and causes some friction when
+contributors venture out of their GitHub sandbox and into the rest of the
+software development ecosystem. Let&rsquo;s clarify what &ldquo;fork&rdquo; really means, and what
+we do without GitHub&rsquo;s concept of one - for it is in this difference that we
+truly discover how git is a <em>distributed</em> version control system.</p>
+<p><strong>Disclaimer</strong>: I am the founder of <a href="https://sourcehut.org">SourceHut</a>, a
+product which competes with GitHub and embraces the &ldquo;bazaar<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>&rdquo; model described
+in this article.</p>
+<p>On GitHub, a fork refers to a copy of a repository used by a contributor<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> to
+stage changes they&rsquo;d like to propose upstream. Prior to GitHub (and in many
+places still today), we&rsquo;d call such a repository a &ldquo;personal branch&rdquo;. A personal
+branch doesn&rsquo;t need to be published to be useful - you can just <code>git clone</code> it
+locally and make your changes there without pushing them to a public, hosted
+repository. Using <a href="https://git-send-email.io">email</a>, you can send changes from
+your local, unpublished repository for consideration upstream. Outside of
+GitHub and its imitators, most contributors to a project don&rsquo;t have a published
+version of their repository online at all, skipping that step and saving some
+time.</p>
+<p>In some cases, however, it&rsquo;s useful to publish your personal branch online. This
+is often done when a team of people is working on a long-lived branch to later
+propose upstream - for example, I&rsquo;ve been doing this while working on the RISC-V
+port of musl libc. It gives us a space to collaborate and work while preparing
+changes which will eventually be proposed upstream, as well as a place for
+interested testers to obtain our experimental work to try themselves. This is
+also done by individuals, such as Greg Kroah-Hartman&rsquo;s Linux branches, which are
+useful for testing upcoming changes to the Linux kernel.</p>
+<p>Greg is not alone in publishing a repo like this. In fact, there are <a href="https://git.kernel.org/pub/scm/linux/kernel/git/">hundreds of
+kernel trees like this</a>. These act as staging areas for long-term
+workstreams, or for the maintainers of many subsystems of the kernel.  Changes
+in these repositories gradually flow upwards towards the &ldquo;main&rdquo; tree,
+<a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/">torvalds/linux</a>. The precise meaning of &ldquo;linux&rdquo; is rather loose
+in this context. An argument could be made that torvalds/linux is Linux, but
+that definition wouldn&rsquo;t capture the LTS branches. Many distros also apply their
+own patches on top of Torvalds, perhaps sourcing them from the maintainers of
+drivers they need a bugfix for, or they maintain their own independent trees
+which periodically pull in lump sums of changes from other trees - meaning that
+the simple definition might not include the version of Linux which is installed
+on your computer, either. This ambiguity is a feature - each of these trees is a
+valid definition of Linux in its own right.</p>
+<p>This is the sense in which git is &ldquo;distributed&rdquo;. The idea of a canonical
+upstream is not written in stone in the way that GitHub suggests it might be.
+After all, open-source software is a collaborative endeavour. What makes Jim&rsquo;s
+branch more important that John&rsquo;s branch? John&rsquo;s branch is definitely more
+important if it has the bugfixes you need. In fact, your branch, based on Jim&rsquo;s,
+with some patches cherry-picked from John, and a couple of fixes of your own
+mixed in, may in fact be the best version of the software for you.</p>
+<p>This is how the git community gets along without the GitHub model of &ldquo;forks&rdquo;.
+This design has allowed the largest and most important projects in the world to
+flourish, and git was explicitly designed around this model. We refer to this as
+the &ldquo;bazaar&rdquo; model, the metaphor hopefully being fairly obvious at this point.
+There is another model, which GitHub embodies instead: the cathedral. In this
+model, the project has a central home and centralized governance, run by a small
+number of people. The cathedral doesn&rsquo;t necessarily depend on the GitHub idea of
+&ldquo;forks&rdquo; and pull requests - that is, you can construct a cathedral with
+email-driven development or some other model - but on GitHub the bazaar option
+is basically absent.</p>
+<p>In the introduction I said that GitHub attempts to replace an existing meaning
+for &ldquo;fork&rdquo;. So what does forking actually mean, then? Consider a project with
+the cathedral model. What happens when there&rsquo;s a schism in the church? The
+answer is that some of the contributors can take the code, put up a new branch
+somewhere, and stake a flag in the ground. They rename it and commit to
+maintaining it entirely independently of the original project, and encourage
+contributors, new and old alike, to abandon the old dogma in favor of theirs.
+At this point, the history<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> begins to diverge. The new contingent pulls in
+all of the patches that were denied upstream and start that big refactoring to
+mold it in their vision. The project has been <strong>forked</strong>. A well known example
+is when ffmpeg was forked to create libav.</p>
+<p>This is usually a traumatic event for the project, and can have repercussions
+that last for years. The precise considerations that should go into forking a
+project, these repercussions and how to address them, and other musings are
+better suited for a separate article. But this is what &ldquo;fork&rdquo; meant before
+GitHub, and this meaning is still used today - albeit more ambiguously.</p>
+<p>If &ldquo;fork&rdquo; already had this meaning, why did GitHub adopt their model? The
+answer, as it often will be, is centralization of power. GitHub is a
+proprietary, commercial service, and their ultimate goal is to turn a profit.
+The design of GitHub&rsquo;s fork and pull request model creates a cathedral that
+keeps people on their platform in a way that a bazaar would not. A distributed
+version control system like git, built on a distributed communications protocol
+like email, is hard to disrupt with a centralized service. So GitHub designed
+their own model.</p>
+<p>As a parting note, I would like to clarify that this isn&rsquo;t a condemnation of
+GitHub. I still use their service for a few projects, and appreciate the
+important role GitHub has played in the popularization of open source. However,
+I think it&rsquo;s important to examine the services we depend on, to strive to
+understand their motivations and design. I also hope the reader will view the
+software ecosystem through a more interesting lens for having read this article.
+Thank you for reading!</p>
+<hr>
+<p><strong>P.S.</strong> Did you know that GitHub also captured the meaning of &ldquo;pull request&rdquo;
+from git&rsquo;s own <a href="https://www.git-scm.com/docs/git-request-pull">request-pull</a>
+tool? git request-pull prepares an email which will ask the recipient to fetch
+changes from a public repository and integrate them into their own branch. This
+is used when a patch is insufficient - for example, when Linux subsystem
+maintainers want to ship a large group of changes to Torvalds for the next
+kernel release. Again, the original version is distributed and bazaar-like,
+whereas GitHub&rsquo;s is centralized and makes you stay on their platform.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Not the bazaar version control system, but bazaar the concept. This is explained later in the article. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>And by bots to increase their reputation, and by confused users who don&rsquo;t know what the button means. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>Git history in particular, but also the other kind. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

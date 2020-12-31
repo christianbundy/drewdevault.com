@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>A broad intro to networking</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  A broad intro to networking
+  <small>
+    <span class="date">December 6, 2016</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Disclaimer: I am not a network engineer. That&rsquo;s the point of this blog post,
+though - I want to share with non-networking people enough information about
+networking to get by. Hopefully by the end of this post you&rsquo;ll know enough about
+networking to keep up with a conversation on networking, or know what to search
+for when something breaks, or know what tech to research more in-depth when you
+are putting together something new.</p>
+<h2 id="layers">Layers</h2>
+<p>The <strong>OSI model</strong> is the standard model we describe networks with. There are 7
+<strong>layers</strong>:</p>
+<p>Layer 1, the physical layer, is the electrical engineering stuff.</p>
+<p>Layer 2, the link layer, is how devices talk to each other.</p>
+<p>Layer 3, the network layer, is what they talk about.</p>
+<p>Layer 4, the transport layer, is where things like TCP and UDP live.</p>
+<p>Layers 5 and 6 aren&rsquo;t very important.</p>
+<p>Layer 7, the application layer, is where Minecraft lives.</p>
+<p>When you hear some security guy talking about a &ldquo;layer 7 attack&rdquo;, he&rsquo;s
+talking about a attack that focuses on flaws in the application layer. In
+practice that means i.e. flooding the server with HTTP requests.</p>
+<h2 id="1-physical-layer">1: Physical Layer</h2>
+<p><em>Generally implemented by matter</em></p>
+<p>Layer 1 is the hardware of a network. Commonly you&rsquo;ll find things here like your
+computer&rsquo;s <strong>NIC</strong> (network interface controller), aka the network interface or
+just the interface, which is the bit of silicon in your PC that you plug network
+cables or WiFi signals into.</p>
+<p>On Linux, network interfaces are assigned names like <em>eth0</em> or <em>eno1</em>. eth0 is
+the traditional name for the 0th wired network interface. eno1 is the newer
+&ldquo;consistent network device naming&rdquo; format popularized by tools like udev (which
+manages hardware on many Linux systems) - this is a deterministic name based on
+your network hardware, and won&rsquo;t change if you add more interfaces. You can
+manage your interfaces with the <em>ip</em> command (<code>man 8 ip</code>), or the now-deprecated
+<em>ifconfig</em> command. Some non-Linux Unix systems have not deprecated ifconfig.</p>
+<p>This layer also has ownership over <strong>MAC addresses</strong>, in theory. A MAC address
+is an allegedly unique identifier for a network device. In practice, software
+at higher layers can use whatever MAC address they want. You can change your MAC
+address with the ip command, which is often useful for dealing with annoying
+public WiFi resource limits or for frustrating someone else on the network.</p>
+<p>Other things you find at layer 1 include <strong>switches</strong>, which do network
+multiplexing (they generally can be thought of as networking&rsquo;s version of a
+power strip - they turn one Ethernet port into many). Also common are
+<strong>routers</strong>, whose behaviors are better explained in other layers. You also have
+hardware like <strong>firewalls</strong>, which filter network traffic, and <strong>load
+balancers</strong>, which distribute a load among several nodes. Both firewalls and
+load balancers can be done in software, depending on your needs.</p>
+<h2 id="2-data-link-layer">2: Data link layer</h2>
+<p><em>Generally implemented by network hardware</em></p>
+<p>At this layer you have protocols that cover how nodes talk to one another. Here
+the <strong>ethernet</strong> protocol is almost certainly the most common - the protocol
+that goes over your network cables. Said network cables are probably <strong>Cat 5</strong>
+cables, or &ldquo;category 5&rdquo; cables.</p>
+<p>Other protocols here include tunnels, which allow you to indirectly access a
+network. A common example is a <strong>VPN</strong>, or virtual private network, which allows
+you to participate in another network remotely. Tunnels can also be useful for
+getting around firewalls, or for setting up a secure means to access resources
+on another network.</p>
+<h2 id="3-network-layer">3: Network layer</h2>
+<p><em>Generally implemented by the kernel</em></p>
+<p>As a software guy, this is where the fun really starts. The other layers are how
+computers talk to each other - this layer is what they talk about. Computers are
+often connected via a <strong>LAN</strong>, or local area network - a <em>local</em> network of
+computers. Computers are also often connected to a <strong>WAN</strong>, or wide area
+network - the internet is one such network.</p>
+<p>The most common protocol at this layer is IP, or Internet Protocol. There are
+two versions that matter: IPv4, and IPv6. Both of them use <strong>IP addresses</strong> to
+identify nodes on their networks, and they carry <strong>packets</strong> between them. The
+major difference between IPv4 and IPv6 is the size of their respective <strong>address
+spaces</strong>. IPv4 uses 32 bit addresses, supporting a total of 4.3 billion possible
+addresses, which on the public internet are quickly becoming a sparse resource.
+IPv6 uses 128-bit addresses, which allows for a zillion unique addresses.</p>
+<p>Ranges of IP addresses can be described with a <strong>subnet mask</strong>. Such a range of
+IP addresses constitutes a <strong>subnetwork</strong>, or subnet. Though you&rsquo;re probably
+used to seeing an IPv4 address encoded like <code>10.20.30.40</code>, remember that it can
+also just be represented as one 32-bit number - in this case 169090600, or
+0xA141E28, and you can do bitwise math against these numbers. You generally
+represent a subnet with CIDR notation, such as <code>192.168.1.0/24</code>. In this case, the
+first 24 bits are meaningful, and all possible values for the remaining 8 bits
+constitute the range of addresses represented by this mask.</p>
+<p>IPv4 has several subnets reserved for this and that. Some important ones are:</p>
+<ul>
+<li><code>0.0.0.0/8</code> - current network. On many systems, you can treat <code>0.0.0.0</code> as all
+IP addresses assigned to your device</li>
+<li><code>127.0.0.0/8</code> - loopback network. These addresses refer to yourself.</li>
+<li><code>10.0.0.0/8</code>, <code>172.16.0.0/12</code>, and <code>192.168.0.0/16</code> are reserved for private
+networks - you can allocate these addresses on a LAN.</li>
+</ul>
+<p>An IPv4 packet includes, among other things: a <strong>time to live</strong>, or TTL, which
+limits how long the packet can live for; the <strong>protocol</strong>, such as TCP; the
+<strong>source</strong> and <strong>destination</strong> addresses; a header checksum; and the
+<strong>payload</strong>, which is specific to the higher level protocol in use.</p>
+<p>Given the limited size of the IPv4 space, most networks are designed with an
+isolated LAN that uses <strong>NAT</strong>, or network address translation, to translate IP
+addresses from the WAN. Basically, a router or similar component will translate
+internal IP addresses (allocated from the private subnets) to its own external
+IP address, and vice versa, when passing communications along to the WAN. With
+IPv6 there are so many IP addresses that you don&rsquo;t need to use NAT. If you&rsquo;re
+wondering whether or not we&rsquo;ll ever run out of IPv6 addresses - leave that to
+someone else to solve tens of millions of years from now.</p>
+<p>IPv6 addresses are 128-bits long and are described with strings like
+<code>2001:0db8:0000:0000:0000:ff00:0042:8329</code>. Luckily the people who designed it
+were kind enough to realize people don&rsquo;t want to write that, so it can be
+shortened to <code>2001:db8::ff00:42:8329</code> by removing leading zeros and removing
+sections entirely composed of zeros. Where colons are reserved for another
+purpose, you&rsquo;ll typically add brackets around the IPv6 address, such as
+<code>http://[2607:f8b0:400d:c03::64]</code>. The IPv6 loopback address (localhost) is
+<code>::1</code>, and IPv6 subnets are written the same way as in IPv4. Given how many
+IPv6 addresses there are, it&rsquo;s common to be allocated lots of them in cases when
+you might have expected to only receive one IPv4 address. Typically these blocks
+will be anywhere from /48 to /56 - which contains more addresses than the entire
+IPv4 space.</p>
+<p>IP addresses are often <strong>static</strong>, which means the node connecting to the
+network already knows its IP address and starts using it right away. They may
+also be <strong>dynamic</strong>, and are allocated by some computer on the network with the
+<strong>DHCP</strong> protocol.</p>
+<p>IPsec also lives in layer 3.</p>
+<h2 id="4-transport-layer">4: Transport Layer</h2>
+<p><em>Generally implemented by the kernel</em></p>
+<p>The transport layer is where you have higher level protocols, through which much
+of the work gets done. Protocols here include TCP, UDP, ICMP (used for ping),
+and others. These protocols are used to power application-layer protocols.</p>
+<p><strong>TCP</strong>, or the transmission control protocol, is probably the most popular
+transport layer protocol out there. It turns the unreliable internet protocol
+into a reliable byte stream. TCP (tries to) make four major guarantees: data
+will arrive, will arrive exactly once, will arrive in the correct order, and
+will be the correct data.</p>
+<p>TCP takes a stream of bytes and breaks it up into <strong>segments</strong>. Each segment is
+then stuck into an IP packet and sent on its way. A TCP segment includes the
+source and destination <strong>ports</strong>, which are used to distinguish between
+different application-layer protocols in use and to distinguish between
+different applications using the protocol on the same host; a <strong>sequence
+number</strong>, which is used to order the packet; an <strong>ACK number</strong>, which is used to
+inform the other end that it has received some packet and it can stop retrying;
+a checksum; and the data itself. The protocol also includes a handshake process
+and other housekeeping processes that the application needn&rsquo;t be aware of.
+Generally speaking, the overhead of TCP is significant for real-time
+applications.</p>
+<p>Most TCP servers will <strong>bind</strong> to a certain port to <strong>listen</strong> for incoming
+connections, via the operating system&rsquo;s <strong>socket</strong> implementation. Many TCP
+<strong>clients</strong> can connect to one server.</p>
+<p>Ports are a 16 bit unsigned integer. Most applications have a default port
+they&rsquo;re known to use, such as 80 for HTTP. Originally these numbers were
+allocated by the internet police, but this has fallen out of practice. On most
+systems, ports less than 1024 require elevated permissions to listen to.</p>
+<p><strong>UDP</strong>, or the user datagram protocol, is the second most popular transport
+layer protocol, and is the lighter of the two. UDP is a paper thin layer on top
+of IP. A UDP packet contains a source port, destination port, checksum, and a
+payload. This protocol is fast and lightweight, but makes none of the promises
+TCP makes - UDP &ldquo;<strong>datagrams</strong>&rdquo; may arrive multiple or zero times, in a
+different order than they were sent, and possibly with data errors. Many people
+who use UDP will implement these guarantees themselves in a some lighter-weight
+fashion than TCP. Importantly, UDP source IPs can be spoofed and the destination
+has no means of knowing where it really came from - TCP avoids this by doing a
+handshake before exchanging any data.</p>
+<p>UDP can also issue broadcasts, which are datagrams that are sent to every node
+on the network. Such datagrams should be addressed to <code>255.255.255.255</code>. There&rsquo;s
+also multicast, which specifies a subset of all nodes to send the datagram to.
+Note that both of these have limited support in real-world networks.</p>
+<h2 id="5--6-session-and-presentation">5 &amp; 6: Session and presentation</h2>
+<p>Think of these as extensions of layer 7, the application layer. Technically
+things like SSL, compression, etc are done here, but in practice it doesn&rsquo;t
+have any important technical implications.</p>
+<h2 id="7-application-layer">7: Application layer</h2>
+<p><em>Generally implemented by end-user software</em></p>
+<p>The application layer is the uppermost layer of the network and it&rsquo;s what all
+the other layers are there for. At this layer you have all of the hundreds of
+thousands of application-specific protocols out there.</p>
+<p><strong>DNS</strong>, or the domain name system, is a protocol for mapping domain names (i.e.
+google.com) to IP addresses (i.e. 209.85.201.100), among other features. DNS
+servers keep track of DNS records, which associate names with records of various
+types. Common records include A, which maps a name to an IPv4 address, AAAA for
+IPv6, CNAME for aliases, and MX for email records. The most popular DNS server
+is bind, which you can run on your own network to operate a private name system.</p>
+<p>Some other UDP protocols: NTP, the network time protocol; DHCP, which assigns
+dynamic IP addresses on networks; and nearly all real-time video and audio
+streaming protocols (like VoIP). Many video games also use UDP for their
+multiplayer networking.</p>
+<p>TCP is more popular than UDP and powers many, many, many applications, due
+largely to the fact that it simplifies the complex intricacies of networking.
+You&rsquo;re probably familiar with HTTP, which is used by web browsers use to fetch
+resources. Email applications often communicate over TCP with IMAP to retrieve
+the contents of your inbox, and SMTP to send emails to other servers. SSH (the
+secure shell), FTP (file transfer protocol), IRC (internet relay chat), and
+countless other protocols also use TCP.</p>
+<hr>
+<p>Hopefully this article helps you gain a general understanding of how computers
+talk to each other. In my own experience, I&rsquo;ve used a broad understanding of the
+entire stack and a deep understanding of levels 3 and up. I expect most
+programmers today need a broad understanding of the entire stack and a deep
+understanding of level 7, and I hope that most programmers would seek a deep
+understanding of level 4 as well.</p>
+<p>Please leave some feedback if you appreciated this article - I may do more
+similar articles in the future, giving a broad introduction to other topics. The
+next topics I have in mind are security and encryption (as separate posts).</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

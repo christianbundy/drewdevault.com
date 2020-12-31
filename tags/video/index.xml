@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>video on Drew DeVault&#39;s blog</title>
+    <link>./tags/video.html</link>
+    <description>Recent content in video on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 13 May 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/video/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Webcast: Reviewing git &amp; mercurial patches with email</title>
+      <link>./2019/05/13/Git-email-webcast.html</link>
+      <pubDate>Mon, 13 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/05/13/Git-email-webcast.html</guid>
+      <description>With the availability of new resources like git-send-email.io, I&amp;rsquo;ve been working on making the email-based workflow more understandable and accessible to the world. One thing that&amp;rsquo;s notably missing from this tutorial, however, is the maintainer side of the work. I intend to do a full write-up in the future, but for now I thought it&amp;rsquo;d be helpful to clarify my workflow a bit with a short webcast. In this video, I narrate my workflow as I review a few sourcehut patches and participate in some dicsussions.</description>
+    </item>
+    
+    <item>
+      <title>[VIDEO] Arch Linux with full disk encryption in (about) 15 minutes</title>
+      <link>./2016/08/18/Arch-Linux-with-full-disk-encryption-in-15-minutes.html</link>
+      <pubDate>Thu, 18 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/08/18/Arch-Linux-with-full-disk-encryption-in-15-minutes.html</guid>
+      <description>window.HELP_IMPROVE_VIDEOJS = false;   After my blog post emphasizing the importance of taking control of your privacy, I&amp;rsquo;ve decided to make a few more posts going over detailed instructions on how to actually do so. Today we have a video that goes over the process of installing Arch Linux with full disk encryption.
+This is my first go at publishing videos on my blog, so please provide some feedback in the comments of this article.</description>
+    </item>
+    
+  </channel>
+</rss>

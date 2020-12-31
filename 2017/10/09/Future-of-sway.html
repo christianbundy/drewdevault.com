@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>The future of Wayland, and sway&#39;s role in it</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  The future of Wayland, and sway&#39;s role in it
+  <small>
+    <span class="date">October 9, 2017</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Today I&rsquo;ve released sway
+<a href="https://github.com/swaywm/sway/releases/tag/0.15-rc1">0.15-rc1</a>, the first
+release candidate for the final 0.x release of sway. That&rsquo;s right - after sway
+0.15 will be sway 1.0. After today, no new features are being added to sway
+until we complete the migration to our new plumbing library,
+<a href="https://github.com/swaywm/wlroots">wlroots</a>. This has been a long time
+coming, and I would love to introduce you to wlroots and tell you what to expect
+from sway 1.0.</p>
+<p><small class="text-muted"><a href="https://github.com/swaywm/sway">Sway</a> is
+a tiling Wayland compositor, if you didn&rsquo;t know.</small></p>
+<p>Before you can understand what wlroots is, you have to understand its
+predecessor: <a href="https://github.com/Cloudef/wlc">wlc</a>. The role of wlc is to manage
+a number of low-level plumbing components of a Wayland compositor. It
+essentially abstracts most of the hard work of Wayland compositing away from the
+compositor itself. It manages:</p>
+<ul>
+<li>The EGL (OpenGL) context</li>
+<li>DRM (display) resources</li>
+<li>libinput resources</li>
+<li>Rendering windows to the display</li>
+<li>Communicating with Wayland clients</li>
+<li>Xwayland (X11) support</li>
+</ul>
+<p>It does a few other things, but these are the most important. When sway wants to
+render a window, it will be told about its existence through a hook from wlc.
+We&rsquo;ll tell wlc where to put it and it will be rendered there. Most of the heavy
+lifting has been handled by wlc, and this has allowed us to develop sway into a
+powerful Wayland compositor very quickly.</p>
+<p>However, wlc has some limitations, ones that sway has been hitting more and more
+often in the past several months. To address these limitations, we&rsquo;ve been
+working very hard on a replacement for wlc called wlroots. The relationship
+between wlc and wlroots is similar to the relationship between Pango and
+Harfbuzz - wlroots is much more powerful, but at the cost of putting a lot more
+work on the shoulders of sway. By replacing wlc, we can customize the behavior
+of the low level components of our system.</p>
+<p>I&rsquo;m happy to announce that development on wlroots has been spectacular. Like
+libweston has Weston itself, wlroots has a reference compositor called Rootston -
+a simple floating compositor that lets us test and demonstrate the features of
+wlroots. It is from this compositor that I write this blog post today. The most
+difficult of our goals are behind us with wlroots, and we&rsquo;re now beginning to
+plan the integration of wlroots and sway.</p>
+<p>All of this work has been possible thanks to a contingent of highly motivated
+contributors who have done huge amounts of work for wlroots, writing and
+maintaining entire subsystems far faster than I could have done it alone. I
+really cannot overstate the importance of these contributors. Thanks to their
+contributions, most of my work is in organizing development and merging pull
+requests. From the bottom of my heart, <a href="https://github.com/swaywm/wlroots/graphs/contributors">thank
+you</a>.</p>
+<p>And for all of this hard work, what are we going to get? Well, for some time
+now, there have been many features requests in sway that we could not address,
+and many long-standing bugs we could not fix. Thanks to wlroots, we can see many
+of these addressed within the next few months. Here are some of the things you
+can expect from the union of wlroots and sway:</p>
+<ul>
+<li>Rotated displays</li>
+<li>Touchscreen bindings</li>
+<li>Drawing tablet support</li>
+<li>Mouse capture for games</li>
+<li>Fractional display scaling</li>
+<li>Display port daisy chaining</li>
+<li>Multi-GPU support</li>
+</ul>
+<p>Some of these features are unique to sway even among Wayland <em>and</em> Xorg
+desktops combined! Others, like output rotation, have been requested by our
+users for a long time. I&rsquo;m looking forward to the several dozen long-open GitHub
+issues that will be closed in the next couple of months. This is just the
+beginning, too - wlroots is such a radical change that I can&rsquo;t even begin to
+imagine all of the features we&rsquo;re going to be able to build.</p>
+<p>We&rsquo;re sharing these improvements with the greater Wayland community, too.
+wlroots is a platform upon which we intend to develop and promote open standards
+that will unify the extensibility of all Wayland desktops. We&rsquo;ve also been
+working with other Wayland compositors, notably
+<a href="https://github.com/way-cooler/way-cooler">way-cooler</a>, which are preparing to
+move their own codebases to a wlroots-based solution.</p>
+<p>My goal is to ship sway 1.0 before the end of the year. These are exciting times
+for Wayland, and I hope you&rsquo;re looking forward to it.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

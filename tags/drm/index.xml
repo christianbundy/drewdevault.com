@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>drm on Drew DeVault&#39;s blog</title>
+    <link>./tags/drm.html</link>
+    <description>Recent content in drm on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 07 Oct 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/drm/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Why Collabora really added Digital Restrictions Management to Weston</title>
+      <link>./2019/10/07/HDCP-in-Weston.html</link>
+      <pubDate>Mon, 07 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/10/07/HDCP-in-Weston.html</guid>
+      <description>A recent article from Collabora, Why HDCP support in Weston is a good thing, proports to offer a lot of insight into why HDCP - a Digital Restrictions Management (DRM) related technology - was added to Weston - a well known basic Wayland compositor which was once the reference compositor for Wayland. But this article is gaslighting you. There is one reason and one reason alone that explains why HDCP support landed in Weston.</description>
+    </item>
+    
+  </channel>
+</rss>

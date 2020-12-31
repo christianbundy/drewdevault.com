@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Drew DeVault's Geminispace blog</title>
+    <link>gemini://drewdevault.com</link>
+    <description>Drew DeVault's Geminispace blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 25 Dec 2020 00:00:00 +0000</lastBuildDate>
+    
+      <atom:link href="./blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>H0 H0 H0</title>
+      
+      <link>gemini://./2020/12/25/H0-H0-H0.gmi</link>
+      
+      <pubDate>Fri, 25 Dec 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/12/25/H0-H0-H0.gmi</guid>
+      
+    </item><item>
+      <title>How to design a new programming language from scratch</title>
+      
+      <link>gemini://./2020/12/25/How-to-design-a-new-programming-language.gmi</link>
+      
+      <pubDate>Fri, 25 Dec 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/12/25/How-to-design-a-new-programming-language.gmi</guid>
+      
+    </item><item>
+      <title>Status update, December 2020</title>
+      
+      <link>gemini://./2020/12/15/Status-update-December-2020.gmi</link>
+      
+      <pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/12/15/Status-update-December-2020.gmi</guid>
+      
+    </item><item>
+      <title>Become shell literate</title>
+      
+      <link>gemini://./2020/12/12/Shell-literacy.gmi</link>
+      
+      <pubDate>Sat, 12 Dec 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/12/12/Shell-literacy.gmi</guid>
+      
+    </item><item>
+      <title>Web analytics should at least meet the standards of informed consent</title>
+      
+      <link>gemini://./2020/12/04/Analytics-and-informed-consent.gmi</link>
+      
+      <pubDate>Fri, 04 Dec 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/12/04/Analytics-and-informed-consent.gmi</guid>
+      
+    </item><item>
+      <title>俺のスカイツリー旅行</title>
+      
+      <link>gemini://./2020/11/29/skytree.gmi</link>
+      
+      <pubDate>Sun, 29 Nov 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/11/29/skytree.gmi</guid>
+      
+    </item><item>
+      <title>A few ways to make money in FOSS</title>
+      
+      <link>gemini://./2020/11/20/A-few-ways-to-make-money-in-FOSS.gmi</link>
+      
+      <pubDate>Fri, 20 Nov 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/11/20/A-few-ways-to-make-money-in-FOSS.gmi</guid>
+      
+    </item><item>
+      <title>We can do better than DuckDuckGo</title>
+      
+      <link>gemini://./2020/11/17/Better-than-DuckDuckGo.gmi</link>
+      
+      <pubDate>Tue, 17 Nov 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/11/17/Better-than-DuckDuckGo.gmi</guid>
+      
+    </item><item>
+      <title>RE: Is This Aggregator Idea Good?</title>
+      
+      <link>gemini://./2020/11/15/RE-Is-this-aggregator-idea-good.gmi</link>
+      
+      <pubDate>Sun, 15 Nov 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/11/15/RE-Is-this-aggregator-idea-good.gmi</guid>
+      
+    </item><item>
+      <title>Status update, November 2020</title>
+      
+      <link>gemini://./2020/11/15/Status-update-November-2020.gmi</link>
+      
+      <pubDate>Sun, 15 Nov 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/11/15/Status-update-November-2020.gmi</guid>
+      
+    </item><item>
+      <title>Copying ain&#39;t stealing</title>
+      
+      <link>gemini://./2020/11/12/Copying-aint-stealing.gmi</link>
+      
+      <pubDate>Thu, 12 Nov 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/11/12/Copying-aint-stealing.gmi</guid>
+      
+    </item><item>
+      <title>My experience as a poll worker in Pennsylvania</title>
+      
+      <link>gemini://./2020/11/10/2020-Election-worker.gmi</link>
+      
+      <pubDate>Tue, 10 Nov 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/11/10/2020-Election-worker.gmi</guid>
+      
+    </item><item>
+      <title>Hacker News over Gemini</title>
+      
+      <link>gemini://./2020/11/08/HN-over-Gemini.gmi</link>
+      
+      <pubDate>Sun, 08 Nov 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/11/08/HN-over-Gemini.gmi</guid>
+      
+    </item><item>
+      <title>Utility vs usability</title>
+      
+      <link>gemini://./2020/11/06/Utility-vs-usability.gmi</link>
+      
+      <pubDate>Fri, 06 Nov 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/11/06/Utility-vs-usability.gmi</guid>
+      
+    </item><item>
+      <title>What is this Gemini thing anyway, and why am I excited about it?</title>
+      
+      <link>gemini://./2020/11/01/What-is-Gemini-anyway.gmi</link>
+      
+      <pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/11/01/What-is-Gemini-anyway.gmi</guid>
+      
+    </item><item>
+      <title>I&#39;m handing over maintenance of wlroots and sway to Simon Ser</title>
+      
+      <link>gemini://./2020/10/23/Im-handing-wlroots-and-sway-to-Simon.gmi</link>
+      
+      <pubDate>Fri, 23 Oct 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/10/23/Im-handing-wlroots-and-sway-to-Simon.gmi</guid>
+      
+    </item><item>
+      <title>Firefox: The Jewel^WEmbarassment of Open Source</title>
+      
+      <link>gemini://./2020/10/22/Firefox-the-embarassment-of-FOSS.gmi</link>
+      
+      <pubDate>Thu, 22 Oct 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/10/22/Firefox-the-embarassment-of-FOSS.gmi</guid>
+      
+    </item><item>
+      <title>New workstation</title>
+      
+      <link>gemini://./2020/10/18/New-workstation.gmi</link>
+      
+      <pubDate>Sun, 18 Oct 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/10/18/New-workstation.gmi</guid>
+      
+    </item><item>
+      <title>Status update, October 2020</title>
+      
+      <link>gemini://./2020/10/15/Status-update-October-2020.gmi</link>
+      
+      <pubDate>Thu, 15 Oct 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/10/15/Status-update-October-2020.gmi</guid>
+      
+    </item><item>
+      <title>Kineto: An HTTP to Gemini proxy</title>
+      
+      <link>gemini://./2020/10/11/Kineto-a-gemini-proxy.gmi</link>
+      
+      <pubDate>Sun, 11 Oct 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/10/11/Kineto-a-gemini-proxy.gmi</guid>
+      
+    </item><item>
+      <title>Four principles of software engineering</title>
+      
+      <link>gemini://./2020/10/09/Four-principles-of-software-engineering.gmi</link>
+      
+      <pubDate>Fri, 09 Oct 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/10/09/Four-principles-of-software-engineering.gmi</guid>
+      
+    </item><item>
+      <title>Spamtoberfest</title>
+      
+      <link>gemini://./2020/10/01/Spamtoberfest.gmi</link>
+      
+      <pubDate>Thu, 01 Oct 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/10/01/Spamtoberfest.gmi</guid>
+      
+    </item><item>
+      <title>Gemini and Hugo</title>
+      
+      <link>gemini://./2020/09/27/Gemini-and-Hugo.gmi</link>
+      
+      <pubDate>Sun, 27 Sep 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/09/27/Gemini-and-Hugo.gmi</guid>
+      
+    </item><item>
+      <title>A tale of two libcs</title>
+      
+      <link>gemini://./2020/09/25/A-story-of-two-libcs.gmi</link>
+      
+      <pubDate>Fri, 25 Sep 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/09/25/A-story-of-two-libcs.gmi</guid>
+      
+    </item><item>
+      <title>TOFU recommendations for Gemini</title>
+      
+      <link>gemini://./2020/09/21/Gemini-TOFU.gmi</link>
+      
+      <pubDate>Mon, 21 Sep 2020 00:00:00 +0000</pubDate>
+      
+      
+      <guid>gemini://./2020/09/21/Gemini-TOFU.gmi</guid>
+      
+    </item>
+  </channel>
+</rss>

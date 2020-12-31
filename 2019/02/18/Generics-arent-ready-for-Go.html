@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Generics aren&#39;t ready for Go</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Generics aren&#39;t ready for Go
+  <small>
+    <span class="date">February 18, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>In the distance, a gradual roar begins to grow in volume. A dust cloud is
+visible over the horizon. As it nears, the shouts of the oncoming angry mob can
+be heard. Suddenly, it stops, and a brief silence ensues. Then the air is filled
+with the clackings of hundreds of keyboards, angrily typing the owner&rsquo;s opinion
+about generics and Go. The clans of Java, C#, Rust, C++, TypeScript, Haskell,
+and more - usually mortal enemies - have combined forces to fight in what may
+become one of the greatest flamewars of our time. And none of them read more
+than the title of this article before writing their comment.</p>
+<p>Have you ever seen someone write something to the effect of &ldquo;I would use Go, but
+I need generics&rdquo;? Perhaps we can infer from this that many of the people who are
+pining after generics in Go are not, in fact, Go users. Many of them are users
+of another programming language that <em>does</em> have generics, and they feel that
+generics are a good fit for this language, and therefore a good fit for any
+language. The inertia of &ldquo;what I&rsquo;m used to&rdquo; comes to a violent stop when they
+try to use Go. People affected by this frustration interpret it as a problem
+with Go, that Go is missing some crucial feature - such as generics. But this
+lack of features is itself a feature, not a bug.</p>
+<p>Go strikes me as one of the most conservative programming languages available
+today. It&rsquo;s small and simple, and every detail is carefully thought out. There
+are very few dusty corners of Go - in large part because Go has fewer corners in
+general than most programming languages. This is a major factor in Go&rsquo;s success
+to date, in my opinion. Nearly all of Go&rsquo;s features are bulletproof, and in my
+opinion are among the best implementations of their concepts in our entire
+industry. Achieving this feat requires having <em>fewer</em> features in total.
+Contrast this to C++, which has too many footguns to count. You <em>could</em> write a
+book called &ldquo;C++: the good parts&rdquo;, but consider that such a book about Go would
+just be a book about Go. There&rsquo;s little room for the bad parts in such a spartan
+language.</p>
+<p>So how should we innovate in Go? Consider the case of dependency management. Go
+1.11 shipped with the first version of Go modules, which, in my opinion, is a
+game changer. I passionately hate <code>$GOPATH</code>, and I thought dep wasn&rsquo;t much
+better. dep&rsquo;s problem is that it took the dependency management ideas that other
+programming languages have been working with and brought the same ideas to Go.
+Instead, Go modules took the idea of dependency management and rethought it from
+first principles, then landed on a much more elegant solution that I think other
+programming languages will spend the next few years catching up with. I like to
+make an analogy to physics: dep is like <a href="https://en.wikipedia.org/wiki/General_relativity">General Relativity</a> or <a href="https://en.wikipedia.org/wiki/Standard_Model">the
+Standard Model</a>, whereas Go modules are more like the <a href="https://en.wikipedia.org/wiki/Grand_Unified_Theory">Grand Unified
+Theory</a>. Go doesn&rsquo;t settle for anything less when adding features. It&rsquo;s
+not a language where liberal experimentation with imperfect ideas is desirable.</p>
+<p>I feel that this applies to generics. In my opinion, generics are an imperfect
+solution to an unsolved problem in computer science. None of the proposals I&rsquo;ve
+seen (notably <a href="https://go.googlesource.com/proposal/+/master/design/go2draft-contracts.md">contracts</a>) feel <em>right</em> yet. Some of this is a gut
+feeling, but there are tangible problems as well. For example, the space of
+problems they solve intersects with other Go features, which weakens the
+strength of both features. &ldquo;Which solution do I use to this problem&rdquo; is a
+question which different people will answer differently, and consequently their
+code at best won&rsquo;t agree on what &ldquo;idiomatic&rdquo; means and at worst will be simply
+incompatible.  Another problem is that the proposal changes the meaning of
+idiomatic Go in the first place - suddenly huge swaths of the Go code, including
+the standard library, will become unidiomatic. One of Go&rsquo;s greatest strengths is
+that code written 5 years ago is still idiomatic. It&rsquo;s almost impossible to
+write unidiomatic Go code at all.</p>
+<p>I used to sneer at the Go maintainers alongside everyone else whenever they&rsquo;d
+punt on generics. With so many people pining after it, why haven&rsquo;t they seen
+sense yet? How can they know better than all of these people? My tune changed
+once I started to use Go more seriously, and now I admire their restraint.  Part
+of this is an evolution of my values as a programmer in general: simplicity and
+elegance are now the principles I optimize for, even if it means certain classes
+of programs are simply not on the table. And I think Go should be comfortable
+not being suitable for writing certain classes of programs. I don&rsquo;t think
+programming languages should compete with each other in an attempt to become the
+perfect solution to every problem.  This is impossible, and attempts will just
+create a messy kitchen sink that solves every problem poorly.</p>
+<p><img
+src="https://sr.ht/TxC_.jpg"
+alt="Nina Tucker from Fullmetal Alchemist"
+width="320" /></p>
+<p class="text-center">
+  <small>fig. 1: the result of C++'s attempt to solve all problems</small>
+</p>
+<p>The constraints imposed by the lack of generics (and other things Go lacks)
+breed creativity.  If you&rsquo;re fighting Go&rsquo;s lack of generics trying to do
+something Your Way, you might want to step back and consider a solution to the
+problem which embraces the limitations of Go instead. Often when I do this the
+new solution is a much better design.</p>
+<p>So it&rsquo;s my hope that Go will hold out until the right solution presents itself,
+and it hasn&rsquo;t yet. Rushing into it to appease the unwashed masses is a bad idea.
+There are other good programming languages - use them! I personally use a wide
+variety of programming languages, and though I love Go dearly, it probably only
+comes in 3rd or 4th place in terms of how frequently it appears in my projects.
+It&rsquo;s <em>excellent</em> in its domain and doesn&rsquo;t need to awkwardly stumble into
+others.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Limited &#34;generics&#34; in C without macros or UB</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Limited &#34;generics&#34; in C without macros or UB
+  <small>
+    <span class="date">June 5, 2017</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I should start this post off by clarifying that what I have to show you today is
+not, in fact, generics. However, it&rsquo;s useful in some situations to solve the
+same problems that generics might. This is a pattern I&rsquo;ve started using to
+reduce the number of <code>void*</code> pointers floating around in my code: multiple
+definitions of a struct.</p>
+<p><strong>Errata</strong>: we rolled this approach back in wlroots because it causes problems
+with LTO. I no longer recommend it.</p>
+<p>Let&rsquo;s take a look at a specific example. In
+<a href="https://github.com/SirCmpwn/wlroots">wlroots</a>, <code>wlr_output</code> is a generic type
+that can be implemented by any number of backends, like DRM (direct rendering
+manager), wayland windows, X11 windows, RDP outputs, etc. The <code>wlr/types.h</code>
+header includes this structure:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">wlr_output_impl</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">wlr_output_state</span><span class="p">;</span>
+
+<span class="k">struct</span> <span class="n">wlr_output</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="k">struct</span> <span class="n">wlr_output_impl</span> <span class="o">*</span><span class="n">impl</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">wlr_output_state</span> <span class="o">*</span><span class="n">state</span><span class="p">;</span>
+    <span class="c1">// [...]
+</span><span class="c1"></span><span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">wlr_output_enable</span><span class="p">(</span><span class="k">struct</span> <span class="n">wlr_output</span> <span class="o">*</span><span class="n">output</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">enable</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">wlr_output_set_mode</span><span class="p">(</span><span class="k">struct</span> <span class="n">wlr_output</span> <span class="o">*</span><span class="n">output</span><span class="p">,</span>
+    <span class="k">struct</span> <span class="n">wlr_output_mode</span> <span class="o">*</span><span class="n">mode</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">wlr_output_destroy</span><span class="p">(</span><span class="k">struct</span> <span class="n">wlr_output</span> <span class="o">*</span><span class="n">output</span><span class="p">);</span>
+</code></pre></div><p><code>wlr_output_impl</code> is defined elsewhere:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">wlr_output_impl</span> <span class="p">{</span>
+    <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">enable</span><span class="p">)(</span><span class="k">struct</span> <span class="n">wlr_output_state</span> <span class="o">*</span><span class="n">state</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">enable</span><span class="p">);</span>
+    <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">set_mode</span><span class="p">)(</span><span class="k">struct</span> <span class="n">wlr_output_state</span> <span class="o">*</span><span class="n">state</span><span class="p">,</span>
+        <span class="k">struct</span> <span class="n">wlr_output_mode</span> <span class="o">*</span><span class="n">mode</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">destroy</span><span class="p">)(</span><span class="k">struct</span> <span class="n">wlr_output_state</span> <span class="o">*</span><span class="n">state</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">wlr_output</span> <span class="o">*</span><span class="nf">wlr_output_create</span><span class="p">(</span><span class="k">struct</span> <span class="n">wlr_output_impl</span> <span class="o">*</span><span class="n">impl</span><span class="p">,</span>
+        <span class="k">struct</span> <span class="n">wlr_output_state</span> <span class="o">*</span><span class="n">state</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">wlr_output_free</span><span class="p">(</span><span class="k">struct</span> <span class="n">wlr_output</span> <span class="o">*</span><span class="n">output</span><span class="p">);</span>
+</code></pre></div><p>Nowhere, however, is <code>wlr_output_state</code> defined. It&rsquo;s left an incomplete type
+throughout all of the common <code>wlr_output</code> code. The &ldquo;generic&rdquo; part is that each
+output implementation, in its own private headers, defines the
+<code>wlr_output_state</code> struct for itself, like the DRM backend:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">wlr_output_state</span> <span class="p">{</span>
+    <span class="n">uint32_t</span> <span class="n">connector</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+    <span class="n">uint32_t</span> <span class="n">crtc</span><span class="p">;</span>
+    <span class="n">drmModeCrtc</span> <span class="o">*</span><span class="n">old_crtc</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">wlr_drm_renderer</span> <span class="o">*</span><span class="n">renderer</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">gbm_surface</span> <span class="o">*</span><span class="n">gbm</span><span class="p">;</span>
+    <span class="n">EGLSurface</span> <span class="o">*</span><span class="n">egl</span><span class="p">;</span>
+    <span class="kt">bool</span> <span class="n">pageflip_pending</span><span class="p">;</span>
+    <span class="k">enum</span> <span class="n">wlr_drm_output_state</span> <span class="n">state</span><span class="p">;</span>
+    <span class="c1">// [...]
+</span><span class="c1"></span><span class="p">};</span>
+</code></pre></div><p>This allows implementations of the <code>enable</code>, <code>set_mode</code>, and <code>destroy</code> functions
+to avoid casting a <code>void*</code> to the appropriate type:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="k">struct</span> <span class="n">wlr_output_impl</span> <span class="n">output_impl</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">.</span><span class="n">enable</span> <span class="o">=</span> <span class="n">wlr_drm_output_enable</span><span class="p">,</span>
+    <span class="c1">// [...]
+</span><span class="c1"></span><span class="p">};</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">wlr_drm_output_enable</span><span class="p">(</span><span class="k">struct</span> <span class="n">wlr_output_state</span> <span class="o">*</span><span class="n">output</span><span class="p">,</span>
+        <span class="kt">bool</span> <span class="n">enable</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">wlr_backend_state</span> <span class="o">*</span><span class="n">state</span> <span class="o">=</span>
+        <span class="n">wl_container_of</span><span class="p">(</span><span class="n">output</span><span class="o">-&gt;</span><span class="n">renderer</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">renderer</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">output</span><span class="o">-&gt;</span><span class="n">state</span> <span class="o">!=</span> <span class="n">DRM_OUTPUT_CONNECTED</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">enable</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">drmModeConnectorSetProperty</span><span class="p">(</span><span class="n">state</span><span class="o">-&gt;</span><span class="n">fd</span><span class="p">,</span>
+            <span class="n">output</span><span class="o">-&gt;</span><span class="n">connector</span><span class="p">,</span>
+            <span class="n">output</span><span class="o">-&gt;</span><span class="n">props</span><span class="p">.</span><span class="n">dpms</span><span class="p">,</span>
+            <span class="n">DRM_MODE_DPMS_ON</span><span class="p">);</span>
+        <span class="c1">// [...]
+</span><span class="c1"></span>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">drmModeConnectorSetProperty</span><span class="p">(</span><span class="n">state</span><span class="o">-&gt;</span><span class="n">fd</span><span class="p">,</span>
+            <span class="n">output</span><span class="o">-&gt;</span><span class="n">connector</span><span class="p">,</span>
+            <span class="n">output</span><span class="o">-&gt;</span><span class="n">props</span><span class="p">.</span><span class="n">dpms</span><span class="p">,</span>
+            <span class="n">DRM_MODE_DPMS_STANDBY</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// [...]
+</span><span class="c1"></span><span class="k">struct</span> <span class="n">wlr_output</span> <span class="n">output</span> <span class="o">=</span> <span class="n">wlr_output_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">output_impl</span><span class="p">,</span> <span class="n">output</span><span class="p">);</span>
+</code></pre></div><p>The limitations of this approach are apparent: you cannot work with multiple
+definitions of <code>wlr_output_state</code> in the same file. However, you get improved
+type safety, have to write less code, and improve readability.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

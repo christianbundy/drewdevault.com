@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>react on Drew DeVault&#39;s blog</title>
+    <link>./tags/react.html</link>
+    <description>Recent content in react on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 20 Jul 2015 00:00:00 +0000</lastBuildDate><atom:link href="./tags/react/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A practical understanding of Flux</title>
+      <link>./2015/07/20/A-practical-understanding-of-Flux.html</link>
+      <pubDate>Mon, 20 Jul 2015 00:00:00 +0000</pubDate>
+      
+      <guid>./2015/07/20/A-practical-understanding-of-Flux.html</guid>
+      <description>React.js and the Flux are shaping up to be some of the most important tools for web development in the coming years. The MVC model was strong on the server when we decided to take the frontend seriously, and it was shoehorned into the frontend since we didn&amp;rsquo;t know any better. React and Flux challenge that and I like where it&amp;rsquo;s going very much. That being said, it was very difficult for me to get into.</description>
+    </item>
+    
+  </channel>
+</rss>

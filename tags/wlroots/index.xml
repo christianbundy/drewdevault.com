@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>wlroots on Drew DeVault&#39;s blog</title>
+    <link>./tags/wlroots.html</link>
+    <description>Recent content in wlroots on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 30 Sep 2018 00:00:00 +0000</lastBuildDate><atom:link href="./tags/wlroots/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Sway &amp; wlroots at XDC 2018</title>
+      <link>./2018/09/30/Sway-wlroots-at-XDC-2018.html</link>
+      <pubDate>Sun, 30 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/09/30/Sway-wlroots-at-XDC-2018.html</guid>
+      <description>Just got my first full night of sleep after the return flight from Spain after attending XDC 2018. It was a lot of fun! I attended along with four other major wlroots contributors. Joining me were Simon Ser (emersion) (a volunteer) and Scott Anderson (ascent12) of Collabora, who work on both wlroots and sway. ongy works on wlroots, hsroots, and waymonad, and joined us on behalf of IGEL. Finally, we were joined by Guido Günther (agx) of Purism, who works with us on wlroots and on the Librem 5.</description>
+    </item>
+    
+    <item>
+      <title>Writing a Wayland compositor with wlroots: shells</title>
+      <link>./2018/07/29/Wayland-shells.html</link>
+      <pubDate>Sun, 29 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/07/29/Wayland-shells.html</guid>
+      <description>I apologise for not writing about wlroots more frequently. I don&amp;rsquo;t really enjoy working on the McWayface codebase this series of blog posts was originally about, so we&amp;rsquo;re just going to dismiss that and talk about the various pieces of a Wayland compositor in a more free-form style. I hope you still find it useful!
+Today, we&amp;rsquo;re going to talk about shells. But to make sure we&amp;rsquo;re on the same page first, a quick refresher on surfaces.</description>
+    </item>
+    
+    <item>
+      <title>Input handling in wlroots</title>
+      <link>./2018/07/17/Input-handling-in-wlroots.html</link>
+      <pubDate>Tue, 17 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/07/17/Input-handling-in-wlroots.html</guid>
+      <description>I&amp;rsquo;ve said before that wlroots is a &amp;ldquo;batteries not included&amp;rdquo; kind of library, and one of the places where that is most apparent is with our approach to input handling. We implemented a very hands-off design for input, in order to support many use-cases: desktop input, phones with and without USB-OTG HIDs plugged in, multiple mice bound to a single cursor, multiple keyboards per seat, simulated input from fake input devices, on-screen keyboards, input which is processed by the compositor but not sent to clients&amp;hellip; we support all of these use-cases and even more.</description>
+    </item>
+    
+    <item>
+      <title>Why did we replace wlc?</title>
+      <link>./2018/05/27/Why-rewrite-wlc.html</link>
+      <pubDate>Sun, 27 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/05/27/Why-rewrite-wlc.html</guid>
+      <description>For a little over a year, I&amp;rsquo;ve been working with a bunch of talented C developers to build a replacement for the wlc library. The result is wlroots, and we&amp;rsquo;re still working on completing it and updating our software to use it. The conventional wisdom suggests that rewriting your code from scratch is almost never the right idea. So why did we do it, and how is it working out? I have spoken a little about this in the past, but we&amp;rsquo;ll answer this question in detail today.</description>
+    </item>
+    
+    <item>
+      <title>Writing a Wayland Compositor, Part 3: Rendering a window</title>
+      <link>./2018/02/28/Writing-a-wayland-compositor-part-3.html</link>
+      <pubDate>Wed, 28 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/02/28/Writing-a-wayland-compositor-part-3.html</guid>
+      <description>This is the third in a series of articles on the subject of writing a Wayland compositor from scratch using wlroots. Check out the first article if you haven&amp;rsquo;t already. We left off with a Wayland server which accepts client connections and exposes a handful of globals, but does not do anything particularly interesting yet. Our goal today is to do something interesting - render a window!
+The commit that this article dissects is 342b7b6.</description>
+    </item>
+    
+    <item>
+      <title>Writing a Wayland Compositor, Part 2: Rigging up the server</title>
+      <link>./2018/02/22/Writing-a-wayland-compositor-part-2.html</link>
+      <pubDate>Thu, 22 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/02/22/Writing-a-wayland-compositor-part-2.html</guid>
+      <description>This is the second in a series of articles on the subject of writing a Wayland compositor from scratch using wlroots. Check out the first article if you haven&amp;rsquo;t already. Last time, we ended up with an application which fired up a wlroots backend, enumerated output devices, and drew some pretty colors on the screen. Today, we&amp;rsquo;re going to start accepting Wayland client connections, though we aren&amp;rsquo;t going to be doing much with them yet.</description>
+    </item>
+    
+    <item>
+      <title>Writing a Wayland Compositor, Part 1: Hello wlroots</title>
+      <link>./2018/02/17/Writing-a-Wayland-compositor-1.html</link>
+      <pubDate>Sat, 17 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/02/17/Writing-a-Wayland-compositor-1.html</guid>
+      <description>This is the first in a series of many articles I&amp;rsquo;m writing on the subject of building a functional Wayland compositor from scratch. As you may know, I am the lead maintainer of sway, a reasonably popular Wayland compositor. Along with many other talented developers, we&amp;rsquo;ve been working on wlroots over the past few months. This is a powerful tool for creating new Wayland compositors, but it is very dense and difficult to understand.</description>
+    </item>
+    
+    <item>
+      <title>The future of Wayland, and sway&#39;s role in it</title>
+      <link>./2017/10/09/Future-of-sway.html</link>
+      <pubDate>Mon, 09 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/10/09/Future-of-sway.html</guid>
+      <description>Today I&amp;rsquo;ve released sway 0.15-rc1, the first release candidate for the final 0.x release of sway. That&amp;rsquo;s right - after sway 0.15 will be sway 1.0. After today, no new features are being added to sway until we complete the migration to our new plumbing library, wlroots. This has been a long time coming, and I would love to introduce you to wlroots and tell you what to expect from sway 1.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,12 @@
+=> gemini://tilde.team/~ew0k/is-this-aggregator-idea-good.gmi ew0k is a Teddybear - Is This Aggregator Idea Good?
+
+CAPCOM is open source:
+
+=> https://tildegit.org/solderpunk/CAPCOM CAPCOM
+
+and, in any case, trivially implemented from scratch. I was thinking it would be cool to encourage people to start hosting CAPCOM on their own capsules as well, with a curated list of what feeds interest them. We could start adding CAPCOM links to our capsule's index pages to make it easier to move around in such a system.
+
+Pros: requires very little effort or bespoke software development
+Cons: requires very little effort or bespoke software development :^)
+
+And an aside: I generally dislike this approach of using our gemlogs to have discussions via "RE: post title" and such-with. Isn't this better suited to the mailing list?

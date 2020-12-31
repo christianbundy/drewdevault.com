@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Integrating a VT220 into my life</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Integrating a VT220 into my life
+  <small>
+    <span class="date">March 22, 2016</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I bought a DEC VT220 terminal a while ago, and put it next to my desk at work. I
+use it to read emails on mutt now, and it&rsquo;s actually quite pleasant. There was
+some setup involved in making it as comfortable as possible, though.</p>
+<p><a href="https://sr.ht/BnAH.jpg"><img src="https://sr.ht/BnAH.jpg" alt="My desk at work"></a></p>
+<p>Here&rsquo;s the terminal up close:</p>
+<p><a href="https://sr.ht/TnC6.jpg"><img src="https://sr.ht/TnC6.jpg" alt="The terminal itself"></a></p>
+<h2 id="hardware">Hardware</h2>
+<p>First, I have several pieces of hardware involved in this:</p>
+<ul>
+<li>VT220 terminal</li>
+<li>LK201 keyboard (later made obsolete)</li>
+<li><a href="http://amzn.com/B00IDSM6BW">USB to serial adapter</a></li>
+<li><a href="http://amzn.com/B00066HL50">DB9-&gt;DB29 null modem cable</a></li>
+</ul>
+<p>It took a while to get all of these things, but I was able to get a nice
+refurbished terminal and a couple of crappy LK201 keyboards. Luckily I was able
+to eventually remove the need for the keyboard.</p>
+<h2 id="basic-setup">Basic Setup</h2>
+<p>Getting this working on Linux is actually pretty simple thanks to decades of
+backwards compatability. Plug all of the cords together, turn on the machine,
+and (on Arch, at least) run:</p>
+<pre><code>systemctl start serial-agetty@ttyUSB0.service
+</code></pre>
+<p>This will start up a getty for you to log into on your terminal. For a while I
+would use the LK201 to log in to this getty and spin up a mail cilent.</p>
+<p>I did have to make a couple of changes to serial-agetty@.service, though:</p>
+<pre><code>ExecStart=-/sbin/agetty -h -L 19200 %I vt220
+</code></pre>
+<p>This specifies the TERM variable as &ldquo;vt220&rdquo; and sets the baud rate to 19200. I
+had to also set the baud rate in the terminal&rsquo;s settings to 19200 baud as well,
+to get the fastest possible terminal.</p>
+<p>I eventually got into the habit of logging into the terminal with the LK201,
+then running tmux and attaching to tmux from my desktop session. I would then
+hide this tmux terminal in the upper left corner of my display, and move my
+mouse over to it when I wanted to interact with the terminal. This let me use
+the same keyboard I used for the rest of my computer experience to interact with
+the VT220, instead of trying to use the LK201 as well. This was a bit annoying,
+so eventually I did some more customization.</p>
+<h2 id="removing-the-keyboard">Removing the keyboard</h2>
+<p>I wanted to be able to make everything automatic, so I could just boot my
+computer and log in normally and treat the VT220 almost like a fourth monitor. I
+started by automating the process of logging in and running tmux.</p>
+<p>First, I created a user for the terminal:</p>
+<pre><code>useradd vt220
+</code></pre>
+<p>Then, I wrote a shell script that would serve as the user&rsquo;s login shell and
+would start tmux:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/usr/bin/env bash
+</span><span class="cp"></span><span class="k">if</span> <span class="o">[[</span> <span class="nv">$TERM</span> <span class="o">==</span> <span class="s2">&#34;screen&#34;</span> <span class="o">]]</span>
+<span class="k">then</span>
+	sudo /usr/local/bin/login-sircmpwn
+<span class="k">else</span>
+	tmux -S /var/tmux/vt220.sock
+<span class="k">fi</span>
+</code></pre></div><p>I made that directory, <code>/var/tmux/</code>, and made sure both the vt220 user and my
+normal user had access to it. I also edited my sudoers file so that vt220 could
+run that command as root:</p>
+<pre><code>vt220 ALL=(ALL) NOASSWD: /usr/local/bin/login-sircmpwn
+</code></pre>
+<p>I put the script into <code>/usr/local/bin</code> and added it to <code>/etc/shells</code>, then made
+it the login shell for the vt220 user with <code>chsh</code>. I then moved to my own
+systemd unit for starting the getty on ttyUSB0, this time with autologin:</p>
+<pre><code>#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Serial Getty on %I
+Documentation=man:agetty(8) man:systemd-getty-generator(8)
+Documentation=http://0pointer.de/blog/projects/serial-console.html
+BindsTo=dev-%i.device
+After=dev-%i.device systemd-user-sessions.service plymouth-quit-wait.service
+
+# If additional gettys are spawned during boot then we should make
+# sure that this is synchronized before getty.target, even though
+# getty.target didn't actually pull it in.
+Before=getty.target
+IgnoreOnIsolate=yes
+
+[Service]
+ExecStart=-/sbin/agetty -a vt220 -h -L 19200 %I vt220
+Type=idle
+Restart=always
+UtmpIdentifier=%I
+TTYPath=/dev/%I
+TTYReset=yes
+TTYVHangup=yes
+KillMode=process
+IgnoreSIGPIPE=no
+SendSIGHUP=yes
+
+[Install]
+WantedBy=getty.target
+</code></pre>
+<p>The only difference here is that it invokes agetty with <code>-a vt220</code> to autologin
+as that user. <code>systemctl enable vtgetty@ttyUSB0.service</code> makes it so that on
+boot, the getty would run on ttyUSB0 and autologin as vt220. Then the script
+from earlier will run tmux, and within tmux will run <code>sudo /usr/local/bin/login-sircmpwn</code>, which is this shell script:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/usr/bin/env bash
+</span><span class="cp"></span><span class="k">until</span> who <span class="p">|</span> grep sircmpwn 2&gt;<span class="p">&amp;</span><span class="m">1</span> &gt;/dev/null
+<span class="k">do</span>
+	sleep <span class="m">1</span>
+<span class="k">done</span>
+sudo -iu sircmpwn
+</code></pre></div><p>What this does is pretty straightforward - it loops until I log in as sircmpwn,
+then enters an interactive session with sudo as sircmpwn.</p>
+<p>The net of all of this is that now, I can boot up my machine, and when I log in,
+the VT220 starts up with tmux running and logged in as me. Then I went back to
+the old way of attaching to this tmux session with a terminal on my desktop
+session hidden in a corner of the screen. And now I could ditch the clunky old
+LK201 keyboard!</p>
+<h2 id="treating-the-terminal-as-another-output">Treating the terminal as another output</h2>
+<p>I said earlier that my goal was to treat the terminal as a fake &ldquo;output&rdquo; that I
+could switch to from my desktop session just like I switch between my three
+graphical outputs. I run <a href="https://github.com/SirCmpwn/sway">sway</a>, of course, so
+I decided to add a fake output in sway and see where that went. I made a
+somewhat complicated <a href="https://github.com/SirCmpwn/sway/compare/vt220">branch</a>
+for this purpose, but the important change is here:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"><span class="gh">diff --git a/sway/handlers.c b/sway/handlers.c
+</span><span class="gh">index cec6319..60f8406 100644
+</span><span class="gh"></span><span class="gd">--- a/sway/handlers.c
+</span><span class="gd"></span><span class="gi">+++ b/sway/handlers.c
+</span><span class="gi"></span><span class="gu">@@ -704,6 +704,21 @@ static void handle_wlc_ready(void) {
+</span><span class="gu"></span> 		free(line);
+ 		list_del(config-&gt;cmd_queue, 0);
+ 	}
+<span class="gi">+	// VT220 stuff
+</span><span class="gi">+	// Adds a made up output that we can use for a tmux window
+</span><span class="gi">+	// connected to my vt220
+</span><span class="gi">+	swayc_t *output = new_swayc(C_OUTPUT);
+</span><span class="gi">+	output-&gt;name = &#34;VT220&#34;;
+</span><span class="gi">+	output-&gt;handle = UINTPTR_MAX;
+</span><span class="gi">+	output-&gt;width = 1000;
+</span><span class="gi">+	output-&gt;height = 1000;
+</span><span class="gi">+	output-&gt;unmanaged = create_list();
+</span><span class="gi">+	output-&gt;bg_pid = -1;
+</span><span class="gi">+	add_child(&amp;root_container, output);
+</span><span class="gi">+	output-&gt;x = -1000;
+</span><span class="gi">+	output-&gt;y = 0;
+</span><span class="gi">+	new_workspace(output, &#34;__VT220&#34;);
+</span><span class="gi">+	// End VT220 stuff
+</span><span class="gi"></span> }
+</code></pre></div><p>This creates a fake output and puts it to the far left, then adds a workspace to
+it called __VT220. I assigned it the output handle of UINTPTR_MAX and everywhere
+in sway that it would try to use the output handle to manipulate a real output,
+I changed to to avoid doing so if the handle is UINTPTR_MAX. Then I added this
+to my sway config:</p>
+<pre><code>for_window [title=&quot;__VT220&quot;] move window to workspace __VT220 
+</code></pre>
+<p>And run this command when sway starts:</p>
+<pre><code>urxvt -T &quot;__VT220&quot; -e tmux -S /var/tmux/vt220.sock a
+</code></pre>
+<p>Which spawns a terminal whose window title is __VT220 running tmux attached to
+the session running on the terminal. The for_window rule I added to my sway
+config automatically moves this to the VT220 fake output and tada! It works. Now
+I have a nice and comfortable way to use my terminal to read emails at work. Now
+if only I could convince people to stop sending me HTML emails! I just bought a
+second VT220 for use at home, too. Life&rsquo;s good~</p>
+<p><a href="https://news.ycombinator.com/item?id=11339909">Discussion on Hacker News</a></p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

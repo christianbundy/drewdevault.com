@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>python on Drew DeVault&#39;s blog</title>
+    <link>./tags/python.html</link>
+    <description>Recent content in python on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 13 Jan 2017 00:00:00 +0000</lastBuildDate><atom:link href="./tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The only problem with Python 3&#39;s str is that you don&#39;t grok it</title>
+      <link>./2017/01/13/The-problem-with-Python-3.html</link>
+      <pubDate>Fri, 13 Jan 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/01/13/The-problem-with-Python-3.html</guid>
+      <description>I&amp;rsquo;ve found myself explaining Python 3&amp;rsquo;s str to people online more and more often lately. There&amp;rsquo;s this ridiculous claim about that Python 3&amp;rsquo;s string handling is broken or somehow worse than Python 2, and today I intend to put that myth to rest. Python 2 strings are broken, and Python 3 strings are sane. The only problem is that you don&amp;rsquo;t grok strings.
+The basic problem many people seem to have with Python 3&amp;rsquo;s strings arises when they write code that treats bytes like a string, because that&amp;rsquo;s how it was in Python 2.</description>
+    </item>
+    
+    <item>
+      <title>Python&#39;s datetime sucks</title>
+      <link>./2014/06/28/Python-datetime-sucks.html</link>
+      <pubDate>Sat, 28 Jun 2014 00:00:00 +0000</pubDate>
+      
+      <guid>./2014/06/28/Python-datetime-sucks.html</guid>
+      <description>I&amp;rsquo;ve been playing with Python for about a year now, and I like pretty much everything about it. There&amp;rsquo;s one thing that&amp;rsquo;s really rather bad and really should not be that bad, however - date &amp;amp; time support. It&amp;rsquo;s ridiculous how bad it is in Python. This is what you get with the standard datetime module:
+ The current time and strftime, with a reasonable set of properties Time deltas with days, seconds, and microseconds and nothing else Acceptable support for parsing dates and times  What you don&amp;rsquo;t get is:</description>
+    </item>
+    
+  </channel>
+</rss>

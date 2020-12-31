@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>privacy on Drew DeVault&#39;s blog</title>
+    <link>./tags/privacy.html</link>
+    <description>Recent content in privacy on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 08 Aug 2018 00:00:00 +0000</lastBuildDate><atom:link href="./tags/privacy/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>I don&#39;t trust Signal</title>
+      <link>./2018/08/08/Signal.html</link>
+      <pubDate>Wed, 08 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/08/08/Signal.html</guid>
+      <description>Occasionally when Signal is in the press and getting a lot of favorable discussion, I feel the need to step into various forums, IRC channels, and so on, and explain why I don&amp;rsquo;t trust Signal. Let&amp;rsquo;s do a blog post instead.
+Off the bat, let me explain that I expect a tool which claims to be secure to actually be secure. I don&amp;rsquo;t view &amp;ldquo;but that makes it harder for the average person&amp;rdquo; as an acceptable excuse.</description>
+    </item>
+    
+    <item>
+      <title>Achtung! Decentralize, decentralize, decentralize!</title>
+      <link>./2018/03/24/Decentralize-decentralize-decentralize.html</link>
+      <pubDate>Sat, 24 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/03/24/Decentralize-decentralize-decentralize.html</guid>
+      <description>I can hardly believe it, but the media is finally putting Facebook&amp;rsquo;s feet to the fire! No longer is it just the weird paranoid kids shouting at everyone to stop giving all of their information to these companies. We need to take this bull by the horns and drive it in a productive direction, and for that reason, it&amp;rsquo;s time to talk about decentralization, federation, and open source.
+This article has been translated into Russian by Get Colorings.</description>
+    </item>
+    
+    <item>
+      <title>What motivates the authors of the software you use?</title>
+      <link>./2016/09/09/What-motivates-the-authors-of-the-software-you-use.html</link>
+      <pubDate>Fri, 09 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/09/09/What-motivates-the-authors-of-the-software-you-use.html</guid>
+      <description>We face an important choice in our lives as technophiles, hackers, geeks: the choice between proprietary software and free/open source software. What platforms we choose to use are important. We have a choice between Windows, OS X, and Linux (not to mention the several less popular choices). We choose between Android or iOS. We choose hardware that requires nonfree drivers or ones that don&amp;rsquo;t. We choose to store our data in someone else&amp;rsquo;s cloud or in our own.</description>
+    </item>
+    
+    <item>
+      <title>Life, liberty, and the pursuit of privacy</title>
+      <link>./2016/06/29/Privacy-as-a-hobby.html</link>
+      <pubDate>Wed, 29 Jun 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./2016/06/29/Privacy-as-a-hobby.html</guid>
+      <description>Privacy is my hobby, and should be a hobby of every technically competent American. Within the eyes of the law I have a right to secure the privacy of my information. At least that&amp;rsquo;s the current law - many officials are trying to subvert that right. I figure that we&amp;rsquo;d better exercise that right while we have it, so that we know how to keep exercising it once it&amp;rsquo;s illegal and all the information about it dries up.</description>
+    </item>
+    
+    <item>
+      <title>Bring more Tor into your life</title>
+      <link>./2015/11/11/Bring-more-tor-into-your-life.html</link>
+      <pubDate>Wed, 11 Nov 2015 00:00:00 +0000</pubDate>
+      
+      <guid>./2015/11/11/Bring-more-tor-into-your-life.html</guid>
+      <description>Tor is a project that improves your privacy online by encrypting and bouncing your connection through several nodes before leaving for the outside world. It makes it much more difficult for someone spying on you to know who you&amp;rsquo;re talking to online and what you&amp;rsquo;re saying to them. Many people use it with the Tor Browser (a fork of Firefox) and only use it with HTTP.
+What some people do not know is that Tor works at the TCP level, and can be used for any kind of traffic.</description>
+    </item>
+    
+  </channel>
+</rss>

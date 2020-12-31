@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Status update, July 2019</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Status update, July 2019
+  <small>
+    <span class="date">July 15, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Today I received the keys to my new apartment, which by way of not being
+directly in the middle of the city<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> saves me a decent chunk of money - and
+allows me to proudly announce that I have officially broken even on doing free
+software full time! I owe a great deal of thanks to all of you who have <a href="https://drewdevault.com/donate">donated
+to support my work</a> or purchased a paid
+<a href="https://sourcehut.org">SourceHut</a> account. I&rsquo;ve dreamed of sustainably working
+on free software for a long, long time, and I&rsquo;m very grateful for all of your
+support in helping realize that dream. Now let me share with you what your money
+has bought over the past month!</p>
+<p>First, my <a href="https://drewdevault.com/make-a-blog">make a blog</a> offer has closed
+for the time being, and the world is now 13 blogs richer for it. Be sure to
+check them out! I have also started a mailing list for tech writers: the <a href="https://lists.sr.ht/~sircmpwn/free-writers-club">free
+writers club</a>, which I
+encourage anyone using free software to blog about technology to join for
+editorial advice, software recommendations, and periodic reminders to keep
+writing. The offer to get paid for your own new blog will reopen in the future,
+keep an eye out!</p>
+<p>As far as projects are concerned, lots of good stuff this month. aerc has been
+making excellent progress. We just pulled in the first batch of patches adding
+maildir support, and will soon have sendmail and mbox support as well. We&rsquo;ve
+also begun on mouse support, and you can now click to switch between tabs. The
+initial patches for tab completion have also been added. Additional changes
+include an :unsubscribe command to unsubscribe from marketing emails and mailing
+lists, basic search functionality, OAuth IMAP authentication, changing config
+options at runtime, and DNS lookups to complete your settings in the new account
+wizard more quickly. Building more upon these features, and a handler for mailto
+links, are the main blockers for aerc 0.2.0.</p>
+<p>In Wayland news, VR work continues. I&rsquo;ve taken on the goal of implementing DRM
+leasing for Wayland, which will allow VR applications to take exclusive control
+over the headset&rsquo;s graphical resources from Wayland compositor. A similar
+technology exists for X11, and I&rsquo;ve written a Wayland protocol for the same
+purpose on Wayland. I&rsquo;ve also written a Vulkan extension to utilize this
+protocol in Vulkan&rsquo;s WSI layer. I&rsquo;ve written implementations of these for
+wlroots, sway, mesa, and the radv (AMD) Vulkan driver. The result: a working VR
+demo on Sway (audio warning):</p>
+<p><video src="https://yukari.sr.ht/xrgears.webm" controls></video></p>
+<p>There&rsquo;s still some details to sort out on the standardization of these
+extensions, which are under discussion now. In the coming weeks I hope to have
+an implementation for Xwayland (which will get working games based on Steam&rsquo;s
+OpenVR runtime), and get a proof-of-concept of a VR-driven Wayland compositor
+based on the demo shown in the previous status update. Exciting stuff!</p>
+<p>I&rsquo;ve also had time to write a few more chapters for my Wayland book, which I&rsquo;ll
+be speeding up my work on. I&rsquo;ll soon be leaving for an extended trip to Japan,
+and on these grueling flights I&rsquo;ll have plenty of time to work on it. In
+additional Wayland news, we&rsquo;ve been chugging along with small bugfixes and
+improvements to wlroots and sway, and implementing more plumbing work to round
+out our implementation of everything. Our work continues to evolve into the most
+robust Wayland implementation available today, and I can only see it getting
+stronger.</p>
+<p>On SourceHut, I have plenty of developments to share, but will leave the details
+for the <a href="https://lists.sr.ht/~sircmpwn/sr.ht-announce">sr.ht-announce mailing
+list</a>. The most exciting news is
+that <a href="https://alpinelinux.org">Alpine Linux</a>, my favorite Linux distribution,
+has completed their mailing list infrastructure migration to <a href="https://lists.alpinelinux.org">their own
+lists.sr.ht instance</a>! I&rsquo;ve also been hard at
+work expanding lists.sr.ht&rsquo;s capabilities to this end. The other big piece of
+news was announced on my blog last week: <a href="https://drewdevault.com/2019/07/08/Announcing-annotations-for-sourcehut.html">code
+annotations</a>.
+All of our services have also been upgraded to Alpine 3.10, and the Alpine
+mirror reorganized a bit to make future upgrades smooth.  There&rsquo;s all sorts of
+other goodies to share, but I&rsquo;ll leave the rest for the sr.ht-announce post
+later today.</p>
+<p>All sorts of other little things have gotten done, like sending patches upstream
+for kmscube fixes, minor improvements to scdoc, writing a new build system for
+mrsh, improvements to openring&hellip; but I&rsquo;m running out of patience and I imagine
+you are, too. Again I&rsquo;m eternally grateful for your support: thank you. I&rsquo;ll see
+you again for the next status update, same time next month!</p>
+<small class="text-muted">
+This work was possible thanks to users who support me financially. Please
+consider <a href="/donate">donating to my work</a> or <a
+href="https://sourcehut.org">buying a sourcehut.org subscription</a>. Thank you!
+</small>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>I can see city hall out the window of my old apartment <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

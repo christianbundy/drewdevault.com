@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Compiler devnotes: Machine specs</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Compiler devnotes: Machine specs
+  <small>
+    <span class="date">February 22, 2017</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I have a number of long-term projects that I plan for on long timelines, on the
+order of decades or more. One of these projects is cozy, a C toolchain. I
+haven&rsquo;t talked about this project in public before, so I&rsquo;ll start by introducing
+you to the project. The main C toolchains in the &ldquo;actually usable&rdquo; category are
+GNU and LLVM, but I&rsquo;m satisfied with neither and I want to build my own
+toolchain. I see no reason why compilers should be deep magic. Here are my goals
+for cozy:</p>
+<ul>
+<li>Self hosting and written in C</li>
+<li>An easy to grok codebase and internal design</li>
+<li>Focused on C. No built-in support for other languages</li>
+<li>Adding new targets architectures and ports should be straightforward</li>
+<li>Modular build pipeline with lots of opportunities for external integrations</li>
+<li>Trivially cross-compiles without building another version of the toolchain</li>
+<li>Includes a decent optimizer</li>
+</ul>
+<p>Some other plans include opinionated warnings about code and minimal support for
+language extensions. Ambitious goals, right? That&rsquo;s why this project is on my
+long-term schedule. I&rsquo;ve found that large projects are entirely feasible, so
+long as you (1) start them and (2) keep working on them for a long time. I don&rsquo;t
+need to rush this - gcc and clang may not be ideal, but they work today. In
+support of these goals, I&rsquo;ll be writing these dev notes to explain my design
+choices and gather feedback — please <a href="mailto:sir@cmpwn.com">email me</a> if
+you have some!</p>
+<p>Since I want to place an emphasis on portability and retargetability, I&rsquo;m
+starting by designing the machine spec and its support code, which is used to
+add support for new architectures. I don&rsquo;t like gcc&rsquo;s lisp specs, and I <em>really</em>
+don&rsquo;t like LLVM&rsquo;s &ldquo;huge pile of C++&rdquo; approach. I think a really good machine
+spec meets these goals:</p>
+<ul>
+<li>Easy to write and human friendly</li>
+<li>More about data than code, but</li>
+<li>Easily extended with C to support architecture-specific nuances</li>
+<li>Provides loads of useful metadata about the target architecture</li>
+<li>Exposes information about the speed and side-effects of each instruction</li>
+<li>Can also be used to generate an assembler and disassembler</li>
+<li>Easily reused to create derivative architectures</li>
+</ul>
+<p>Adding a new architecture should be a weekend project, and when you&rsquo;re done the
+entire toolchain should both support and run on your new architecture. I set out
+to come up with a new syntax that could potentially meet these goals. I started
+with the Z80 architecture in mind because it&rsquo;s simple, I&rsquo;m intimately familiar
+with it, and I want cozy to be able to target 8-bit machines just as easily as
+32 or 64 bit.</p>
+<p>For reference, here are the gcc and LLVM guides on adding new targets:</p>
+<ul>
+<li><a href="https://gcc.gnu.org/onlinedocs/gccint/Back-End.html">gcc - Anatomy of a Target Back End</a></li>
+<li><a href="http://llvm.org/docs/WritingAnLLVMBackend.html">Writing an LLVM Backend</a></li>
+</ul>
+<p>The cozy machine spec is a cross between ini files, yaml, and a custom syntax.
+The format is somewhat complex, but once understood is intuitive and flexible.
+At the top level, it looks like an ini file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="p">[</span><span class="l">metadata]</span><span class="w">
+</span><span class="w"></span><span class="c"># ...</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="p">[</span><span class="l">registers]</span><span class="w">
+</span><span class="w"></span><span class="c"># ...</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="p">[</span><span class="l">macros]</span><span class="w">
+</span><span class="w"></span><span class="c"># ...</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="p">[</span><span class="l">instructions]</span><span class="w">
+</span><span class="w"></span><span class="c"># ...</span><span class="w">
+</span></code></pre></div><h3 id="metadata">Metadata</h3>
+<p>The <strong>metadata</strong> section contains some high-level information about the
+architecture design, and is the simplest section to understand. It currently
+looks like this for z80:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="p">[</span><span class="l">metadata]</span><span class="w">
+</span><span class="w"></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">z80</span><span class="w">
+</span><span class="w"></span><span class="nt">bits</span><span class="p">:</span><span class="w"> </span><span class="m">8</span><span class="w">
+</span><span class="w"></span><span class="nt">endianness</span><span class="p">:</span><span class="w"> </span><span class="l">little</span><span class="w">
+</span><span class="w"></span><span class="nt">signedness</span><span class="p">:</span><span class="w"> </span><span class="l">twos-complement</span><span class="w">
+</span><span class="w"></span><span class="nt">cache</span><span class="p">:</span><span class="w"> </span><span class="l">none</span><span class="w">
+</span><span class="w"></span><span class="nt">pipeline</span><span class="p">:</span><span class="w"> </span><span class="l">none</span><span class="w">
+</span></code></pre></div><p>This isn&rsquo;t comprehensive, and I&rsquo;ll be adding more metadata as it becomes
+necessary. On LLVM, this sort of information is encoded into a string that looks
+something like this: <code>&quot;e-p:16:8:8-i8:8:8-i16:8:8-n8:16&quot;</code>. This string is passed
+into the <code>LLVMTargetMachine</code> base constructor in C++. I think we can do a hell
+of a lot better than that!</p>
+<h3 id="registers">Registers</h3>
+<p>The <strong>registers</strong> section describes the registers on this architecture.</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="p">[</span><span class="l">registers]</span><span class="w">
+</span><span class="w"></span><span class="nt">BC</span><span class="p">:</span><span class="w"> </span><span class="m">16</span><span class="w">
+</span><span class="w">    </span><span class="nt">B</span><span class="p">:</span><span class="w"> </span><span class="m">8</span><span class="w">
+</span><span class="w">    </span><span class="nt">C</span><span class="p">:</span><span class="w"> </span><span class="m">8</span><span class="l">; offset=8</span><span class="w">
+</span><span class="w"></span><span class="nt">DE</span><span class="p">:</span><span class="w"> </span><span class="m">16</span><span class="w">
+</span><span class="w">    </span><span class="nt">D</span><span class="p">:</span><span class="w"> </span><span class="m">8</span><span class="w">
+</span><span class="w">    </span><span class="nt">E</span><span class="p">:</span><span class="w"> </span><span class="m">8</span><span class="l">; offset=8</span><span class="w">
+</span><span class="w"></span><span class="nt">HL</span><span class="p">:</span><span class="w"> </span><span class="m">16</span><span class="w">
+</span><span class="w">    </span><span class="nt">H</span><span class="p">:</span><span class="w"> </span><span class="m">8</span><span class="w">
+</span><span class="w">    </span><span class="nt">L</span><span class="p">:</span><span class="w"> </span><span class="m">8</span><span class="l">; offset=8</span><span class="w">
+</span><span class="w"></span><span class="nt">SP</span><span class="p">:</span><span class="w"> </span><span class="m">16</span><span class="l">; stack</span><span class="w">
+</span><span class="w"></span><span class="nt">PC</span><span class="p">:</span><span class="w"> </span><span class="m">16</span><span class="l">; program</span><span class="w">
+</span></code></pre></div><p>Here we can start to see some interesting syntax and get an idea of the design
+of cozy machine specs. The contents of each section are keys, which have values,
+attributes, and children. The format looks like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">value; attributes, ...</span><span class="w">
+</span><span class="w">    </span><span class="l">children...</span><span class="w">
+</span></code></pre></div><p>In this example, we&rsquo;ve defined the BC, DE, HL, SP, and PC registers. HL, DE, and
+BC are general purpose 16-bit registers, and each can also be used as two
+separate 8-bit registers. The attributes for these sub-registers indicates their
+offsets in the parent register. We also define the stack and program registers,
+SP and PC, which use the stack and program attributes to indicate their special
+purposes.</p>
+<p>We can also describe CPU flags in this section:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="p">[</span><span class="l">registers]</span><span class="w">
+</span><span class="w"></span><span class="nt">AF</span><span class="p">:</span><span class="w"> </span><span class="m">16</span><span class="l">; special</span><span class="w">
+</span><span class="w">    </span><span class="nt">A</span><span class="p">:</span><span class="w"> </span><span class="m">8</span><span class="l">; accumulator</span><span class="w">
+</span><span class="w">    </span><span class="nt">F</span><span class="p">:</span><span class="w"> </span><span class="m">8</span><span class="l">; flags, offset 8;; flag</span><span class="w">
+</span><span class="w">        </span><span class="nt">_C</span><span class="p">:</span><span class="w">  </span><span class="m">1</span><span class="w">
+</span><span class="w">        </span><span class="nt">_N</span><span class="p">:</span><span class="w">  </span><span class="m">1</span><span class="l">; offset 1</span><span class="w">
+</span><span class="w">        </span><span class="nt">_PV</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="l">; offset 2</span><span class="w">
+</span><span class="w">        </span><span class="nt">_3</span><span class="p">:</span><span class="w">  </span><span class="m">1</span><span class="l">; offset 3, undocumented</span><span class="w">
+</span><span class="w">        </span><span class="nt">_H</span><span class="p">:</span><span class="w">  </span><span class="m">1</span><span class="l">; offset 4</span><span class="w">
+</span><span class="w">        </span><span class="nt">_5</span><span class="p">:</span><span class="w">  </span><span class="m">1</span><span class="l">; offset 5, undocumented</span><span class="w">
+</span><span class="w">        </span><span class="nt">_Z</span><span class="p">:</span><span class="w">  </span><span class="m">1</span><span class="l">; offset 6</span><span class="w">
+</span><span class="w">        </span><span class="nt">_S</span><span class="p">:</span><span class="w">  </span><span class="m">1</span><span class="l">; offset 7</span><span class="w">
+</span></code></pre></div><p>Here we introduce another feature of cozy specs with <code>F: 8; flags, offset 8;; flag</code>. Using <code>;;</code> adds those attributes to all children of this key, so each of
+_C, _N, etc have the <code>flag</code> attribute.</p>
+<p>Take note of the &ldquo;undocumented&rdquo; attribute here. Some of the metadata included
+in a spec can be applied to cozy tools. Some of it, however, is there for other
+tools to utilize. We have a good opportunity to make a machine-readable
+description of the architecture, so I&rsquo;ve opted to include a lot of extra details
+in machine specs that third parties could utilize (though there might be a
+-fno-undocumented compiler flag some day, I guess).</p>
+<h3 id="macros">Macros</h3>
+<p>The <strong>macros</strong> section is heavily tied to the instructions section. Most instruction
+sets are quite large, and I don&rsquo;t want to burden spec authors with writing out
+the entire thing. We can speed up their work by providing macros.</p>
+<p>z80 instructions have a few sets of common patterns in their encodings. Register
+groups are often represented by the same set of bits, and we can make our
+instruction set specification more concise by taking advantage of this. For
+example, here&rsquo;s a macro that we can use for instructions that can use either the
+BC, DE, HL, or SP registers:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="p">[</span><span class="l">macros]</span><span class="w">
+</span><span class="w"></span><span class="nt">reg_BCDEHLSP</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">BC</span><span class="p">:</span><span class="w"> </span><span class="m">00</span><span class="w">
+</span><span class="w">    </span><span class="nt">DE</span><span class="p">:</span><span class="w"> </span><span class="m">01</span><span class="w">
+</span><span class="w">    </span><span class="nt">HL</span><span class="p">:</span><span class="w"> </span><span class="m">10</span><span class="w">
+</span><span class="w">    </span><span class="nt">SP</span><span class="p">:</span><span class="w"> </span><span class="m">11</span><span class="w">
+</span></code></pre></div><p>We have the name of the macro as the top-level key, in this case <code>reg_BCDEHLSP</code>.
+We can later refer to this macro with <code>@reg_BCDEHLSP</code>. Then, we have each of the
+cases it can match on, and the binary values these correspond to when encoded in
+an instruction.</p>
+<h3 id="instructions">Instructions</h3>
+<p>The instructions section brings everything together and defines the actual
+instructions available on this architecture. Instructions can be organized into
+groups at the spec author&rsquo;s pleasure, which can be referenced by derivative
+architectures. Here we can take a look at the &ldquo;load&rdquo; group:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="p">[</span><span class="l">instructions]</span><span class="w">
+</span><span class="w"></span><span class="nt">.load</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">ld</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">@reg_BCDEHLSP, @imm[16]</span><span class="p">:</span><span class="w"> </span><span class="m">00</span><span class="w"> </span><span class="l">$1 0001 $2</span><span class="w">
+</span></code></pre></div><p>On z80, the <code>ld</code> instruction is similar to the <code>mov</code> instruction on Intel
+architectures. It assigns the second argument to the first. This could be used
+to assign registers to each other (e.g. <code>ld a, b</code> to set A = B), to set
+registers to constants, and so on. Our example here uses our macro from earlier
+to match instructions like this:</p>
+<pre><code>ld hl, 0x1234
+</code></pre>
+<p>The value for this key may reference the arguments with variables. $1 here
+equals <code>10</code>, from the macro. The <code>imm</code> built-in is implemented in C to match
+constants and provides $2. An assembler could use this information to assemble
+our example instruction into this machine code:</p>
+<pre><code>00100001 00110100 00010010
+</code></pre>
+<p>Which will load HL with the value 0x1234 when executed.</p>
+<h3 id="lots-more-metadata">Lots more metadata</h3>
+<p>Now that we have the basics down, let&rsquo;s dive into some deeper details. Cozy
+specs are designed to provide most of the information the <em>entire toolchain</em>
+needs to support an architecture. The information we have so far could be used
+to generate assemblers and disassemblers, but I want this file to be able to
+generate things like optimizers as well. You can add the necessary metadata to
+each instruction by utilizing attributes.</p>
+<p>Consider the z80 instruction LDIR, which stands for
+&ldquo;load/decrement/increment/repeat&rdquo;. This instruction is used for memcpy
+operations. To use it, you set the HL register to a source address, the DE
+register to a destination address, and BC to a length. This instruction looks
+like this in the spec:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">ldir</span><span class="p">:</span><span class="w"> </span><span class="m">11101101</span><span class="w"> </span><span class="m">10110000</span><span class="l">; uses[HL, DE, BC], \</span><span class="w">
+</span><span class="w">    </span><span class="l">affects[HL[+BC], DE[+BC], BC[0]], \</span><span class="w">
+</span><span class="w">    </span><span class="l">flags[_H:0,_N:0,_PV:0], cycles[16 + BC * 5]</span><span class="w">
+</span></code></pre></div><p>That&rsquo;s a lot of attributes! The purpose of these attributes are to give the
+toolchain insights into the registers this instruction uses, its side effects,
+and how fast it is. These attributes can help us compare the efficiency of
+different approaches and understand the how the state of registers evolves
+during a function, which leads to all sorts of useful optimizations.</p>
+<p>The <code>affects</code> attribute, for example, tells us how each register is affected by
+this instruction. We can see that after this instruction, HL and DE will have
+had BC added to them, and BC will have been set to 0. We can make all sorts of
+optimizations based on this knowledge. Here are some examples:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">char</span> <span class="o">*</span><span class="n">dest</span><span class="p">,</span> <span class="o">*</span><span class="n">src</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+<span class="n">memcpy</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+<span class="n">src</span> <span class="o">+=</span> <span class="n">len</span><span class="p">;</span>
+</code></pre></div><p>The compiler can assign <code>src</code> to HL, <code>dest</code> to DE, and <code>len</code> to BC. We can then
+optimize out the final statement entirely because we know that the LDIR
+instruction will have already added BC to HL for us.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">char</span> <span class="o">*</span><span class="n">dest</span><span class="p">,</span> <span class="o">*</span><span class="n">src</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+<span class="n">memcpy</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+<span class="kt">int</span> <span class="n">foobar</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</code></pre></div><p>In this case, the register allocator can just assign BC to <code>foobar</code> and avoid
+initializing it because we know it&rsquo;s already going to be zero. Many other
+optimizations are made possible when we are keeping track of the side effects of
+each instruction.</p>
+<h2 id="next-steps">Next steps</h2>
+<p>I&rsquo;ve iterated over this spec design for a while now, and I&rsquo;m pretty happy with
+it. I would love to hear your feedback. Assuming that this looks good, my next
+step is writing more specs, and a tool that parses and compiles them to C. These
+C files are going to be linked into <code>libcozyspec</code>, which will provide an API to
+access all of this metadata from C. It will also include an instruction matcher,
+which will be utilized by the next step - writing the assembler.</p>
+<p>The assembler is going to take a while, because I don&rsquo;t want to go the gas route
+of making a half-baked assembler that&rsquo;s more useful for compiling the C
+compiler&rsquo;s output than for anything else. I want to make an assembler that
+assembly programmers would <em>want</em> to use.</p>
+<p>I have not yet designed an intermediate bytecode for the compiler to use, but
+one will have to be made. The machine spec will likely change somewhat to
+accommodate this. Some of the conversion from internal bytecode to target
+assembly can likely be inferred from metadata, but some will have to be done
+manually for each architecture.</p>
+<p><a href="https://sr.ht/7_Pe.txt">Here&rsquo;s the entire z80 spec</a> I&rsquo;ve been working on, for
+your reading pleasure.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Talks on Drew DeVault&#39;s blog</title>
+    <link>./talks.html</link>
+    <description>Recent content in Talks on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator><atom:link href="./talks/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The FOSS contributor&#39;s mindset</title>
+      <link>./talks/foss-contributors-mindset.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>./talks/foss-contributors-mindset.html</guid>
+      <description>Abstract
+ Many people use free software, and a fraction of them have dipped their toes into contributing - publishing their own projects, or contributing to one or two. Too few, however, have completely grokked the opportunities the expansive free software ecosystem offers to us.
+This talk will discuss how to contribute to a wider variety of projects, introduce useful tools for quickly coming to grips with a foreign codebase, and explain the mindset that these tools help to cultivate.</description>
+    </item>
+    
+  </channel>
+</rss>

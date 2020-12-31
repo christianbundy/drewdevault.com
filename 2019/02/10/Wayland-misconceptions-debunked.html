@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Wayland misconceptions debunked</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Wayland misconceptions debunked
+  <small>
+    <span class="date">February 10, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>This article has been on my backburner for a while, but it seems Wayland FUD is
+making the news again recently, so I&rsquo;ve bumped up the priority a bit. For those
+new to my blog, I am the maintainer of
+<a href="https://github.com/swaywm/wlroots">wlroots</a>, a library which implements much of
+the functionality required of a Wayland compositor and is arguably the single
+most influential project in Wayland right now; and <a href="https://swaywm.org">sway</a>, a
+popular Wayland compositor which is nearing version 1.0. Let&rsquo;s go over some of
+the common misconceptions I hear about Wayland and why they&rsquo;re wrong. Feel free
+to pick and choose the misconceptions you believe to read and disregard the
+rest.</p>
+<p>The art of hating Wayland has become a cult affair. We don&rsquo;t need to put
+ourselves into camps at war. Please try not to read this article through the
+lens of anger.</p>
+<h3 id="wayland-isnt-more-secure-look-at-this-keylogger">Wayland isn&rsquo;t more secure, look at this keylogger!</h3>
+<p>There is an <a href="https://github.com/Aishou/wayland-keylogger">unfortunate GitHub
+project</a> called &ldquo;Wayland keylogger&rdquo;
+whose mode of operation is using <code>LD_PRELOAD</code> to intercept calls to the
+libwayland shared library and record keypresses from it. The problem with this
+&ldquo;critique&rdquo; is stated in the <code>README.md</code> file, though most don&rsquo;t read past the
+title of the repository. Wayland is only <em>one part</em> of an otherwise secure
+system. Using <code>LD_PRELOAD</code> is effectively equivalent to rewriting client
+programs to log keys themselves, and any program which is in a position to do
+this has already won. If I rephrased this as &ldquo;Wayland can be keylogged, assuming
+the attacker can sneak some evil code into your .bashrc&rdquo;, the obviousness of
+this truth should become immediately apparent.</p>
+<p>Some people have also told me that they can log keys by opening <code>/dev/input/*</code>
+files and reading input events. They&rsquo;re right! Try it yourself: <code>sudo libinput debug-events</code>. The catch should also be immediately obvious: ask
+yourself why this needs to be run with <code>sudo</code>.</p>
+<h3 id="wayland-doesnt-support-screenshotscapture">Wayland doesn&rsquo;t support screenshots/capture!</h3>
+<p>The <a href="https://github.com/wayland-project/wayland/blob/master/protocol/wayland.xml">core Wayland protocol</a> does not define a mechanism for taking
+screenshots. Here&rsquo;s another thing it doesn&rsquo;t define: how to open application
+windows, like gedit and Firefox. The Wayland protocol is very conservative and
+general purpose, and is built with use-cases other than desktop systems in mind.
+To this end it only implements the lowest common denominator, and leaves the
+rest to protocol extensions. There is a process for defining, implementing,
+maturing, and standardizing these extensions, though the last part is in need of
+improvements - which are under discussion.</p>
+<p>There are two protocols for the purpose of screenshots and screen recording,
+which are developed by wlroots and supported by a strong majority of Wayland
+compositors: <a href="https://github.com/swaywm/wlroots/blob/master/protocol/wlr-screencopy-unstable-v1.xml">screencopy</a> and
+<a href="https://github.com/swaywm/wlroots/blob/master/protocol/wlr-export-dmabuf-unstable-v1.xml">dmabuf-export</a>, respectively for copying pixels (best for
+screenshots) and exporting DMA buffers (best for real-time video capture).</p>
+<p>There are two approaches to this endorsed by different camps in Wayland: these
+Wayland protocols, and a dbus protocol based on Pipewire. Progress is being made
+on making these approaches talk to each other via <a href="https://github.com/emersion/xdg-desktop-portal-wlr">xdg-desktop-portal</a>,
+which will make just about every client and compositor work together.</p>
+<h3 id="wayland-doesnt-have-a-secondary-clipboard">Wayland doesn&rsquo;t have a secondary clipboard!</h3>
+<p>Secondary clipboard support (aka primary selection) was first implemented as
+<a href="https://github.com/swaywm/wlroots/blob/master/protocol/gtk-primary-selection.xml">gtk-primary-selection</a> and was recently standardized as
+<a href="https://github.com/wayland-project/wayland-protocols/blob/master/unstable/primary-selection/primary-selection-unstable-v1.xml">wp-primary-selection</a>. It is supported by nearly all Wayland
+compositors and clients.</p>
+<h3 id="wayland-doesnt-support-clipboard-managers">Wayland doesn&rsquo;t support clipboard managers!</h3>
+<p>See <a href="https://github.com/bugaevc/wl-clipboard">wl-clipboard</a></p>
+<h3 id="wayland-isnt-suitable-for-embedded-devices">Wayland isn&rsquo;t suitable for embedded devices!</h3>
+<p>Some people argue that Wayland isn&rsquo;t supported on embedded devices or require
+proprietary blobs to work. This is <em>very</em> untrue. Firstly, Wayland is a
+protocol: the <em>implementations</em> are the ones that need support from drivers, and
+a Wayland implementation could be written for basically any driver. You could
+implement Wayland by writing Wayland protocol messages on pieces of paper,
+passing them to your friend in class, and having them draw your window on their
+notebook with a pencil.</p>
+<p>That being said, this is also untrue of the implementations. wlroots, which
+contains the most popular Wayland rendering backend, implements KMS+DRM+GBM,
+which is supported by all open source graphics drivers, and uses GLESv2, which
+is the most broadly supported graphics implementation, including on embedded
+(which is what the &ldquo;E&rdquo; stands for) and most older hardware. For ancient
+hardware, writing an fbdev backend is totally possible and I&rsquo;d merge it in
+wlroots if someone put in the time. Writing a more modern KMS+DRM+GBM
+implementation for that hardware is equally possible.</p>
+<h3 id="wayland-doesnt-have-network-transparency">Wayland doesn&rsquo;t have network transparency!</h3>
+<p>This is actually true! But it&rsquo;s not as bad as it&rsquo;s made out to be. Here&rsquo;s why:
+X11 forwarding works on Wayland.</p>
+<p>Wait, what? Yep: all mainstream desktop Wayland compositors have support for
+<strong>Xwayland</strong>, which is an implementation of the X11 server which translates X11
+to Wayland, for backwards compatibility. X11 forwarding works with it! So if you
+use X11 forwarding on Xorg today, your workflow will work on Wayland unchanged.</p>
+<p>However, Wayland itself is not network transparent. The reason for this is that
+some protocols rely on file descriptors for transferring information quickly or
+in bulk. One example is GPU buffers, so that the Wayland compositor can render
+clients without copying data on the GPU - which improves performance
+dramatically. However, little about Wayland is inherently network <em>opaque</em>.
+Things like sending pixel buffers to the compositor are already abstracted on
+Wayland and a network-backed implementation could be easily made. The problem is
+that no one seems to really care: all of the people who want network
+transparency drank the anti-Wayland kool-aid instead of showing up to put the
+work in. If you want to implement this, though, we&rsquo;re here and ready to support
+you! Drop by the wlroots <a href="https://webchat.freenode.net/?channels=sway-devel">IRC channel</a> and we&rsquo;re prepared to help
+you implement this.</p>
+<h3 id="wayland-doesnt-support-remote-desktop">Wayland doesn&rsquo;t support remote desktop!</h3>
+<p>This one is also true, but work is ongoing. Several of the pieces are in place:
+screen capture and keyboard simulation are there. If an interested developer
+wants to add pointer device simulation and tie it all together with librdesktop,
+that would be a great boon to the Wayland ecosystem. <a href="https://webchat.freenode.net/?channels=sway-devel">We&rsquo;re waiting to
+help!</a></p>
+<h3 id="wayland-requires-client-side-decorations">Wayland requires client side decorations!</h3>
+<p>This was actually true for a long time, but there was deep contention in the
+Wayland ecosystem over this matter. We fought long and hard over this and we now
+have a protocol for negotiating client- vs server-side decorations, which is now
+fairly broadly supported, including among some of its opponents. You&rsquo;re welcome.</p>
+<h3 id="wayland-doesnt-support-hotkey-daemons">Wayland doesn&rsquo;t support hotkey daemons!</h3>
+<p>This is a feature, not a bug, but you&rsquo;re free to disagree once you hear the
+rationale. There are lots of problems with the idea of hotkey daemons as it
+exists on X. What if there&rsquo;s a conflict between several clients who want the
+same hotkey? What if the user wants to pick a different hotkey? On top of this,
+designing a protocol carefully to avoid keylogging concerns makes it more
+difficult still.</p>
+<p>To this end, I&rsquo;ve been encouraging client developers who want hotkeys to instead
+use some kind of IPC mechanism and a control binary. For example, <code>mako</code>, a
+notification daemon, allows you to dismiss notifications by running the <code>makoctl dismiss</code> command. Users are then encouraged to use the compositor&rsquo;s own
+keybinding facilities to execute this command. This is more flexible even
+outside of keybinding - the user might want to execute this behavior through a
+script, too.</p>
+<p>Still, if you <em>really</em> want hotkeys, you should start the discussion for
+standardizing a protocol. It will be an uphill battle but I believe that a
+protocol which addresses everyone&rsquo;s concerns is theoretically possible. <em>You</em>
+have to step up, though: no one working on Wayland today seems to care. We are
+mostly volunteers working for free in our spare time.</p>
+<h3 id="wayland-doesnt-support-nvidia">Wayland doesn&rsquo;t support Nvidia!</h3>
+<p>Actually, Nvidia doesn&rsquo;t support us. There are three standard APIs which are
+implemented by all graphics drivers in the Linux kernel: DRM (display resource
+management), KMS (kernel mode setting), and GBM (generic buffer management). All
+three are necessary for most Wayland compositors. Only the first two are
+implemented by the Nvidia proprietary driver. In order to support Nvidia,
+Wayland compositors need to add code resembling this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">if</span> <span class="p">(</span><span class="n">nvidia</span> <span class="n">proprietary</span> <span class="n">driver</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* several thousand lines of code */</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="cm">/* several thousand lines of code */</span>
+<span class="p">}</span>
+</code></pre></div><p>That&rsquo;s terrible! On top of that, we cannot debug the proprietary driver, we
+cannot send fixes upstream, and we cannot read the code to understand its
+behavior. The mesa code (where much of the important code for many drivers
+lives) is a frequent object of study among Wayland compositor developers. We
+cannot do this with the proprietary drivers, and it doesn&rsquo;t even implement the
+APIs it needs to. They claim to be working on a replacement for GBM which they
+hope will satisfy everyone&rsquo;s concerns, but 52 commits in 3 years with over a
+year of inactivity isn&rsquo;t a great sign.</p>
+<p>To boot, Nvidia is a bad actor on Linux. Compare the talks at FOSDEM 2018
+from the <a href="https://archive.fosdem.org/2018/schedule/event/nouveau/">nouveau developers</a> (the open source Nvidia driver) and the
+<a href="https://archive.fosdem.org/2018/schedule/event/amd_graphics/">AMDGPU developers</a> (the <em>only</em><sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> AMD driver - also open source). The
+Nouveau developers discuss all of the ways that Nvidia makes their lives
+difficult, up to and including <em>signed firmwares</em>. AMDGPU instead talks about
+the process of upstreaming their driver, discuss their new open source Vulkan
+driver, and how the community can contribute - and this was presented by paid
+AMD staff. I met Intel employees at XDC who were working on a continuous
+integration system wherein Intel offers a massive Intel GPU farm to Mesa
+developers free-of-charge for working on the open source driver. Nvidia is
+clearly a force for bad on the Linux scene and for open source in general, and
+the users who reward this by spending oodles of cash on their graphics cards are
+not exactly in my good graces.</p>
+<p>So in short, people asking for Nvidia proprietary driver support are asking the
+wrong people to spend hundreds of hours working for free to write and maintain
+an implementation for <em>one</em> driver which represents a harmful force on the Linux
+ecosystem and a headache for developers trying to work with it. With respect, my
+answer is no.</p>
+<h3 id="wayland-doesnt-support-gaming">Wayland doesn&rsquo;t support gaming!</h3>
+<p>First-person shooters, among other kinds of games, require &ldquo;locking&rdquo; the pointer
+to their window. This requires <a href="https://github.com/wayland-project/wayland-protocols/blob/master/unstable/pointer-constraints/pointer-constraints-unstable-v1.xml">a protocol</a>, which was
+standardized in 2015. Adoption has been slower, but it landed in wlroots several
+months ago and support was added to sway a few weeks ago.</p>
+<h3 id="in-conclusion">In conclusion</h3>
+<p>At some point, some of these things have been true. Some have never been true.
+It takes time to replace a 30-year incumbent. To be fair, some of these points
+are true on GNOME and KDE, but none are inherently problems with the Wayland
+protocol. wlroots is a dominating force in the Wayland ecosystem and the tide is
+clearly moving our way.</p>
+<p>Another thing I want to note is that Xorg still works. If you find your needs
+aren&rsquo;t met by Wayland, just keep using X! We won&rsquo;t be offended. I&rsquo;m not trying
+to force you to use it. Why you heff to be mad?</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>*actively maintained <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

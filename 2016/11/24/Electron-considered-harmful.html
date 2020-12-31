@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Electron considered harmful</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Electron considered harmful
+  <small>
+    <span class="date">November 24, 2016</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Yeah, I know that &ldquo;considered harmful&rdquo; essays are allegedly <a href="http://meyerweb.com/eric/comment/chech.html">considered
+harmful</a>. If it surprises you that
+I&rsquo;m writing one, though, you must be a new reader. Welcome! Let&rsquo;s get started.
+If you&rsquo;re unfamiliar with Electron, it&rsquo;s some hot new tech that lets you make
+desktop applications with HTML+CSS+JavaScript. It&rsquo;s basically a chromeless web
+browser with a Node.js backend and a Chromium-based frontend. What follows is
+the rant of a pissed off Unix hacker, you&rsquo;ve been warned.</p>
+<p>As software engineers we have a responsibility to pick the <em>right</em> tools for the
+job. In fact, that&rsquo;s the <em>most important</em> choice we have to make when we start a
+project. When you choose Electron you get:</p>
+<ul>
+<li>An entire copy of Chromium you&rsquo;ll be shipping with your app</li>
+<li>An interface that looks and feels nothing like the rest of the user&rsquo;s OS</li>
+<li>One of the slowest, least memory efficient, and most inelegant GUI application
+platforms out there (remember, we <em>tolerate</em> frontend web development because
+we have no choice, not because it is by any means <em>good</em>)</li>
+</ul>
+<p>Let&rsquo;s go over some case studies.</p>
+<p><strong><a href="https://github.com/mifi/lossless-cut">lossless-cut</a></strong> is an Electron app that
+gives you a graphical UI for <em>two ffmpeg flags</em>. Seriously, the flags in
+question are -ss and -t. No really, that&rsquo;s <em><a href="https://github.com/mifi/lossless-cut/blob/master/src/ffmpeg.js#L46">literally all it
+does</a></em>. It
+doesn&rsquo;t even use ffmpeg to decode the video preview in the app, it&rsquo;s limited to
+the codecs chromium supports. It also ships its own ffmpeg, so it has the
+industry standard video decoding tool <em>right there</em> and doesn&rsquo;t use it to render
+video. For the price of 200 extra MiB of disk space and an entire Chromium process
+in RAM and on your CPU, you get a less capable GUI that saves you from having to
+type the -ss and -t flags yourself.</p>
+<p><strong><a href="http://1clipboard.io/">1Clipboard</a></strong> is a clipboard manager. In Electron. A
+<em>clipboard manager</em>. In order to show you <em>a list of things you&rsquo;ve copied</em>, it
+uses <em>an entire bundled copy of Chromium</em>. Also note that despite the promises
+of Electron making cross platform development easy, it doesn&rsquo;t support Linux.</p>
+<p><strong><a href="https://getcollectie.com/">Collectie</a></strong> is a&hellip; fancy bookmark manager, I
+guess? Another one that fails to get the cross platform value add from Electron,
+this only supports OS X (or is it macOS). For only $10 bucks you get to organize
+your shit into folders. Or you could just open the Finder for free and get a
+native UX to boot.</p>
+<p>This is a <a href="https://hyper.is/">terminal</a> written with Electron. On the landing
+page they say &ldquo;# A terminal emulator 100% based on JavaScript, HTML, and CSS&rdquo;
+like they&rsquo;re proud of it. They&rsquo;ve taken one of the most lightweight and
+essential tools on your computer and bloated it by orders of magnitude. Why the
+fuck would you want to render Google in your god damn terminal emulator? Bonus:
+also not cross platform.</p>
+<p>This is not to mention the dozens of companies that have taken their websites
+and crammed them into a shitty electron app and called it their desktop app.
+Come on guys!</p>
+<p>By the way, if you&rsquo;re the guy who&rsquo;s going to leave a comment about how this blog
+post introduced you to a bunch of interesting apps you&rsquo;re going to install now,
+I hate you.</p>
+<h2 id="electron-enables-lazy-developers-to-write-garbage">Electron enables lazy developers to write garbage</h2>
+<p>Let me be clear about this: JavaScript sucks. It&rsquo;s not the worst, but it&rsquo;s also
+not by any means good. ES6 is a really great step forward and I&rsquo;m thrilled about
+how much easier it&rsquo;s going to be to write JavaScript, but it&rsquo;s still JavaScript
+underneath the syntactic sugar. We use it because we have no choice (people who
+know more than just JavaScript know this). The object model is whack and the
+loose typing is whack and the DOM is super whack.</p>
+<p>When Node.js happened, a bunch of developers who never bothered to learn more
+than JavaScript for their frontend work suddenly could write their crappy code
+on the backend, too. Now this is happening to desktop applications. The reason
+people choose Electron is because they are <em>too lazy</em> to learn the right tools
+for the job. This is the <em>worst</em> quality a developer can have. You&rsquo;re an
+engineer, for the love of God! Fucking act like one! Do they build square
+airplanes so they don&rsquo;t have to learn about aerodynamics, then just throw on an
+extra ten engines to make up for it? NO!</p>
+<p>For the love of God, learn something else. Learn how to use GTK or Qt. Maybe Xwt
+is more up your alley. How about GNOME&rsquo;s Vala thing? <em>Learn another programming
+language</em>. Learn Python or C/C++ or C#. Fun fact: it&rsquo;ll make your JavaScript
+better, and once you have it in your toolbox you can make more educated
+decisions on the appropriate tool to use when you face your next problem. Hint:
+it&rsquo;s not Electron.</p>
+<h2 id="some-electron-apps-dont-suck">Some Electron apps don&rsquo;t suck</h2>
+<p>For some use-cases Electron is a reasonable choice.</p>
+<ul>
+<li><a href="https://code.visualstudio.com/">Visual Studio Code</a>, because it&rsquo;s a full
+blown IDE with a debugger and plugins and more. It&rsquo;s already gonna be
+bloated.</li>
+<li><a href="http://www.soundnodeapp.com/">Soundnode</a>, because it&rsquo;s not like any other
+music service&rsquo;s app obeys your OS&rsquo;s UI conventions</li>
+</ul>
+<p>Uh, that&rsquo;s it. That&rsquo;s the entire list.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

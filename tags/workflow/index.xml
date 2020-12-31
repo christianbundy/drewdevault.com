@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>workflow on Drew DeVault&#39;s blog</title>
+    <link>./tags/workflow.html</link>
+    <description>Recent content in workflow on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 20 Apr 2020 00:00:00 +0000</lastBuildDate><atom:link href="./tags/workflow/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Configuring aerc for git via email</title>
+      <link>./2020/04/20/Configuring-aerc-for-git.html</link>
+      <pubDate>Mon, 20 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/04/20/Configuring-aerc-for-git.html</guid>
+      <description>I use aerc as my email client (naturally — I wrote it, after all), and I use git send-email to receive patches to many of my projects. I designed aerc specifically to be productive for this workflow, but there are a few extra things that I use in my personal aerc configuration that I thought were worth sharing briefly. This blog post will be boring and clerical, feel free to skip it unless it&amp;rsquo;s something you&amp;rsquo;re interested in.</description>
+    </item>
+    
+  </channel>
+</rss>

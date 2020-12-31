@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>hack on Drew DeVault&#39;s blog</title>
+    <link>./tags/hack.html</link>
+    <description>Recent content in hack on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 30 Oct 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/hack/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>An old-school shell hack on a line printer</title>
+      <link>./2019/10/30/Line-printer-shell-hack.html</link>
+      <pubDate>Wed, 30 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/10/30/Line-printer-shell-hack.html</guid>
+      <description>It&amp;rsquo;s been too long since I last did a good hack, for no practical reason other than great hack value. In my case, these often amount to a nostalgia for an age of computing I wasn&amp;rsquo;t present for. In a recent bid to capture more of this nostalgia, I recently picked up a dot matrix line printer, specifically the Epson LX-350 printer. This one is nice because it has a USB port, so I don&amp;rsquo;t have to break out my pile of serial cable hacks to get it talking to Linux 😁</description>
+    </item>
+    
+    <item>
+      <title>Redirecting stderr of a running process</title>
+      <link>./2018/05/04/Redirecitng-stderr-of-running-process.html</link>
+      <pubDate>Fri, 04 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/05/04/Redirecitng-stderr-of-running-process.html</guid>
+      <description>During the KDE sprint in Berlin, Roman Gilg leaned over to me and asked if I knew how to redirect the stderr of an already-running process to a file. I Googled it and found underwhelming answers using strace and trying to decipher the output by reading the write syscalls. Instead, I thought a gdb based approach would work better, and after putting the pieces together Roman insisted I wrote a blog post on the topic.</description>
+    </item>
+    
+  </channel>
+</rss>

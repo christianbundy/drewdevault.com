@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>wio on Drew DeVault&#39;s blog</title>
+    <link>./tags/wio.html</link>
+    <description>Recent content in wio on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 01 May 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/wio/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Announcing Wio: A clone of Plan 9&#39;s Rio for Wayland</title>
+      <link>./2019/05/01/Announcing-wio.html</link>
+      <pubDate>Wed, 01 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/05/01/Announcing-wio.html</guid>
+      <description>For a few hours here and there over the past few months, I&amp;rsquo;ve been working on a side project: Wio. I&amp;rsquo;ll just let the (3 minute) screencast do the talking first:
+
+Note: this video begins with several seconds of grey video. This is normal.
+In short, Wio is a Wayland compositor based on wlroots which has a similar look and feel to Plan 9&amp;rsquo;s Rio desktop. It works by running each application in its own nested Wayland compositor, based on Cage - yet another wlroots-based Wayland compositor.</description>
+    </item>
+    
+  </channel>
+</rss>

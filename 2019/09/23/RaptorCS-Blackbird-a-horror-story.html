@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>RaptorCS POWER9 Blackbird PC review</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  RaptorCS POWER9 Blackbird PC review
+  <small>
+    <span class="date">September 23, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p><strong>November 2018</strong>: Ordered <a href="https://www.raptorcs.com/content/BK1B01/intro.html">Basic Blackbird
+Bundle</a> w/32 GB RAM:
+$1,935.64</p>
+<p><strong>Update 2019-12-23</strong>: This article was originally titled &ldquo;RaptorCS POWER9
+Blackbird PC: An expensive mistake&rdquo;. Please read the follow-up article,
+published 2019-10-10:
+<a href="https://drewdevault.com/2019/10/10/RaptorCS-redemption.html">RaptorCS&rsquo;s redemption: the POWER9 machine works</a></p>
+<p><strong>June 2019</strong></p>
+<p>Order ships, and arrives without RAM. It had been long enough that I didn&rsquo;t
+realize the order had only been partially fulfilled, so I order some RAM from
+the <a href="https://wiki.raptorcs.com/wiki/POWER9_Hardware_Compatibility_List/Memory">list of recommended chips</a> ($338.40), along with the other necessities
+that I didn&rsquo;t purchase from Raptor: a case ($97.99) and a PSU ($68.49), and grab
+some hard drives I have lying around. Total cost: about $2,440. Worth it to get
+POWER9 builds working on builds.sr.ht!</p>
+<p>I carefully put everything together, consulting the manual at each step, plug in
+a display, and turn it on. Lights come on, things start whizzing, and the screen
+comes to life - and promptly starts boot looping.</p>
+<p><strong>June 27th</strong></p>
+<p>Support ticket created. What&rsquo;s going on with my board?</p>
+<p><strong>June 28th</strong></p>
+<p>Support gets back to me the next day with a suggestion which is unrelated to the
+problem, but no matter - I spoke with volunteers in the IRC channel a few hours
+earlier and we found out that - whoops! - I hadn&rsquo;t connected the CPU power to
+the motherboard. This is the end of the PEBKAC errors, but not the end of the
+problems. The machine gets further ahead in the boot - almost to &ldquo;petitboot&rdquo;,
+and then the display dies and the machine reveals no further secrets.</p>
+<p>I sent an update to the support team.</p>
+<p><strong>July 1st</strong></p>
+<blockquote>
+<p>We have normally only seen this type of failure when there is a RAM-related
+fault, or if the PSU is underpowered enough that bringing the CPUs online at
+full power causes a power fault and immediate safety power off.</p>
+<p>Can you watch the internal lights while the system is booting, and see if the
+power LED cluster immediately changes from green to orange as the system stops
+responding over SSH?</p>
+</blockquote>
+<p>The IRC channel suspects this is not related to the problem. Regardless, I reply
+a few hours later with two videos showing the boot up process from power-out to
+display death, with the internal LEDs and the display output clearly visible.</p>
+<p><strong>July 4th</strong></p>
+<p>&ldquo;Any progress on this issue?&rdquo;, I ask.</p>
+<p><strong>July 15th</strong></p>
+<p>&ldquo;Hi guys, I&rsquo;m still experiencing this problem. If you&rsquo;re unsure of the issue I
+would like to send the board back to you for diagnosis or a refund.&rdquo;</p>
+<p><strong>July 25th</strong></p>
+<blockquote>
+<p>Sorry for the delay. Having senior support check out the videos.</p>
+<p>Thanks for writing back. We should have something for you by tomorrow during
+the day.</p>
+</blockquote>
+<p><strong>July 31st</strong></p>
+<blockquote>
+<p>Hi Drew.</p>
+<p>The videos are being reviewed this week. Thank you for sending them.</p>
+<p>Please stay tuned.</p>
+</blockquote>
+<p><strong>September 15th</strong></p>
+<p>No reply from support. I have since bought a little more hardware for
+self-diagnosis, namely the necessary pieces to connect to the two (or is it 3?)
+serial ports. I manage to get a log, which points to several failures, but none
+of them seem to be related to the problem at hand (they do indicate some network
+failures, which would explain why I can&rsquo;t log into the BMC over SSH for further
+diagnosis). And the getty is looping, so I can&rsquo;t log in on the serial console to
+explore any further.</p>
+<hr>
+<p>That was a week ago. Radio silence since.</p>
+<p>So, 10 months after I placed an order for a POWER9 machine, 3 months after I
+received it (without the RAM I purchased, no less), and over $2,500 invested&hellip;
+it&rsquo;s clear that buying the Blackbird was an expensive mistake. Maybe someday
+I&rsquo;ll get it working. If I do, I doubt the &ldquo;support&rdquo; team will have been
+involved. Currently my best bet seems to be waiting for some apparent staff
+member (the only apparent staff member) who idles in the IRC channel on Freenode
+and allegedly comes online from time to time.</p>
+<p>I&rsquo;m not alone in these problems. Here are some (anonymized) quotes I&rsquo;ve heard
+from others while trying to troubleshoot this on IRC.</p>
+<p>On support:</p>
+<blockquote>
+<p>ugh, ddevault, yeah. [Blackbird ownership] has not been a smooth experience
+for me, either.</p>
+</blockquote>
+<blockquote>
+<p>my personal theory is that they have really bad ticket software that &lsquo;loses&rsquo;
+tickets somehow</p>
+</blockquote>
+<p>On reliability:</p>
+<blockquote>
+<p>I&rsquo;ve found openbmc&rsquo;s networking to be&hellip; a bit unreliable&hellip; maybe 20% of the
+time it does not responed[sic]/does not respond fast enough to networking
+requests.</p>
+</blockquote>
+<blockquote>
+<p>yeah the vga handoff failing doesn&rsquo;t surprise me (other people here have
+reported it). but the BMC not getting a DHCP lease is odd. (well maybe not
+that odd if you look at the crumminess of the OpenBMC software stack&hellip;)</p>
+</blockquote>
+<p>So, yeah, don&rsquo;t buy from Raptor Computer Systems. It&rsquo;s too large and unwieldly
+to be an effective paper weight, either!</p>
+<hr>
+<p><strong>Erratta</strong></p>
+<p><em>2019-09-24 @ 00:19 UTC</em>: Raptor has reached out and apologized for my support
+experience. We are discussing these problems in more detail now. They have also
+issued a refund for the unshipped RAM.</p>
+<p><em>2019-09-24 @ 00:51 UTC</em>: Raptor believes the CPU to be faulty and is shipping a
+replacement. They attribute the delay to having to reach out to IBM about the
+problem, but don&rsquo;t have a satisfactory answer to why the support process failed.
+I understand it&rsquo;s being discussed internally.</p>
+<p><em>2019-09-24 @ 13:08 UTC</em>:</p>
+<blockquote>
+<p>After investigation, we are implementing new mechanisms to avoid support
+issues like the one you experienced. We now have a self-serve RMA generation
+system which would have significantly reduced your wait time, and are taking
+measures to ensure that tickets are no longer able to be ignored by front line
+support staff. We believe we have addressed the known failure modes at this
+time, and management will be keeping a close eye on the operation of the
+support system to ensure that new failure modes are handled rapidly.</p>
+</blockquote>
+<p>They&rsquo;ve tweeted this about their new self-service RMA system as well:</p>
+<blockquote>
+<p>We&rsquo;ve made it easy to submit RMA requests for defective products on our Web
+site. Simply go to your account, select the &ldquo;Submit RMA Request&rdquo; link, and
+fill out the form.  Your product will be warranty checked and, if valid, you
+will receive an RMA number and shipping address!</p>
+</blockquote>
+<p>— @RaptorCompSys via <a href="https://twitter.com/RaptorCompSys/status/1176432946670186498">Twitter</a></p>
+<p>I agree that this shows positive improvements and a willingness to continue
+making improvements in their support experience. Thanks to Raptor for taking
+these concerns seriously. I hope to have a working Blackbird system soon, and
+will publish a follow-up review when the time comes.</p>
+<p><em>2019-10-08 @ 22:30 UTC</em> A source quoted anonymously in this article asked me to
+remove their quote, after a change of heart. They feel that the attention this
+article has received has made their statement reach beyond the level of
+dissatisfaction they had with Raptor at the time.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

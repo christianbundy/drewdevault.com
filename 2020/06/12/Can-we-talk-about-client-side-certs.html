@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Can we talk about client-side certificates?</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Can we talk about client-side certificates?
+  <small>
+    <span class="date">June 12, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I&rsquo;m working on improving the means by which API users authenticate with the
+SourceHut API. Today, I was reading <a href="https://tools.ietf.org/html/rfc6749">RFC 6749</a> (OAuth2) for this purpose,
+and it got me thinking about the original OAuth spec. I recalled vaguely that it
+had the API clients actually <em>sign</em> every request, and&hellip; <a href="https://tools.ietf.org/html/rfc5849">yep, indeed it
+does</a>. This also got me thinking: what else signs requests? TLS!</p>
+<p>OAuth is very complicated. The RFC is 76 pages long, the separate bearer token
+RFC (6750) is another 18, and no one has ever read either of them. Add JSON Web
+Tokens (RFC 7519, 30 pages), too. The process is complicated and everyone
+implements it themselves — a sure way to make mistakes in a
+security-critical component. Not all of the data is authenticated, no
+cryptography is involved at any step, and it&rsquo;s easy for either party to end up
+in an unexpected state. The server has to deal with problems of revocation and
+generating a secure token itself. Have you ever met anyone who feels positively
+about OAuth?</p>
+<p>Now, take a seat. Have a cup of coffee. I want to talk about client-side
+certificates. Why didn&rsquo;t they take off? Let&rsquo;s sketch up a hypothetical TLS-based
+protocol as an alternative to OAuth.  Picture the following&hellip;</p>
+<ol>
+<li>You, an API client developer, generate a certificate authority and
+intermediate, and you upload your CA certificate to the Service Provider as
+part of your registration as a user agent.</li>
+<li>When you want a user to authorize you to access their account, you generate a
+certificate for them, and redirect them to the Service Provider&rsquo;s
+authorization page with a <abbr title="Certificate Signing Request">CSR</abbr>
+in tow. Your certificate includes, among other things, the list of authorized
+scopes for which you want to be granted access. It is already signed with
+your client CA key, or one of its intermediates.</li>
+<li>The client reviews the desired access, and consents. They are redirected back
+to your API client application, along with the signed certificate.</li>
+<li>Use this client-side certificate to authenticate your API requests. Hooray!</li>
+</ol>
+<p>Several advantages to this approach occur to me.</p>
+<ul>
+<li>You get strong encryption and authentication guarantees for free.</li>
+<li>TLS is basically the single most ironclad, battle-tested security mechanism on
+the internet, and mature implementations are available for every platform.
+Everyone implements OAuth themselves, and often poorly.</li>
+<li>Client-side certificates are stateless. They contain all of the information
+necessary to prove that the client is entitled to access.</li>
+<li>If you handle SSL termination with nginx, haproxy, etc, you can reject
+unauthorized requests before your application backend ever even sees them.</li>
+<li>The service provider can untrust the client&rsquo;s CA in a single revocation, if
+they are malicious or lose their private keys.</li>
+<li>The API client and service provider are both always certain that the process
+was deliberately initiated by the API client. No weird state tokens to carry
+through the process like OAuth uses!</li>
+<li>Lots of free features: any metadata you like, built-in expirations, API
+clients can self-organize into intermediates at their discretion, and so on.</li>
+<li>Security-concious end users can toggle a flag in their account which would, as
+part of the consent process, ask them to sign the API client&rsquo;s certificate
+themselves, before the signed certificate is returned to the API client. Then
+any API request authorized for that user&rsquo;s account has to be signed by the API
+client, the service provider, <em>and</em> the user to be valid.</li>
+</ul>
+<p>Here&rsquo;s another example: say your organization has several services, each of
+which interacts with a subset of Acme Co&rsquo;s API on behalf of their users. Your
+organization generates a single root CA, and signs up for Acme Co&rsquo;s API with it.
+Then you issue intermediate CAs to each of your services, which are <em>only</em>
+allowed to issue CSRs for the subset of scopes they require. If any service is
+compromised, it can&rsquo;t be used to get more access than it already had, and you
+can revoke just that one intermediate without affecting the rest.</p>
+<p>Even some famous downsides, such as <abbr title="Certificate Revocation
+Lists">CRLs</abbr> and <abbr title="Online Certificate Status
+Protocol">OCSP</abbr>, are mitigated here, because the system is much more
+centralized. You control all of the endpoints which will be validating
+certificates, you can just distribute revocations directly to them as soon as
+they come in.</p>
+<p>The advantages are clearly numerous. Let&rsquo;s wrap it up in a cute, Google-able
+name, write some nice tooling and helper libraries for it, and ship it!</p>
+<p>Or, maybe not. I have a nagging feeling that I&rsquo;m missing something here. It
+doesn&rsquo;t seem right that such an obvious solution would have been left on the
+table, by everyone, for decades. Maybe it&rsquo;s just that the whole certificate
+signing dance has left a bad taste in everyone&rsquo;s mouth — many of us have
+not-so-fond memories of futzing around with the awful OpenSSL CLI to generate a
+CSR. But, there&rsquo;s no reason why we couldn&rsquo;t do it better, and more streamlined,
+if we had the motivation to.</p>
+<p>There are also more use-cases for client-side certificates that seem rather
+compelling, such as an alternative to user passwords. Web browser support for
+client-side certificates totally sucks, but that is a solvable problem.</p>
+<p>For the record, I have no intention of using this approach for the SourceHut
+API. This thought simply occurred to me, and I want to hear what you think. Why
+aren&rsquo;t we using client-side certificates?</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

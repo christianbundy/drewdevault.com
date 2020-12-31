@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>nvidia on Drew DeVault&#39;s blog</title>
+    <link>./tags/nvidia.html</link>
+    <description>Recent content in nvidia on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 26 Oct 2017 00:00:00 +0000</lastBuildDate><atom:link href="./tags/nvidia/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Nvidia sucks and I&#39;m sick of it</title>
+      <link>./2017/10/26/Fuck-you-nvidia.html</link>
+      <pubDate>Thu, 26 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/10/26/Fuck-you-nvidia.html</guid>
+      <description>There&amp;rsquo;s something I need to make clear about Nvidia. Sway 1.0, which is the release after next, is not going to support the Nvidia proprietary driver, EGLStreams, or any other proprietary graphics APIs. The only supported driver for Nvidia cards will be the open source nouveau driver. I will explain why.
+Today, Sway is able to run on the Nvidia proprietary driver. This is not and has never been an officially supported feature - we&amp;rsquo;ve added a few things to try and make it easier but my stance has always been that Nvidia users are on their own for support.</description>
+    </item>
+    
+  </channel>
+</rss>

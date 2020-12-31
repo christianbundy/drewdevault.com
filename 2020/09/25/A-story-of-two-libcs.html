@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>A tale of two libcs</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  A tale of two libcs
+  <small>
+    <span class="date">September 25, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I received a bug report from Debian today, who had fed some garbage into
+<a href="https://git.sr.ht/~sircmpwn/scdoc">scdoc</a>, and it gave them a SIGSEGV back.
+Diving into this problem gave me a good opportunity to draw a comparison between
+musl libc and glibc. Let&rsquo;s start with the stack trace:</p>
+<pre><code>==26267==ERROR: AddressSanitizer: SEGV on unknown address 0x7f9925764184
+(pc 0x0000004c5d4d bp 0x000000000002 sp 0x7ffe7f8574d0 T0)
+==26267==The signal is caused by a READ memory access.
+    0 0x4c5d4d in parse_text /scdoc/src/main.c:223:61
+    1 0x4c476c in parse_document /scdoc/src/main.c
+    2 0x4c3544 in main /scdoc/src/main.c:763:2
+    3 0x7f99252ab0b2 in __libc_start_main
+/build/glibc-YYA7BZ/glibc-2.31/csu/../csu/libc-start.c:308:16
+    4 0x41b3fd in _start (/scdoc/scdoc+0x41b3fd)
+</code></pre><p>And if we pull up that line of code, we find&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">isalnum</span><span class="p">(</span><span class="n">last</span><span class="p">)</span> <span class="o">||</span> <span class="p">((</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">FORMAT_UNDERLINE</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">isalnum</span><span class="p">(</span><span class="n">next</span><span class="p">)))</span> <span class="p">{</span>
+</code></pre></div><p>Hint: p is a valid pointer. &ldquo;last&rdquo; and &ldquo;next&rdquo; are both uint32_t. The segfault
+happens in the second call to isalnum. And, the key: it can only be reproduced
+on glibc, not on musl libc. If you did a double-take, you&rsquo;re not alone. There&rsquo;s
+nothing here which could have caused a segfault.</p>
+<p>Since it was narrowed down to glibc, I pulled up the source code and went
+digging for the isalnum implementation, expecting some stupid bullshit. But
+before I get into their stupid bullshit, of which I can assure you there is <em>a
+lot</em>, let&rsquo;s briefly review the happy version. This is what the musl libc
+<code>isalnum</code> implementation looks like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">isalnum</span><span class="p">(</span><span class="kt">int</span> <span class="n">c</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">return</span> <span class="n">isalpha</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">||</span> <span class="n">isdigit</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">isalpha</span><span class="p">(</span><span class="kt">int</span> <span class="n">c</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">return</span> <span class="p">((</span><span class="kt">unsigned</span><span class="p">)</span><span class="n">c</span><span class="o">|</span><span class="mi">32</span><span class="p">)</span><span class="o">-</span><span class="sc">&#39;a&#39;</span> <span class="o">&lt;</span> <span class="mi">26</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">isdigit</span><span class="p">(</span><span class="kt">int</span> <span class="n">c</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">return</span> <span class="p">(</span><span class="kt">unsigned</span><span class="p">)</span><span class="n">c</span><span class="o">-</span><span class="sc">&#39;0&#39;</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>As expected, for any value of <code>c</code>, isalnum will never segfault. Because why the
+fuck would isalnum segfault? Okay, now, let&rsquo;s compare this to the
+<a href="https://sourceware.org/git/?p=glibc.git;a=blob;f=ctype/ctype.h;h=351495aa4feaf23993fe65afc0760615268d044e;hb=HEAD">glibc implementation</a>. When opening this header, you&rsquo;re greeted with the
+typical GNU bullshit, but let&rsquo;s trudge through and grep for isalnum.</p>
+<p>The first result is this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">enum</span>
+<span class="p">{</span>
+  <span class="n">_ISupper</span> <span class="o">=</span> <span class="n">_ISbit</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>        <span class="cm">/* UPPERCASE.  */</span>
+  <span class="n">_ISlower</span> <span class="o">=</span> <span class="n">_ISbit</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>        <span class="cm">/* lowercase.  */</span>
+  <span class="c1">// ...
+</span><span class="c1"></span>  <span class="n">_ISalnum</span> <span class="o">=</span> <span class="n">_ISbit</span> <span class="p">(</span><span class="mi">11</span><span class="p">)</span>        <span class="cm">/* Alphanumeric.  */</span>
+<span class="p">};</span>
+</code></pre></div><p>This looks like an implementation detail, let&rsquo;s move on.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">__exctype</span> <span class="p">(</span><span class="n">isalnum</span><span class="p">);</span>
+</code></pre></div><p>But what&rsquo;s <code>__exctype</code>? Back up the file a few lines&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define __exctype(name) extern int name (int) __THROW
+</span></code></pre></div><p>Okay, apparently that&rsquo;s just the prototype. Not sure why they felt the need to
+write a macro for that. Next search result&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#if !defined __NO_CTYPE
+</span><span class="cp"># ifdef __isctype_f
+</span><span class="cp"></span><span class="n">__isctype_f</span> <span class="p">(</span><span class="n">alnum</span><span class="p">)</span>
+<span class="c1">// ...
+</span></code></pre></div><p>Okay, this looks useful. What is <code>__isctype_f</code>? Back up the file now&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#ifndef __cplusplus
+</span><span class="cp"># define __isctype(c, type) \
+</span><span class="cp">  ((*__ctype_b_loc ())[(int) (c)] &amp; (unsigned short int) type)
+</span><span class="cp">#elif defined __USE_EXTERN_INLINES
+</span><span class="cp"># define __isctype_f(type) \
+</span><span class="cp">  __extern_inline int                                                         \
+</span><span class="cp">  is##type (int __c) __THROW                                                  \
+</span><span class="cp">  {                                                                           \
+</span><span class="cp">    return (*__ctype_b_loc ())[(int) (__c)] &amp; (unsigned short int) _IS##type; \
+</span><span class="cp">  }
+</span><span class="cp">#endif
+</span></code></pre></div><p>Oh&hellip;. oh dear. It&rsquo;s okay, we&rsquo;ll work through this together. Let&rsquo;s see,
+<code>__isctype_f</code> is some kind of inline function&hellip; wait, this is the else branch
+of <code>#ifndef __cplusplus</code>. Dead end. Where the fuck is isalnum <em>actually</em>
+defined? Grep again&hellip; okay&hellip; here we are?</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#if !defined __NO_CTYPE
+</span><span class="cp"># ifdef __isctype_f
+</span><span class="cp"></span><span class="n">__isctype_f</span> <span class="p">(</span><span class="n">alnum</span><span class="p">)</span>
+<span class="c1">// ...
+</span><span class="c1"></span><span class="cp"># elif defined __isctype
+</span><span class="cp"># define isalnum(c)     __isctype((c), _ISalnum) </span><span class="c1">// &lt;- this is it
+</span></code></pre></div><p>Hey, there&rsquo;s that implementation detail from earlier! Remember this?</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">enum</span>
+<span class="p">{</span>
+  <span class="n">_ISupper</span> <span class="o">=</span> <span class="n">_ISbit</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>        <span class="cm">/* UPPERCASE.  */</span>
+  <span class="n">_ISlower</span> <span class="o">=</span> <span class="n">_ISbit</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>        <span class="cm">/* lowercase.  */</span>
+  <span class="c1">// ...
+</span><span class="c1"></span>  <span class="n">_ISalnum</span> <span class="o">=</span> <span class="n">_ISbit</span> <span class="p">(</span><span class="mi">11</span><span class="p">)</span>        <span class="cm">/* Alphanumeric.  */</span>
+<span class="p">};</span>
+</code></pre></div><p>Let&rsquo;s suss out that macro real quick:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp"># include &lt;bits/endian.h&gt;
+</span><span class="cp"># if __BYTE_ORDER == __BIG_ENDIAN
+</span><span class="cp">#  define _ISbit(bit)   (1 &lt;&lt; (bit))
+</span><span class="cp"># else </span><span class="cm">/* __BYTE_ORDER == __LITTLE_ENDIAN */</span><span class="cp">
+</span><span class="cp">#  define _ISbit(bit)   ((bit) &lt; 8 ? ((1 &lt;&lt; (bit)) &lt;&lt; 8) : ((1 &lt;&lt; (bit)) &gt;&gt; 8))
+</span><span class="cp"># endif
+</span></code></pre></div><p>Oh, for fuck&rsquo;s sake. Whatever, let&rsquo;s move on and just assume this is a magic
+number. The other macro is <code>__isctype</code>, which is similar to the <code>__isctype_f</code> we
+were just looking at a moment ago. Let&rsquo;s go look at that <code>ifndef __cplusplus</code>
+branch again:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#ifndef __cplusplus
+</span><span class="cp"># define __isctype(c, type) \
+</span><span class="cp">  ((*__ctype_b_loc ())[(int) (c)] &amp; (unsigned short int) type)
+</span><span class="cp">#elif defined __USE_EXTERN_INLINES
+</span><span class="cp"></span><span class="c1">// ...
+</span><span class="c1"></span><span class="cp">#endif
+</span></code></pre></div><p>&hellip;</p>
+<p>Well, at least we have a pointer dereference now, that could explain the
+segfault. What&rsquo;s <code>__ctype_b_loc</code>?</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cm">/* These are defined in ctype-info.c.
+</span><span class="cm">   The declarations here must match those in localeinfo.h.
+</span><span class="cm">
+</span><span class="cm">   In the thread-specific locale model (see `uselocale&#39; in &lt;locale.h&gt;)
+</span><span class="cm">   we cannot use global variables for these as was done in the past.
+</span><span class="cm">   Instead, the following accessor functions return the address of
+</span><span class="cm">   each variable, which is local to the current thread if multithreaded.
+</span><span class="cm">
+</span><span class="cm">   These point into arrays of 384, so they can be indexed by any `unsigned
+</span><span class="cm">   char&#39; value [0,255]; by EOF (-1); or by any `signed char&#39; value
+</span><span class="cm">   [-128,-1).  ISO C requires that the ctype functions work for `unsigned
+</span><span class="cm">   char&#39; values and for EOF; we also support negative `signed char&#39; values
+</span><span class="cm">   for broken old programs.  The case conversion arrays are of `int&#39;s
+</span><span class="cm">   rather than `unsigned char&#39;s because tolower (EOF) must be EOF, which
+</span><span class="cm">   doesn&#39;t fit into an `unsigned char&#39;.  But today more important is that
+</span><span class="cm">   the arrays are also used for multi-byte character sets.  */</span>
+<span class="k">extern</span> <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">short</span> <span class="kt">int</span> <span class="o">**</span><span class="nf">__ctype_b_loc</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+     <span class="n">__THROW</span> <span class="n">__attribute__</span> <span class="p">((</span><span class="n">__const__</span><span class="p">));</span>
+<span class="k">extern</span> <span class="k">const</span> <span class="n">__int32_t</span> <span class="o">**</span><span class="nf">__ctype_tolower_loc</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+     <span class="n">__THROW</span> <span class="n">__attribute__</span> <span class="p">((</span><span class="n">__const__</span><span class="p">));</span>
+<span class="k">extern</span> <span class="k">const</span> <span class="n">__int32_t</span> <span class="o">**</span><span class="nf">__ctype_toupper_loc</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+     <span class="n">__THROW</span> <span class="n">__attribute__</span> <span class="p">((</span><span class="n">__const__</span><span class="p">));</span>
+</code></pre></div><p>That is just so, super cool of you, glibc. I just <em>love</em> dealing with locales.
+Anyway, my segfaulted process is sitting in gdb, and equipped with all of this
+information I wrote the following monstrosity:</p>
+<pre><code>(gdb) print ((unsigned int **(*)(void))__ctype_b_loc)()[next]
+Cannot access memory at address 0x11dfa68
+</code></pre><p>Segfault found. Reading that comment again, we see &ldquo;ISO C requires that the
+ctype functions work for &lsquo;unsigned char&rsquo; values and for EOF&rdquo;. If we
+cross-reference that with the specification:</p>
+<blockquote>
+<p>In all cases [of functions defined by ctype.h,] the argument is an int, the
+value of which shall be representable as an unsigned char or shall equal the
+value of the macro EOF.</p>
+</blockquote>
+<p>So the fix is obvious at this point. Okay, fine, my bad. My code is wrong. I
+apparently cannot just hand a UCS-32 codepoint to isalnum and expect it to tell
+me if it&rsquo;s between 0x30-0x39, 0x41-0x5A, or 0x61-0x7A.</p>
+<p>But, I&rsquo;m going to go out on a limb here: maybe isalnum should never cause a
+program to segfault no matter what input you give it. Maybe because the spec
+says you <em>can</em> does not mean you <em>should</em>. Maybe, just maybe, the behavior of
+this function should not depend on five macros, whether or not you&rsquo;re using a
+C++ compiler, the endianness of your machine, a look-up table, thread-local
+storage, and two pointer dereferences.</p>
+<p>Here&rsquo;s the musl version as a quick reminder:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">isalnum</span><span class="p">(</span><span class="kt">int</span> <span class="n">c</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">return</span> <span class="n">isalpha</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">||</span> <span class="n">isdigit</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">isalpha</span><span class="p">(</span><span class="kt">int</span> <span class="n">c</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">return</span> <span class="p">((</span><span class="kt">unsigned</span><span class="p">)</span><span class="n">c</span><span class="o">|</span><span class="mi">32</span><span class="p">)</span><span class="o">-</span><span class="sc">&#39;a&#39;</span> <span class="o">&lt;</span> <span class="mi">26</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">isdigit</span><span class="p">(</span><span class="kt">int</span> <span class="n">c</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">return</span> <span class="p">(</span><span class="kt">unsigned</span><span class="p">)</span><span class="n">c</span><span class="o">-</span><span class="sc">&#39;0&#39;</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>Bye!</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+  <p>
+  ⇒ This article is also available <a href="gemini://./2020/09/25/A-story-of-two-libcs.gmi">on gemini</a>.
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

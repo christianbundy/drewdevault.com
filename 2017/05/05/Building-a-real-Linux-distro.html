@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Building a &#34;real&#34; Linux distro</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Building a &#34;real&#34; Linux distro
+  <small>
+    <span class="date">May 5, 2017</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I recently saw a post on Hacker News: &ldquo;<a href="https://github.com/MichielDerhaeg/build-linux">Build yourself a
+Linux</a>&rdquo;, a cool project
+that guides you through building a simple Linux system. It&rsquo;s similar to Linux
+from Scratch in that it helps you build a simple Linux system for personal use.
+I&rsquo;d like to supplement this with some insight into my experience with a more
+difficult task: building a full blown Linux distribution. The result is
+<a href="http://agunix.org">agunix</a>, the &ldquo;silver unix&rdquo; system.</p>
+<p>For many years I&rsquo;ve been frustrated with every distribution I&rsquo;ve tried. Many of
+them have compelling features and design, but there&rsquo;s always a catch. The
+popular distros are stable and portable, but cons include bloat, frequent use of
+GNU, systemd, and often apt. Some more niche distros generally have good points
+but often have some combination of GNU, an init system I don&rsquo;t like, poor docs,
+dynamic linking, or an overall amateurish or incomplete design. Many of them are
+tolerable, but none have completely aligned with my desires.</p>
+<p>I&rsquo;ve also looked at not-Linux - I have plenty of beefs with the Linux kernel. I
+like the BSD kernels, but I dislike the userspaces (though NetBSD is pretty good)
+I like the microkernel design of Minix, but it&rsquo;s too unstable and has shit
+hardware support. plan9/9front has the most elegant kernel and userspace design
+ever made, but it&rsquo;s not POSIX and has shit hardware support. Though none of
+these userspaces are for me, I intend to attempt a port of the agunix userspace
+to all of their kernels at some point (a KFreeBSD port is underway).</p>
+<p>After trying a great number of distros and coming away with a kind of
+dissatisfaction unique to each one, I resolved to make a distro that embodied my
+own principles about userspace design. It turns out this is a ton of work -
+here&rsquo;s how it&rsquo;s done.</p>
+<p>Let&rsquo;s distinguish a Linux &ldquo;system&rdquo; from a Linux &ldquo;distribution&rdquo;. A Linux system
+is anything that boots up from the Linux kernel. A Linux <em>distribution</em>, on the
+other hand, is a Linux system that can be <em>distributed</em> to end users.  It&rsquo;s this
+sort of system that I wanted to build. In my opinion, there are two core
+requirements for a Linux system to become a Linux distribution:</p>
+<ol>
+<li>It has a package manager (or some other way of staying up to date)</li>
+<li>It is self-hosting (it can compile itself and all of the infrastructure runs
+on it)</li>
+</ol>
+<p>The first order of business in creating a Linux distro is to fulfill these two
+requirements. Getting to this stage is called <em>bootstrapping</em> your distribution -
+everything else can come later. To do this, you&rsquo;ll need to port your package
+manager to your current system, and start building the base packages with it.
+If your new distro doesn&rsquo;t use the same architecture or libc as your current
+system, you also need to build a cross compiler and use it for building your
+new packages.</p>
+<p>My initial approach was different - I used my cross compiler to fill up a chroot
+with software without using my package manager, hoping to later bootstrap from
+it. I used this approach on my first 3 attempts before deciding to make
+base packages on the host system instead. With this approach, I started by
+building packages that weren&rsquo;t necessarily self hosting - they used the
+host-specific cross compiler builds and such - but produced working packages for
+the new environment. I built packages for:</p>
+<ul>
+<li>my package manager</li>
+<li>musl libc</li>
+<li>bash</li>
+<li>busybox</li>
+<li>autotools</li>
+<li>make</li>
+<li>gcc (clang can&rsquo;t compile the Linux kernel)</li>
+<li>vim</li>
+</ul>
+<p>I also had to package all of the dependencies for these. Once I had a system
+that was reasonably capable of compiling arbitrary software, I transferred my
+PKGBUILDs (scripts used to build packages) to my chroot and started tweaking
+them to re-build packages from the new distro itself. This process took months to
+get completely right - there are <em>tons</em> of edge cases and corner cases. Simply
+getting this software to run in a new Linux system is only moderately difficult -
+getting a system that can build itself is <em>much harder</em>. I was successful on
+my 4th attempt, but threw it out and redid it to get a cleaner distribution with
+the benefit of hindsight. This became agunix.</p>
+<p>Once you reach this stage you can go ham on making packages for your system. The
+next step for me was graduating from a chroot to dedicated hardware. I built out
+an init system with runit and <a href="http://git.agunix.org/init/">agunix-init</a> and
+various other packages that are useful on a proper install. I also compiled a
+kernel without support for loadable modules (on par with the static linking theme
+of agunix). If you make your own Linux distribution you will probably have to
+figure out modules yourself, likely implicating something like eudev.
+Eventually, I was able to get agunix <a href="https://sr.ht/OzCq.jpg">running on my
+laptop</a>, which has now become my primary agunix dev
+machine (often via SSH from my dev desktop).</p>
+<p>The next stage for me was getting agunix.org up and running on agunix. I
+deliberately chose not to have a website until it could be hosted on agunix
+itself. I deployed agunix to a VPS, then ported nginx and put the website up.
+The rest of the infrastructure was a bit more difficult: cgit took me about 10
+packages of work, and bugzilla was about 100 packages of work. Haven&rsquo;t started
+working on mailman yet.</p>
+<p>Then begins the eternal packaging phase. At this point you&rsquo;ve successfully made
+a Linux distribution, and now you just need to fill it with packages. This takes
+<em>forever</em>. I have made 407 packages to date and I still don&rsquo;t have a desktop to
+show for it (I&rsquo;m <em>almost</em> there, just have to make a few dozen more packages
+before <a href="https://github.com/SirCmpwn/sway">sway</a> will run). At this point to have
+success you need others to buy into your ideas and start contributing - it&rsquo;s
+impossible to package everything yourself. Speaking of which, check out
+<a href="http://agunix.org">agunix.org</a> and see if you like it! I haven&rsquo;t been doing
+much marketing for this distro yet, but I do have a little bit of help. If
+you&rsquo;re interested in contributing in a new distro, we have lots of work for you
+to do!</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

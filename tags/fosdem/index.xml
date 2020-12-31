@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>fosdem on Drew DeVault&#39;s blog</title>
+    <link>./tags/fosdem.html</link>
+    <description>Recent content in fosdem on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 05 Feb 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/fosdem/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>My experiences at FOSDEM 2019</title>
+      <link>./2019/02/05/FOSDEM-recap.html</link>
+      <pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/02/05/FOSDEM-recap.html</guid>
+      <description>Currently in a plane on my way home from FOSDEM and, as seems to be a recurring pattern when I fly long distances home after attending a conference, a recap is readily flowing from my fingertips. This was my first year at FOSDEM, and I&amp;rsquo;m glad that I came. I&amp;rsquo;m already excited for next year! It was also my first year volunteering, which was equally great and another thing I expect to repeat.</description>
+    </item>
+    
+  </channel>
+</rss>

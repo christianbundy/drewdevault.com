@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>announcement on Drew DeVault&#39;s blog</title>
+    <link>./tags/announcement.html</link>
+    <description>Recent content in announcement on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 19 Aug 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/announcement/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Shell access for builds.sr.ht CI</title>
+      <link>./2019/08/19/Introducing-shell-access-for-builds.html</link>
+      <pubDate>Mon, 19 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/08/19/Introducing-shell-access-for-builds.html</guid>
+      <description>Have you ever found yourself staring at a failed CI build, wondering desperately what happened? Or, have you ever needed a fresh machine on-demand to test out an idea in? Have you been working on Linux, but need to test something on OpenBSD? Starting this week, builds.sr.ht can help with all of these problems, because you can now SSH into the build environment.
+If you didn&#39;t know, Sourcehut is the 100% open/libre software forge for hackers, complete with git and Mercurial hosting, CI, mailing lists, and more - with no JavaScript.</description>
+    </item>
+    
+    <item>
+      <title>Announcing code annotations for SourceHut</title>
+      <link>./2019/07/08/Announcing-annotations-for-sourcehut.html</link>
+      <pubDate>Mon, 08 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/07/08/Announcing-annotations-for-sourcehut.html</guid>
+      <description>Today I&amp;rsquo;m happy to announce that code annotations are now available for SourceHut! These allow you to decorate your code with arbitrary links and markdown. The end result looks something like this:
+NOTICE: Annotations were ultimately removed from sourcehut.
+SourceHut is the &#34;hacker&#39;s forge&#34;, a 100% open-source platform for hosting Git &amp;amp; Mercurial repos, bug trackers, mailing lists, continuous integration, and more. No JavaScript required!  The annotations shown here are sourced from a JSON file which you can generate and upload during your CI process.</description>
+    </item>
+    
+    <item>
+      <title>Initial pre-release of aerc: an email client for your terminal</title>
+      <link>./2019/06/03/Announcing-aerc-0.1.0.html</link>
+      <pubDate>Mon, 03 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/06/03/Announcing-aerc-0.1.0.html</guid>
+      <description>After years of painfully slow development, the aerc email client has seen a huge boost in its pace of development recently. This leads to today&amp;rsquo;s announcement: aerc 0.1.0 is now available! After my transition to working on free software full time allowed me to spend more time on more projects, I was able to invest considerably more time into aerc. Your support led us here: thank you to all of the people who donate to my work!</description>
+    </item>
+    
+    <item>
+      <title>Announcing the release of sway 1.0</title>
+      <link>./2019/03/11/Sway-1.0-released.html</link>
+      <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/03/11/Sway-1.0-released.html</guid>
+      <description>1,315 days after I started the sway project, it&amp;rsquo;s finally time for sway 1.0! I had no idea at the time how much work I was in for, or how many talented people would join and support the project with me. In order to complete this project, we have had to rewrite the entire Linux desktop nearly from scratch. Nearly 300 people worked together, together writing over 9,000 commits and almost 100,000 lines of code, to bring you this release.</description>
+    </item>
+    
+    <item>
+      <title>sr.ht, the hacker&#39;s forge, now open for public alpha</title>
+      <link>./2018/11/15/sr.ht-general-availability.html</link>
+      <pubDate>Thu, 15 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/11/15/sr.ht-general-availability.html</guid>
+      <description>I&amp;rsquo;m happy to announce today that I&amp;rsquo;m opening sr.ht (pronounced &amp;ldquo;sir hat&amp;rdquo;, or any other way you want) to the general public for the remainder of the alpha period. Though it&amp;rsquo;s missing some of the features which will be available when it&amp;rsquo;s completed, sr.ht today represents a very capable software forge which is already serving the needs of many projects in the free &amp;amp; open source software community. If you&amp;rsquo;re familiar with the project and ready to register your account, you can head straight to the sign up page.</description>
+    </item>
+    
+    <item>
+      <title>Sway 1.0-beta.1 release highlights</title>
+      <link>./2018/10/20/Sway-1.0-highlights.html</link>
+      <pubDate>Sat, 20 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/10/20/Sway-1.0-highlights.html</guid>
+      <description>1,173 days ago, I wrote sway&amp;rsquo;s initial commit, and 8,269 commits followed1, written by hundreds of contributors. What started as a side project became the most fully featured and stable Wayland desktop available, and drove the development of what has become the dominant solution for building Wayland compositors - wlroots, now the basis of 10 Wayland compositors.
+Sway 1.0-beta.1 was just released and is 100% compatible with the i3 X11 window manager.</description>
+    </item>
+    
+    <item>
+      <title>Embedding files in C programs with koio</title>
+      <link>./2018/05/29/Embedding-files-in-C.html</link>
+      <pubDate>Tue, 29 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/05/29/Embedding-files-in-C.html</guid>
+      <description>Quick blog post today to introduce a new tool I wrote: koio. This is a small tool which takes a list of files and embeds them in a C file. A library provides an fopen shim which checks the list of embedded files before resorting to the real filesystem.
+I made this tool for chopsui, where I eventually want to be able to bundle up sui markup, stylesheets, images, and so on in a statically linked chopsui program.</description>
+    </item>
+    
+    <item>
+      <title>Introducing scdoc, a man page generator</title>
+      <link>./2018/05/13/scdoc.html</link>
+      <pubDate>Sun, 13 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/05/13/scdoc.html</guid>
+      <description>A man page generator is one of those tools that I&amp;rsquo;ve said I would write for a long time, being displeased with most of the other options. For a while I used asciidoc, but was never fond of it. There are a few things I want to see in a man page generator:
+ A syntax which is easy to read and write Small and with minimal dependencies Designed with man pages as a first-class target  All of the existing tools failed some of these criteria.</description>
+    </item>
+    
+    <item>
+      <title>The future of Wayland, and sway&#39;s role in it</title>
+      <link>./2017/10/09/Future-of-sway.html</link>
+      <pubDate>Mon, 09 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./2017/10/09/Future-of-sway.html</guid>
+      <description>Today I&amp;rsquo;ve released sway 0.15-rc1, the first release candidate for the final 0.x release of sway. That&amp;rsquo;s right - after sway 0.15 will be sway 1.0. After today, no new features are being added to sway until we complete the migration to our new plumbing library, wlroots. This has been a long time coming, and I would love to introduce you to wlroots and tell you what to expect from sway 1.</description>
+    </item>
+    
+  </channel>
+</rss>

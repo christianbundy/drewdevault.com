@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>PinePhone review</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  PinePhone review
+  <small>
+    <span class="date">December 18, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p><strong>tl;dr</strong>: Holy shit! This is the phone I have always wanted. I have never been
+this excited about the mobile sector before. However: the software side is
+totally absent — phone calls are very dubious, SMS is somewhat dubious,
+LTE requires some hacks, and everything will have to be written from the ground
+up.</p>
+<p>I have a PinePhone developer edition model, which I paid for out of pocket<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>
+and which took an excruciatingly long time to arrive. When it finally arrived,
+it came with no SIM or microSD card (expected), and the eMMC had some half-assed
+version of Android on it which just boot looped without POSTing to anything
+useful<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>. This didn&rsquo;t bother me in the slightest — like any other
+computer I&rsquo;ve purchased, I planned on immediately flashing my own OS on it. My
+Linux distribution of choice for it is
+<a href="https://postmarketos.org/">postmarketOS</a>, which is basically the mobile OS I&rsquo;d
+build if I wanted to build a mobile OS.</p>
+<p>Let me make this clear: <strong>right now, there are very few people, perhaps only
+dozens, for whom this phone is the right phone, given the current level of
+software support</strong>. I am not using it as my daily driver, and I won&rsquo;t for some
+time. The only kind of person I would recommend this phone to is a developer who
+believes in the phone and wants to help build the software necessary for it to
+work.  However, it seems to me that all of the right people <em>are</em> working on the
+software end of this phone — everyone I&rsquo;d expect from the pmOS community,
+from KDE, from the kernel hackers — this phone has an unprecedented level
+of community support and the software <em>will</em> be written.</p>
+<p>So, what&rsquo;s it actually like?</p>
+<details>
+  <summary>Expand for a summary of the specs</summary>
+  <p>
+    The device is about
+    <abbr title="The thickness of a GameBoy cartridge">1 cm thick</abbr>
+    and weighs
+    <abbr
+      title="The weight of one GameBoy Color, with batteries, without cartridge"
+    >188 grams</abbr>. The screen is about 16 cm tall, of which 1.5 cm is bezel,
+    and <abbr
+      title="About the width and height of a GameBoy color, plus 1 inch of height"
+    >7.5 cm wide</abbr> (5 mm of bezel). The physical size and weight is very
+    similar to my daily driver, a Samsung Galaxy J7 Refine. It has a USB-C port,
+    which I understand can be reconfigured for DisplayPort, and a standard
+    headphone jack and speakers, both of which sound fine in my experience. The
+    screen is 720x1440, and looks about as nice as any other phone. It has
+    front- and back-facing cameras, which I've yet to get working (I understand
+    that someone has got them working at some point), plus a flash/lamp on the
+    back, and an <abbr
+      title="Note that the only values for R, G, and B that I've managed to get working are 0.0 and 1.0 each, for a total of 7 possible colors (including off)"
+    >RGB LED</abbr> on the front.
+  </p>
+  <p>
+    The eMMC is 16G and, side note, had <em>seventeen</em> partitions on it when
+    I first got the phone. 2G of RAM, 4 cores. It's not very powerful, but in my
+    experience it runs lightweight UIs (such as <a
+    href="https://swaywm.org">sway</a>) just fine. With very little effort by
+    way of power management, and with obvious power sinks left unfixed, the
+    battery lasts about 5 hours.
+  </p>
+</details>
+<p>In short, I&rsquo;m quite satisfied with it, but I&rsquo;ve never had especially strenuous
+demands of my phone. I haven&rsquo;t run any benchmarks on the GPU, but it seems
+reasonably fast and the open-source Lima driver supports GLESv2. The modem is
+supported by <a href="https://01.org/ofono">Ofono</a>, which is a telephony daemon based on
+dbus — however, I understand that we can just open <code>/dev/ttyUSB1</code> and talk
+to the modem ourselves, and I may just write a program that does this. Using
+Ofono, I have successfully spun up LTE internet, sent and received SMS messages,
+and placed and answered phone calls - though the last one without working
+audio. A friend from KDE, Bhushan Shah, is working on this and rumor has it that
+a call has successfully been placed. I have not had success with MMS, but I
+think it&rsquo;s possible. WiFi works. All of this with zero blobs and a kernel which
+is&hellip; admittedly, pretty heavily patched, but <a href="https://gitlab.com/pine64-org/linux">open
+source</a> and making its way upstream.<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></p>
+<p>Of course, no one wants to place phone calls by typing a lengthy command into
+their terminal, but that these features can be done in an annoying way means
+that it&rsquo;s feasible to write applications that do this in a convenient way. For
+my part, I have been working on some components of a mobile-friendly Wayland
+compositor, based on Sway, which I&rsquo;m calling Sway Mobile for the time being. I&rsquo;m
+not sure if Sway will actually stick around once it becomes difficult to bend to
+my will (it&rsquo;s designed for keyboard-driven operation, after all), but I&rsquo;m
+building mobile shell components which will translate nicely to any other
+wlroots-based compositors.</p>
+<p>The first of these is a simple app drawer, which I&rsquo;ve dubbed
+<a href="https://git.sr.ht/~sircmpwn/casa">casa</a>. I have a lot more stuff planned:</p>
+<ul>
+<li>A new bar/notification drawer/quick action thing</li>
+<li>A dialer &amp; call manager, maybe integrated with gnome-contacts</li>
+<li>A telephony daemon which records incoming SMS messages and pulls up the call
+manager for incoming phone calls. Idea: write incoming SMS messages into a
+Maildir.</li>
+<li>A new touch-friendly Wayland lock screen</li>
+<li>An on-screen keyboard program</li>
+</ul>
+<p>Here&rsquo;s a video showing casa in action:</p>
+<p><video
+src="https://yukari.sr.ht/casa.webm?cache-break"
+style="max-width: 50%; margin: 0 auto; display: block"
+autoplay loop muted >
+Your browser does not support webm playback. Please choose a browser which
+supports free and open standards.
+</video></p>
+<p>The latest version has 4 columns and uses the space a bit better. Also, in the
+course of this work I put together the
+<a href="https://gitlab.freedesktop.org/ddevault/fdicons">fdicons</a> library, which may be
+useful to some.</p>
+<p>I have all sorts of other small things to work on, like making audio behave
+better and improving power management. I intend to contribute these tools to
+postmarketOS upstream as a nice lightweight plug-and-play UI package you can
+choose from when installing pmOS, either improving their existing
+postmarketos-ui-sway meta-package or making something new.</p>
+<p>In conclusion: I have been waiting for this phone for years and years and years.
+I have been hoping that someone would make a phone whose hardware was compatible
+with upstream Linux drivers, and could <em>theoretically</em> be used as a daily driver
+if only the software were up to snuff. I wanted this because I knew that the
+free software community was totally capable of building the software for such a
+phone, if only the hardware existed. This is actually happening — all of
+the free software people I would hope are working on the PinePhone, are working
+on the PinePhone. And it&rsquo;s only $150! I could buy four of them for the price of
+the typical smartphone! And I just might!</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>In other words, no one paid me to or even asked me to write this review. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>I understand that the final production run of the PinePhone is going to ship with postmarketOS or something. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>The upstream kernel actually does work if you patch in the DTS, but WiFi doesn&rsquo;t work and it&rsquo;s not very stable. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

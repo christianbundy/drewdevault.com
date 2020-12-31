@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>KnightOS on Drew DeVault&#39;s blog</title>
+    <link>./tags/KnightOS.html</link>
+    <description>Recent content in KnightOS on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 27 Jan 2020 00:00:00 +0000</lastBuildDate><atom:link href="./tags/KnightOS/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>KnightOS was an interesting operating system</title>
+      <link>./2020/01/27/KnightOS-was-interesting.html</link>
+      <pubDate>Mon, 27 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/01/27/KnightOS-was-interesting.html</guid>
+      <description>KnightOS is an operating system I started writing about 10 years ago, for Texas Instruments line of z80 calculators — the TI-73, TI-83+, TI-84+, and similar calculators are supported. It still gets the rare improvements, but these days myself and most of the major contributors are just left with starry eyed empty promises to themselves that one day they&amp;rsquo;ll do one of those big refactorings we&amp;rsquo;ve been planning&amp;hellip; for 4 or 5 years now.</description>
+    </item>
+    
+    <item>
+      <title>Porting an assembler, debugger, and more to WebAssembly</title>
+      <link>./2014/11/30/Porting-an-entire-toolchain-to-the-browser-with-emscripten.html</link>
+      <pubDate>Sun, 30 Nov 2014 00:00:00 +0000</pubDate>
+      
+      <guid>./2014/11/30/Porting-an-entire-toolchain-to-the-browser-with-emscripten.html</guid>
+      <description>WebAssembly is pretty cool! It lets you write portable C and cross-compile it to JavaScript so it&amp;rsquo;ll run in a web browser. As the maintainer of KnightOS, I looked to WASM as a potential means of reducing the cost of entry for new developers hoping to target the OS.
+ Note: this article uses JavaScript to run all of this stuff in your web browser. I don&#39;t use any third-party scripts, tracking, or anything else icky.</description>
+    </item>
+    
+    <item>
+      <title>Process scheduling and multitasking in KnightOS</title>
+      <link>./2014/09/02/Process-scheduling-in-KnightOS.html</link>
+      <pubDate>Tue, 02 Sep 2014 00:00:00 +0000</pubDate>
+      
+      <guid>./2014/09/02/Process-scheduling-in-KnightOS.html</guid>
+      <description>I&amp;rsquo;m going to do some blogging about technical decisions made with KnightOS. It&amp;rsquo;s an open-source project I&amp;rsquo;ve been working on for the past four years to build an open-source Unix-like kernel for TI calculators (in assembly). It&amp;rsquo;s been a cool platform on top of which I can research low level systems concepts and I thought I&amp;rsquo;d share some of my findings with the world.
+So, first of all, what is scheduling?</description>
+    </item>
+    
+    <item>
+      <title>Hacking on your TI calculator</title>
+      <link>./2014/02/25/Hacking-on-your-TI-calculator.html</link>
+      <pubDate>Tue, 25 Feb 2014 00:00:00 +0000</pubDate>
+      
+      <guid>./2014/02/25/Hacking-on-your-TI-calculator.html</guid>
+      <description>I&amp;rsquo;ve built the KnightOS kernel, an open-source OS that runs on several TI calculator models, including the popular TI-83+ family, and recently the new TI-84+ Color Silver Edition. I have published some information on how to build your own operating sytsems for these devices, but I&amp;rsquo;ve learned a lot since then and I&amp;rsquo;m writing this blog post to include the lessons I&amp;rsquo;ve learned from other attempts.
+Prerequisites Coming into this, you should be comforable with z80 assembly.</description>
+    </item>
+    
+    <item>
+      <title>The bug that hides from breakpoints</title>
+      <link>./2014/02/02/The-worst-bugs.html</link>
+      <pubDate>Sun, 02 Feb 2014 00:00:00 +0000</pubDate>
+      
+      <guid>./2014/02/02/The-worst-bugs.html</guid>
+      <description>This is the story of the most difficult bug I ever had to solve. See if you can figure it out before the conclusion.
+Background For some years now, I&amp;rsquo;ve worked on a kernel for Texas Instruments calculators called KnightOS. This kernel is written entirely in assembly, and targets the old-school z80 processor from back in 1976. This classic processor was built without any concept of protection rings. It&amp;rsquo;s an 8-bit processor, with 150-some instructions and (in this application) 32K of RAM and 32K of Flash.</description>
+    </item>
+    
+  </channel>
+</rss>

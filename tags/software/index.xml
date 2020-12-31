@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>software on Drew DeVault&#39;s blog</title>
+    <link>./tags/software.html</link>
+    <description>Recent content in software on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sat, 06 Jun 2020 00:00:00 +0000</lastBuildDate><atom:link href="./tags/software/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Add a &#34;contrib&#34; directory to your projects</title>
+      <link>./2020/06/06/Add-a-contrib-directory.html</link>
+      <pubDate>Sat, 06 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/06/06/Add-a-contrib-directory.html</guid>
+      <description>There&amp;rsquo;s a common pattern among free- and open-source software projects to include a &amp;ldquo;contrib&amp;rdquo; directory at the top of their source code tree. I&amp;rsquo;ve seen this in many projects for many years, but I&amp;rsquo;ve seen it discussed only rarely — so here we are!
+The contrib directory is used as an unorganized (or, at best, lightly organized) bin of various useful things contributed by the community around the software, but which is not necessarily a good candidate for being a proper part of the software.</description>
+    </item>
+    
+  </channel>
+</rss>

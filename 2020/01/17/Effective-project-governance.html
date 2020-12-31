@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>A philosophy of project governance</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  A philosophy of project governance
+  <small>
+    <span class="date">January 17, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I&rsquo;ve been in the maintainer role for dozens of projects for a while now, and
+have moderated my fair share of conflicts. I&rsquo;ve also been on the other side,
+many times, as a minor contributor watching or participating in conflict within
+other projects. Over the years, I&rsquo;ve developed an approach to project governance
+which I believe is lightweight, effective, and inclusive.</p>
+<p>I hold the following axioms to be true:</p>
+<ol>
+<li>Computer projects are organized by humans, creating a social system.</li>
+<li>Social systems are fundamentally different from computer systems.</li>
+<li>Objective rules cannot be programmed into a social system.</li>
+</ol>
+<p>And the following is true of individuals within those systems:</p>
+<ol>
+<li>Project leadership is in a position to do anything they want.</li>
+<li>Project leadership will ultimately do whatever they want, even if they have
+to come up with an interpretation of the rules which justifies it.</li>
+<li>Individual contributors who have a dissonant world-view from project
+leadership will never be welcome under those leaders.</li>
+</ol>
+<p>Any effective project governance model has to acknowledge these truths. To this
+end, the simplest effective project governance model is a BDFL, which scales a
+lot further than people might expect.</p>
+<p>The BDFL (Benevolent Dictator for Life) is a term which was first used to
+describe Python&rsquo;s governance model with Guido van Rossum at the helm. The &ldquo;for
+life&rdquo; in BDFL is, in practice, until the &ldquo;dictator&rdquo; resigns from their role.
+Transfers of power either involve stepping away and letting lesser powers decide
+between themselves how to best fill the vacuum, or simply directly appointing a
+successor (or successors). In this model, a single entity is in charge —
+often the person who started the project, at first — and while they may
+delegate their responsibilities, they ultimately have the final say in all
+matters.</p>
+<p>This decision-making authority derives from the BDFL. Consequently, the
+project&rsquo;s values are a reflection of that BDFL&rsquo;s values. Conflict resolution and
+matters of exclusion or inclusion of specific people from the project is the
+direct responsibility of the BDFL. If the BDFL delegates this authority to other
+groups or project members, that authority derives from the BDFL and is exercised
+at their leisure, on their terms. In practice, for projects of a certain size,
+most if not all of the BDFL&rsquo;s authority is delegated across many people, to the
+point where the line between BDFL and core contributor is pretty blurred. The
+relationships in the project are built on trust between individuals, not trust
+in the system.</p>
+<p>As a contributor, you should evaluate the value system of the leadership and
+make a personal determination as to whether or not it aligns with your own. If
+it does, participate. If it does not, find an alternative or fork the
+project.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+<p>Consider the main competing model: a Code of Conduct as the rule of law.</p>
+<p>These attempt to boil subjective matters down into objectively enforcible rules.
+Not even in sovereign law do we attempt this. Programmers can easily fall into
+the trap of thinking that objective rules can be applied to social systems, and
+that they can deal with conflict by executing a script. This is quite untrue,
+and attempting to will leave loopholes big enough for bad actors to drive a
+truck through.</p>
+<p>Additionally, governance models which provide a scripted path onto the decision
+making committee can often have this path exploited by bad actors, or by people
+for whom the politics are more important than the software. By implementing this
+system, the values of the project can easily shift in ways the leaders and
+contributors don&rsquo;t expect or agree with.</p>
+<p>The worst case can be that a contributor is ostracized due to the letter of the
+CoC, but not the spirit of it. Managing drama is a sensitive, subjective issue,
+but objective rules break hearts. Enough of this can burn out the leaders,
+creating a bigger power vacuum, without a plan to fill it.</p>
+<p>In summary:</p>
+<p><strong>For leaders</strong>: Assume good faith until proven otherwise.</p>
+<p>Do what you think is right. If someone is being a
+dickhead<small><sup>†</sup></small>,
+tell them to stop.  If they don&rsquo;t stop, kick them out. Work with contributors
+you trust to elevate their role in the project so you can delegate
+responsibilities to them and have them act as good role models for the
+community. If you&rsquo;re not good at moderating discussions or conflict resolution,
+find someone who is among your trusted advisors and ask them to exercise their
+skills.</p>
+<p>If you need to, sketch up informal guidelines to give an approximation of your
+values, so that contributors know how to act and what to expect, but make it
+clear that they&rsquo;re guidelines rather than rules. Avoid creating complex systems
+of governance. Especially avoid setting up systems which create paths that
+untrusted people can use to quickly weasel their way into positions of power.
+Don&rsquo;t give power to people who don&rsquo;t have a stake in the project.</p>
+<p><strong>For contributors</strong>: Assume good faith until proven otherwise.</p>
+<p>Do what you think is right. If someone is being a
+dickhead<small><sup>†</sup></small>,
+talk to the leadership about it. If you don&rsquo;t trust the project leadership, the
+project isn&rsquo;t for you, and future conflicts aren&rsquo;t going to go your way. Be
+patient with your maintainers — remember that you have the easier job.</p>
+<p><small><sup>†</sup> According to your subjective definition of dickhead.</small></p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Note that being able to fork is the escape hatch which makes this model fair and applicable to free &amp; open source projects. The lack of a similarly accessible escape hatch in, for example, the governments of soverign countries, prevents this model from generalizing well. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Sway reporting in from KDE&#39;s Berlin development sprint</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Sway reporting in from KDE&#39;s Berlin development sprint
+  <small>
+    <span class="date">April 28, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I&rsquo;m writing to you from an airplane on my way back to Philadelphia, after
+spending a week in Berlin working with the KDE team. It was great to meet those
+folks and work with them for a while. It&rsquo;ll take me some time to get the taste
+of C++ out of my mouth, though! In all seriousness, it was a very productive
+week and I feel like we have learned a lot about each other&rsquo;s projects and have
+a strengthened interest in collaborating more in the future.</p>
+<p>The main purpose of my trip was to find opportunities for
+<a href="http://swaywm.org">sway</a> and <a href="http://kde.org">KDE</a> to work together on
+improving the Linux desktop. Naturally, the main topic of discussion was
+interopability of software written for each of our projects. I brought the
+wlroots layer-shell protocol to the table seeking their feedback on it, as well
+as reviewing how their desktop shell works today. From our discussions we found
+a lot of common ground in our designs and needs, as well as room for improvement
+in both of our approaches.</p>
+<p>The KDE approach to their desktop shell is similar to the original sway
+approach. Today, their Plasma shell uses a number of proprietary protocols which
+are hacks on top of the xdg-shell protocol (for those not in the know, the
+xdg-shell protocol is used to render normal desktop windows and is not designed
+for use with e.g. panels) that incorporate several of the concepts they were
+comfortable using on X11 in an almost 1:1 fashion. Sway never had any X11
+concepts to get comfortable with, but some may not know that sway&rsquo;s panel,
+wallpaper, and lock screen programs on the 0.x releases are also hacks on top of
+xdg-shell that are not portable between compositors.</p>
+<p>In the wlroots project (which is overseen by sway), we&rsquo;ve been developing a
+new protocol designed for desktop shell components like these. In theory, it is
+a more generally applicable approach to building desktop shells on Wayland than
+the approach we were using before. I sat down with the KDE folks and went over
+this protocol in great detail, and learned about how Plasma shell works today,
+and we were happy to discover that the wlroots approach (with some minor tweaks)
+should be excellently suited to Plasma shell. In addition to the layer-shell, we
+reviewed several other protocols Plasma uses to build its desktop experience,
+and identified more places where it makes sense for us to unify our approach.
+Other subjects discussed included virtual desktops, external window management,
+screen capture and pipewire, and more.</p>
+<p>The upshot of this is that we believe it&rsquo;s possible to integrate the Plasma
+shell with sway. Users of KDE on X11 were able to replace kwin with i3 and still
+utilize the Plasma shell - a feature which was lost in the transition to
+Wayland. As we continue to work together, this use-case may well be captured
+again. Even KDE users who are uninterested in sway stand to benefit from this.
+The hacks Plasma uses today are temporary and unmaintainable, and the
+improvements to Plasma&rsquo;s codebase will make it easier to work with. Should kwin
+grow stable layer-shell support, clients designed for sway will work on KDE as
+well. Replacing sway&rsquo;s own similar hacks will have similar benefits for our
+codebase and open the door to 3rd-party panels, lockscreens, rofi, etc.</p>
+<p>I spent my time in their care working on actual code to this end. I wrote up a
+C++ library that extends Qt with layer-shell support called
+<a href="https://github.com/SirCmpwn/qtlayershell">qtlayershell</a>, and extended the
+popular <a href="#">Latte Dock</a> KDE extension to support it. Though this work is not
+complete, it works - as I write this blog post, Latte is running on my sway
+session! This is good progress, but I must return my focus to wlroots soon. If
+you are interested in this work, please help me complete it!</p>
+<p><img src="/img/latte-dock.png" alt=""></p>
+<p>A big thanks goes to KDE for putting on this event and covering my travel costs
+to attend. I hope they found it as productive as I did, and I&rsquo;m very excited
+about working more with them in the future. The future of Wayland is bright!</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

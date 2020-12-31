@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>email on Drew DeVault&#39;s blog</title>
+    <link>./tags/email.html</link>
+    <description>Recent content in email on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 19 Jun 2020 00:00:00 +0000</lastBuildDate><atom:link href="./tags/email/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Email service provider recommendations</title>
+      <link>./2020/06/19/Mail-service-provider-recommendations.html</link>
+      <pubDate>Fri, 19 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/06/19/Mail-service-provider-recommendations.html</guid>
+      <description>Email is important to my daily workflow, and I&amp;rsquo;ve built many tools which encourage productive use of it for software development. As such, I&amp;rsquo;m often asked for advice on choosing a good email service provider. Personally, I run my own mail servers, but about a year ago I signed up for and evaluated many different service providers available today so that I could make informed recommendations to people. Here are my top picks, as well as the criteria by which they were evaluated.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>shell on Drew DeVault&#39;s blog</title>
+    <link>./tags/shell.html</link>
+    <description>Recent content in shell on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 28 Dec 2018 00:00:00 +0000</lastBuildDate><atom:link href="./tags/shell/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Anatomy of a shell</title>
+      <link>./2018/12/28/Anatomy-of-a-shell.html</link>
+      <pubDate>Fri, 28 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/12/28/Anatomy-of-a-shell.html</guid>
+      <description>I&amp;rsquo;ve been contributing where I can to Simon Ser&amp;rsquo;s mrsh project, a work-in-progress strictly POSIX shell implementation. I worked on some small mrsh features during my holiday travels and it&amp;rsquo;s in the forefront of my mind, so I&amp;rsquo;d like to share some of its design details with you.
+There are two main components to a shell: parsing and execution. mrsh uses a simple recursive descent parser to generate an AST (Abstract Syntax Tree, or an in-memory model of the structure of the parsed source).</description>
+    </item>
+    
+    <item>
+      <title>Introduction to POSIX shell</title>
+      <link>./2018/02/05/Introduction-to-POSIX-shell.html</link>
+      <pubDate>Mon, 05 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/02/05/Introduction-to-POSIX-shell.html</guid>
+      <description>What the heck is the POSIX shell anyway? Well, the POSIX (the Portable Operating System Interface) shell is the standard Unix shell - standard meaning it was formally defined and shipped in a published standard. This makes shell scripts written for it portable, something no other shell can lay claim to. The POSIX shell is basically a formalized version of the venerable Bourne shell, and on your system it lives at /bin/sh, unless you&amp;rsquo;re one of the unlucky masses for whom this is a symlink to bash.</description>
+    </item>
+    
+  </channel>
+</rss>

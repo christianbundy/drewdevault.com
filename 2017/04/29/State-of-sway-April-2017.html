@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>State of Sway April 2017</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  State of Sway April 2017
+  <small>
+    <span class="date">April 29, 2017</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Development on Sway continues. I thought we would have slowed down a lot more by
+now, but every release still comes with new features - Sway 0.12 added
+redshift support and binary space partitioning layouts. Sway 0.13.0 is
+coming soon and includes, among other things, nvidia proprietary driver support.
+We already have some interesting features slated for Sway 0.14.0, too!</p>
+<p>Today Sway has 21,446 lines of C (and 4,261 lines of header files) written by 81
+authors across 2,263 commits. These were written through 653 pull requests and
+529 issues. Sway packages are available today in the official repos of pretty
+much every distribution except for Debian derivatives, and a PPA is available
+for those guys.</p>
+<p><a href="https://sr.ht/ICd5.png"><img src="https://sr.ht/ICd5.png" alt=""></a></p>
+<p>For those who are new to the project, <a href="http://swaywm.org">Sway</a> is an
+i3-compatible Wayland compositor. That is, your existing <a href="http://i3wm.org/">i3</a>
+configuration file will work as-is on Sway, and your keybindings and colors and
+fonts and for_window rules and so on will all be the same. It&rsquo;s i3, but for
+Wayland, plus it&rsquo;s got some bonus features. Here&rsquo;s a quick rundown of what&rsquo;s
+new since the <a href="/2016/12/27/State-of-sway.html">previous state of Sway</a>:</p>
+<ul>
+<li>Redshift support</li>
+<li>Improved security configuration</li>
+<li>Automatic binary space partitioning layouts ala AwesomeWM</li>
+<li>Support for more i3 window criterion</li>
+<li>Support for i3 marks</li>
+<li>xdg_shell v6 support (Wayland thing, makes more native Wayland programs work)</li>
+<li>We&rsquo;ve switched from X.Y to X.Y.Z releases, Z releases shipping bugfixes while
+the next Y release is under development</li>
+<li>Lots of i3 compatibility improvements</li>
+<li>Lots of documentation improvements</li>
+<li>Lots of bugfixes</li>
+</ul>
+<p>The new <a href="https://github.com/SirCmpwn/sway/issues/986">bounty program</a> has also
+raised $1,200 to support Sway development! Several bounties have been awarded,
+including redshift support and i3 marks, but every awardee chose to redonate
+their reward to the bounty pool. Thanks to everyone who&rsquo;s donated and everyone
+who&rsquo;s worked on new features! Bounties have also been awarded for features in
+the Wayland ecosystem beyond Sway - a fact I&rsquo;m especially proud of. If you want
+a piece of that $1,200 pot, <a href="http://webchat.freenode.net/?channels=sway&amp;uio=d4">join us on
+IRC</a> and we&rsquo;ll help you get started.</p>
+<p>Many new developments are in the pipeline for you. 0.13.0 is expected to
+ship within the next few weeks - <a href="https://github.com/SirCmpwn/sway/issues/1162#issuecomment-295012255">here&rsquo;s a sneak peek at the
+changelog</a>.
+In the future releases, development is ongoing for tray icons (encouraged by the
+sweet $270 bounty sitting on that feature), and several other features for
+0.14.0 have been completed. We&rsquo;ve also started work on a long term project to
+replace our compositor plumbling library, wlc, with a new one:
+<a href="https://github.com/SirCmpwn/wlroots">wlroots</a>. This should allow us to fix many
+of the more difficult bugs in Sway, and opens the doors for <em>many</em> features that
+weren&rsquo;t previously possible. It should also give us a platform on which we can
+build standard protocols that other compositors can implement, unifying the
+Wayland platform a bit more.</p>
+<p>Many thanks to <a href="https://github.com/SirCmpwn/sway/graphs/contributors">everyone that&rsquo;s contributed to
+sway</a>! There&rsquo;s no way Sway
+would have enjoyed its success without your help. That wraps things up for
+today, thanks for using Sway and look forward to Sway 1.0!</p>
+<hr>
+<p>Note: future posts like this will omit some of the stats that were included in
+the previous posts. You can use the following commands to find them for
+yourself:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Lines of code per author:</span>
+git ls-tree -r -z --name-only HEAD -- */*.c <span class="se">\
+</span><span class="se"></span>    <span class="p">|</span> xargs -0 -n1 git blame --line-porcelain HEAD <span class="se">\
+</span><span class="se"></span>    <span class="p">|</span> grep  <span class="s2">&#34;^author &#34;</span> <span class="p">|</span> sort <span class="p">|</span> uniq -c <span class="p">|</span> sort -nr
+<span class="c1"># Commits per author:</span>
+git shortlog
+</code></pre></div>
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,25 @@
+I had an idea today: I wonder if we could convert HTML to Gemtext by using the guts of Firefox's reader view to simplify it to a reasonable subset of HTML first?
+
+The answer is yes.
+
+It works best with article-style content, so to illustrate this, I've create a mirror of Hacker News in geminispace that converts the linked articles to Gemtext for better viewing in your favorite Gemini client.
+
+=> /cgi-bin/hn.py Browse Hacker News over Gemini
+
+Note that it's kind of finicky (and, to be honest, so is gmnisrv), so we can hopefully expect it to become more stable over time as I improve gmnisrv and flush out the bugs. In the meantime, be patient with it, and maybe hit refresh if it doesn't work the first time. I might expand the featureset a bit as well, adding comments, user pages, pages other than the front page, and so on.
+
+The HTML to Gemtext conversion works even better than I expected. The guts of it are in a small JavaScript program:
+
+=> gemini://drewdevault.com/cgi-bin/web.sh?https://git.sr.ht/~sircmpwn/gci-scripts/tree/master/web2gmi.js web2gmi.js (viewed on git.sr.ht via the readability converter!)
+
+This can stand alone pretty well on its own, so I might refactor things to convert this less from a purpose-built HN viewer and into a more general-purpose gemini-to-web gateway. Patches also welcome, if anyone wants to help out with that.
+
+The other component is just a little bit of rigging to consult the HN API, render the front page as Gemtext, and handle the linkage to the web to gemtext converter.
+
+=> gemini://drewdevault.com/cgi-bin/web.sh?https://git.sr.ht/~sircmpwn/gci-scripts/tree/master/hn.py hn.py (via git.sr.ht)
+
+The source code is available in my CGI scripts repository:
+
+=> https://git.sr.ht/~sircmpwn/gci-scripts gci-scripts (HTTP)
+
+Cheers!

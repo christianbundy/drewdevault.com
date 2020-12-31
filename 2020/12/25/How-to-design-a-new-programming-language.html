@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>How to design a new programming language from scratch</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  How to design a new programming language from scratch
+  <small>
+    <span class="date">December 25, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>There is a long, difficult road from vague, pie-in-the-sky ideas about what
+would be cool to have in a new programming language, to a robust,
+self-consistent, practical implementation of those ideas. Designing and
+implementing a new programming language from scratch is one of the most
+challenging tasks a programmer can undertake.</p>
+<p>Note: this post is targeted at motivated programmers who want to make a
+serious attempt at designing a useful programming language. If you just want to
+make a language as a fun side project, then you can totally just wing it. Taking
+on an unserious project of that nature is also a good way to develop some
+expertise which will be useful for a serious project later on.</p>
+<p>Let&rsquo;s set the scene. You already know a few programming languages, and you know
+what you like and dislike about them — these are your influences. You have
+some cool novel language design ideas as well. A good first step from here is to
+dream up some pseudocode, putting some of your ideas to paper, so you can get an
+idea of what it would actually feel like to write or read code in this
+hypothetical language. Perhaps a short write-up or a list of goals and ideas is
+also in order. Circulate these among your confidants for discussion and
+feedback.</p>
+<p>Ideas need to be proven in the forge of implementations, and the next step is to
+write a compiler (or interpreter — everything in this article applies
+equally to them). We&rsquo;ll call this the sacrificial implementation, because you
+should be prepared to throw it away later. Its purpose is to prove that your
+design ideas work and can be implemented efficiently, but <em>not</em> to be the
+production-ready implementation of your new language. It&rsquo;s a tool to help you
+refine your language design.</p>
+<p>To this end, I would suggest using a parser generator like yacc to create your
+parser, even if you&rsquo;d prefer to ultimately use a different design (e.g.
+recursive descent). The ability to quickly make changes to your grammar, and the
+side-effect of having a formal grammar written as you work, are both valuable to
+have at this stage of development. Being prepared to throw out the rest of the
+compiler is helpful because, due to the inherent difficulty of designing and
+implementing a programming language at the same time, your first implementation
+will probably be shit. You don&rsquo;t know what the language will look like, you&rsquo;ll
+make assumptions that you have to undo later, and it&rsquo;ll undergo dozens of
+refactorings. It&rsquo;s gonna suck.</p>
+<p>However, shit as it may be, it will have done important work in validating your
+ideas and refining your design. I would recommend that your next step is to
+start working on a formal specification of the language (something that I
+believe all languages should have). You&rsquo;ve proven what works, and writing it up
+formally is a good way to finalize the ideas and address the edge cases. Gather
+a group of interested early adopters, contributors, and subject matter experts
+(e.g. compiler experts who work with similar languages), and hold discussions on
+the specification as you work.</p>
+<p>This is also a good time to start working on your second implementation. At this
+point, you will have a good grasp on the overall compiler design, the flaws from
+your original implementation, and better skills as a compiler programmer.
+Working on your second compiler and your specification at the same time can help
+as both endeavours inform the others — a particularly difficult detail to
+implement could lead to a simplification in the spec, and an under-specified
+detail getting shored up could lead to a more robust implementation.</p>
+<p>Don&rsquo;t get carried away — keep this new compiler simple and small. Don&rsquo;t go
+crazy on nice-to-have features like linters and formatters, an exhaustive test
+suite, detailed error messages, a sophisticated optimizer, and so on. You want
+it to implement the specification as simply as possible, so that you can use it
+for the next step: the hosted compiler. You need to write a third
+implementation, using your own language to compile itself.</p>
+<p>The second compiler, which I hope you wrote in C, is now the bootstrap compiler.
+I recommend keeping it up-to-date with the specification and maintaining it
+perpetually as a convenient path to bootstrap your toolchain from scratch
+(looking at you, Rust). But it&rsquo;s not going to be the final implementation: any
+self-respecting general-purpose programming language is implemented in itself.
+The next, and final step, is to implement your language for a third time.</p>
+<p>At this point, you will have refined and proven your language design. You will
+have developed and applied compiler programming skills. You will have a robust
+implementation for a complete and self-consistent programming language,
+developed carefully and with the benefit of hindsight. Your future community
+will thank you for the care and time you put into this work, as your language
+design and implementation sets the ceiling on the quality of programs written in
+it.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+  <p>
+  ⇒ This article is also available <a href="gemini://./2020/12/25/How-to-design-a-new-programming-language.gmi">on gemini</a>.
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

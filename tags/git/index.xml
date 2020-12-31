@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>git on Drew DeVault&#39;s blog</title>
+    <link>./tags/git.html</link>
+    <description>Recent content in git on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 20 Apr 2020 00:00:00 +0000</lastBuildDate><atom:link href="./tags/git/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Configuring aerc for git via email</title>
+      <link>./2020/04/20/Configuring-aerc-for-git.html</link>
+      <pubDate>Mon, 20 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/04/20/Configuring-aerc-for-git.html</guid>
+      <description>I use aerc as my email client (naturally — I wrote it, after all), and I use git send-email to receive patches to many of my projects. I designed aerc specifically to be productive for this workflow, but there are a few extra things that I use in my personal aerc configuration that I thought were worth sharing briefly. This blog post will be boring and clerical, feel free to skip it unless it&amp;rsquo;s something you&amp;rsquo;re interested in.</description>
+    </item>
+    
+    <item>
+      <title>Webcast: Reviewing git &amp; mercurial patches with email</title>
+      <link>./2019/05/13/Git-email-webcast.html</link>
+      <pubDate>Mon, 13 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/05/13/Git-email-webcast.html</guid>
+      <description>With the availability of new resources like git-send-email.io, I&amp;rsquo;ve been working on making the email-based workflow more understandable and accessible to the world. One thing that&amp;rsquo;s notably missing from this tutorial, however, is the maintainer side of the work. I intend to do a full write-up in the future, but for now I thought it&amp;rsquo;d be helpful to clarify my workflow a bit with a short webcast. In this video, I narrate my workflow as I review a few sourcehut patches and participate in some dicsussions.</description>
+    </item>
+    
+    <item>
+      <title>Tips for a disciplined git workflow</title>
+      <link>./2019/02/25/Using-git-with-discipline.html</link>
+      <pubDate>Mon, 25 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/02/25/Using-git-with-discipline.html</guid>
+      <description>Basic git usage involves typing a few stock commands to &amp;ldquo;sync everyone up&amp;rdquo;. Many people who are frustrated with git become so because they never progress beyond this surface-level understanding of how it works. However, mastering git is easily worth your time. How much of your day is spent using git? I would guess that there are many tools in your belt that you use half as often and have spent twice the time studying.</description>
+    </item>
+    
+    <item>
+      <title>Git is already federated &amp; decentralized</title>
+      <link>./2018/07/23/Git-is-already-distributed.html</link>
+      <pubDate>Mon, 23 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/07/23/Git-is-already-distributed.html</guid>
+      <description>There have always been murmurs about &amp;ldquo;replacing GitHub with something decentralized!&amp;rdquo;, but in the wake of the Microsoft acquisition these murmurs have become conversations. In particular, this blog post is a direct response to forge-net (formerly known as GitPub). They want to federate and decentralize git using ActivityPub, the same technology leveraged by Mastodon and PeerTube. But get this: git is already federated and decentralized!
+I already spoke at length about how a large minority of the git community uses email for collaboration in my previous article on the subject.</description>
+    </item>
+    
+    <item>
+      <title>The advantages of an email-driven git workflow</title>
+      <link>./2018/07/02/Email-driven-git.html</link>
+      <pubDate>Mon, 02 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/07/02/Email-driven-git.html</guid>
+      <description>git 2.18.0 has been released, and with it my first contribution to git has shipped! My patch was for a git feature which remains disappointingly obscure: git send-email. I want to introduce my readers to this feature and speak to the benefits of using an email-driven git workflow - the workflow git was originally designed for.
+Email isn&amp;rsquo;t as sexy as GitHub (and its imitators), but it has several advantages over the latter.</description>
+    </item>
+    
+  </channel>
+</rss>

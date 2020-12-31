@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Choosing a VPN service is a serious decision</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Choosing a VPN service is a serious decision
+  <small>
+    <span class="date">April 19, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>There&rsquo;s a disturbing trend in the past year or so of various VPN companies
+advertising to the general, non-technical public. It&rsquo;s great that the general
+public is starting to become more aware of their privacy online, but I&rsquo;m not a
+fan of these companies exploiting public paranoia to peddle their wares. Using
+a VPN in the first place has potentially grave consequences for your privacy -
+and can often be worse than not using one in the first place.</p>
+<p>It&rsquo;s true that, generally speaking, when you use a VPN, the websites you visit
+don&rsquo;t have access to your original IP address, which can be used to derive your
+approximate location (often not more specific than your city or neighborhood).
+But that&rsquo;s not true of the VPN provider themselves - who can identify you much
+more precisely because you used your VPN login to access the service.
+Additionally, they can promise not to siphon off your data and write it down
+somewhere - tracking you, selling it to advertisers, handing it over to law
+enforcement - but they <em>could</em> and you&rsquo;d be none the wiser. By routing all of
+your traffic through a VPN, <em>you route all of your traffic through a VPN</em>.</p>
+<p>Another advantage offered by VPNs is that they can prevent your ISP from knowing
+what you&rsquo;re doing online. If you don&rsquo;t trust your ISP but you do trust your VPN,
+this makes a lot of sense. It also makes sense if you&rsquo;re on an unfamiliar
+network, like airport WiFi. However, it&rsquo;s still quite important that you <em>do</em>
+trust the VPN on the other end. You need to do research. What country are they
+based in, and what&rsquo;s their diplomatic relationship with your home country? What
+kind of power the local authorities have to force them to record &amp; disclose your
+traffic? Are they backed by venture capitalists who expect infinite growth, and
+will they eventually have to meet those demands by way of selling your
+information to advertisers? What happens to you when their business is going
+poorly? How much do you trust their security competency - are they likely to be
+hacked? If you haven&rsquo;t answered all of these questions yourself, then you should
+not use a VPN.</p>
+<p>Even more alarming than the large advertising campaigns which have been popular
+in the past few months is push-button VPN services which are coming
+pre-installed on consumer hardware and software. These bother me because they&rsquo;re
+implemented by programmers who should understand this stuff and know better than
+to write the code. Opera now has a push-button VPN pre-bundled which is free and
+tells you little about the service before happily sending all of your traffic
+through it.  Do you trust a Chinese web browser&rsquo;s free VPN to behave in your
+best interests?  Purism also recently announced a collaboration with Private
+Internet Access to ship a VPN in their upcoming Librem 5. I consider this highly
+irresponsible of Purism, and actually discussed the matter at some length with
+Todd Weaver (the CEO) over email. We need to stop making it easy for users to
+siphon all of their data into the hands of someone they don&rsquo;t know.</p>
+<p>For anyone who needs a VPN but isn&rsquo;t comfortable using one of these companies,
+there are other choices. First, consider that any website you visit with HTTPs
+support (identified by the little green lock in the address bar on your web
+browser) is already encrypting all of your traffic so it cannot be read or
+tampered with. This discloses your IP address to the operator of that website
+and discloses that you visited that website to your ISP, but does not disclose
+any data you sent to them, or any content they sent to you, to your ISP or any
+eavesdroppers. If you&rsquo;re careful to use HTTPS (and other forms of SSL for
+things like email), that can often be enough.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+<p>If that&rsquo;s not enough, the ironclad solution is
+<a href="https://www.torproject.org/">Tor</a>. When you connect to a website on Tor, it (1)
+hides your IP address from the website and any eavesdroppers, (2) hides who
+you&rsquo;re talking to from your ISP, and (3) hides what you&rsquo;re talking about from
+the ISP. In some cases (onion services), it even hides the origin of the service
+you&rsquo;re talking to from <em>you</em>. Tor comes with its own set of limitations and
+pitfalls for privacy &amp; security, which you should <a href="https://2019.www.torproject.org/download/download.html.en#Warning">read about and
+understand</a>
+before using it. Bad actors on the Tor network can read and tamper with your
+traffic if you aren&rsquo;t using SSL or Onion routing.</p>
+<p>Finally, if you have some technical know-how, you can set up your own VPN. If
+you have a server somewhere (or rent one from a VPS provider), you can install a
+VPN on it. I suggest <a href="https://www.wireguard.com/">Wireguard</a> (easiest, Linux
+only) or <a href="https://openvpn.net">OpenVPN</a> (more difficult, works on everything).
+Once again, this comes with its own limitations. You&rsquo;ll always be using a
+consistent IP address that services you visit can remember to track you, and you
+get a new ISP (whoever your VPS provider uses). This&rsquo;ll generally route you
+through commercial ISPs, though, who are much less likely to do obnoxious crap
+like injecting ads in webpages or redirecting your failed DNS queries to &ldquo;search
+results&rdquo; (i.e. more ads). You&rsquo;ll need to vet your VPS provider and their ISP
+with equal care.</p>
+<p>Understand who handles your data - encrypted and unencrypted - before you share
+it.  No matter your approach, you should also always install an adblocker (I
+strongly recommend <a href="https://github.com/gorhill/uBlock/#installation">uBlock
+Origin</a>), stick to
+HTTPS-enabled websites, and be suspicious of and diligent about every piece of
+software, every browser extension, every app you install, and every website you
+visit. Most of them are trying to spy on you.</p>
+<p>Related articles:</p>
+<ul>
+<li><a href="https://schub.io/blog/2019/04/08/very-precarious-narrative.html">VPN - a Very Precarious Narrative - Dennis Schubert</a></li>
+<li><a href="https://www.skadligkod.se/vpn/the-trustworthy-of-vpn-review-sites-and-how-affiliate-programs-affects-their-opinion/">The trustworthy of VPN review sites and how affiliate programs affects their opinion</a></li>
+</ul>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>A reader points out that HTTPS can also be tampered with. If someone else administrates your computer (such as your employer), they can install custom certificates that allow them to tamper with your traffic. This is also sometimes done by software you install on your system, like antivirus software (which more times than not, is a virus itself). Additionally, anyone who can strongarm a certificate authority (state actors) may be able to issue an illegitimate certificate for the same purpose. The only communication method I know of which has no known flaws is onion routing on Tor. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

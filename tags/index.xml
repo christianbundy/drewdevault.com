@@ -1,0 +1,784 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Drew DeVault&#39;s blog</title>
+    <link>./tags.html</link>
+    <description>Recent content in Tags on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 15 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="./tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>status update</title>
+      <link>./tags/status-update.html</link>
+      <pubDate>Tue, 15 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/status-update.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>foss</title>
+      <link>./tags/foss.html</link>
+      <pubDate>Mon, 10 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/foss.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>go</title>
+      <link>./tags/go.html</link>
+      <pubDate>Sat, 01 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/go.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>free software</title>
+      <link>./tags/free-software.html</link>
+      <pubDate>Mon, 27 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/free-software.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>time</title>
+      <link>./tags/time.html</link>
+      <pubDate>Tue, 14 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/time.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>operating systems</title>
+      <link>./tags/operating-systems.html</link>
+      <pubDate>Fri, 26 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/operating-systems.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>rant</title>
+      <link>./tags/rant.html</link>
+      <pubDate>Fri, 26 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/rant.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>email</title>
+      <link>./tags/email.html</link>
+      <pubDate>Fri, 19 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/email.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>practices</title>
+      <link>./tags/practices.html</link>
+      <pubDate>Sat, 06 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/practices.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>software</title>
+      <link>./tags/software.html</link>
+      <pubDate>Sat, 06 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/software.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>culture</title>
+      <link>./tags/culture.html</link>
+      <pubDate>Tue, 05 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/culture.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>aerc</title>
+      <link>./tags/aerc.html</link>
+      <pubDate>Mon, 20 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/aerc.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>git</title>
+      <link>./tags/git.html</link>
+      <pubDate>Mon, 20 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/git.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>workflow</title>
+      <link>./tags/workflow.html</link>
+      <pubDate>Mon, 20 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/workflow.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>performance</title>
+      <link>./tags/performance.html</link>
+      <pubDate>Fri, 21 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/performance.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>maintainership</title>
+      <link>./tags/maintainership.html</link>
+      <pubDate>Thu, 06 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/maintainership.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>philosophy</title>
+      <link>./tags/philosophy.html</link>
+      <pubDate>Thu, 06 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/philosophy.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>KnightOS</title>
+      <link>./tags/KnightOS.html</link>
+      <pubDate>Mon, 27 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/KnightOS.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>followup</title>
+      <link>./tags/followup.html</link>
+      <pubDate>Wed, 08 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/followup.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mobile</title>
+      <link>./tags/mobile.html</link>
+      <pubDate>Wed, 18 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/mobile.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>review</title>
+      <link>./tags/review.html</link>
+      <pubDate>Wed, 18 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/review.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>activism</title>
+      <link>./tags/activism.html</link>
+      <pubDate>Fri, 29 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/activism.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>politics</title>
+      <link>./tags/politics.html</link>
+      <pubDate>Wed, 20 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/politics.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>hack</title>
+      <link>./tags/hack.html</link>
+      <pubDate>Wed, 30 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/hack.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>drm</title>
+      <link>./tags/drm.html</link>
+      <pubDate>Mon, 07 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/drm.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>wayland</title>
+      <link>./tags/wayland.html</link>
+      <pubDate>Mon, 07 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/wayland.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>languages</title>
+      <link>./tags/languages.html</link>
+      <pubDate>Sun, 08 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/languages.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>informational</title>
+      <link>./tags/informational.html</link>
+      <pubDate>Mon, 02 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/informational.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sourcehut</title>
+      <link>./tags/sourcehut.html</link>
+      <pubDate>Mon, 02 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/sourcehut.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ssh</title>
+      <link>./tags/ssh.html</link>
+      <pubDate>Mon, 02 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/ssh.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>announcement</title>
+      <link>./tags/announcement.html</link>
+      <pubDate>Mon, 19 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/announcement.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>irc</title>
+      <link>./tags/irc.html</link>
+      <pubDate>Mon, 01 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/irc.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>status updates</title>
+      <link>./tags/status-updates.html</link>
+      <pubDate>Sat, 15 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/status-updates.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>video</title>
+      <link>./tags/video.html</link>
+      <pubDate>Mon, 13 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/video.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>money</title>
+      <link>./tags/money.html</link>
+      <pubDate>Mon, 06 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/money.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>plan 9</title>
+      <link>./tags/plan-9.html</link>
+      <pubDate>Wed, 01 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/plan-9.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>wio</title>
+      <link>./tags/wio.html</link>
+      <pubDate>Wed, 01 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/wio.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cage</title>
+      <link>./tags/cage.html</link>
+      <pubDate>Tue, 23 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/cage.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>vpn</title>
+      <link>./tags/vpn.html</link>
+      <pubDate>Fri, 19 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/vpn.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mercurial</title>
+      <link>./tags/mercurial.html</link>
+      <pubDate>Mon, 15 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/mercurial.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>C</title>
+      <link>./tags/C.html</link>
+      <pubDate>Mon, 25 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/C.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>rust</title>
+      <link>./tags/rust.html</link>
+      <pubDate>Mon, 25 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/rust.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sway</title>
+      <link>./tags/sway.html</link>
+      <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/sway.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>language design</title>
+      <link>./tags/language-design.html</link>
+      <pubDate>Mon, 18 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/language-design.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>fosdem</title>
+      <link>./tags/fosdem.html</link>
+      <pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/fosdem.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>roundup</title>
+      <link>./tags/roundup.html</link>
+      <pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/roundup.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>flask</title>
+      <link>./tags/flask.html</link>
+      <pubDate>Wed, 30 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/flask.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>web</title>
+      <link>./tags/web.html</link>
+      <pubDate>Wed, 30 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/web.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ops</title>
+      <link>./tags/ops.html</link>
+      <pubDate>Sun, 13 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/ops.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>shell</title>
+      <link>./tags/shell.html</link>
+      <pubDate>Fri, 28 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/shell.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>alpine linux</title>
+      <link>./tags/alpine-linux.html</link>
+      <pubDate>Thu, 20 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/alpine-linux.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>risc-v</title>
+      <link>./tags/risc-v.html</link>
+      <pubDate>Thu, 20 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/risc-v.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>instructional</title>
+      <link>./tags/instructional.html</link>
+      <pubDate>Mon, 29 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/instructional.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>wlroots</title>
+      <link>./tags/wlroots.html</link>
+      <pubDate>Sun, 30 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/wlroots.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>qemu</title>
+      <link>./tags/qemu.html</link>
+      <pubDate>Mon, 10 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/qemu.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ffmpeg</title>
+      <link>./tags/ffmpeg.html</link>
+      <pubDate>Sun, 26 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/ffmpeg.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>instructive</title>
+      <link>./tags/instructive.html</link>
+      <pubDate>Sun, 26 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/instructive.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>privacy</title>
+      <link>./tags/privacy.html</link>
+      <pubDate>Wed, 08 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/privacy.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mail</title>
+      <link>./tags/mail.html</link>
+      <pubDate>Sun, 05 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/mail.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>encryption</title>
+      <link>./tags/encryption.html</link>
+      <pubDate>Wed, 27 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/encryption.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>scdoc</title>
+      <link>./tags/scdoc.html</link>
+      <pubDate>Sun, 13 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/scdoc.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>google</title>
+      <link>./tags/google.html</link>
+      <pubDate>Thu, 03 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/google.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kde</title>
+      <link>./tags/kde.html</link>
+      <pubDate>Sat, 28 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/kde.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>slack</title>
+      <link>./tags/slack.html</link>
+      <pubDate>Sat, 10 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/slack.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>fiction</title>
+      <link>./tags/fiction.html</link>
+      <pubDate>Tue, 13 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/fiction.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>gnome</title>
+      <link>./tags/gnome.html</link>
+      <pubDate>Sat, 27 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/gnome.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>unix</title>
+      <link>./tags/unix.html</link>
+      <pubDate>Tue, 02 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/unix.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>firefox</title>
+      <link>./tags/firefox.html</link>
+      <pubDate>Sat, 16 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/firefox.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>portability</title>
+      <link>./tags/portability.html</link>
+      <pubDate>Mon, 13 Nov 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/portability.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>nvidia</title>
+      <link>./tags/nvidia.html</link>
+      <pubDate>Thu, 26 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/nvidia.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>hacker news</title>
+      <link>./tags/hacker-news.html</link>
+      <pubDate>Wed, 13 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/hacker-news.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>regex</title>
+      <link>./tags/regex.html</link>
+      <pubDate>Sun, 13 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/regex.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linkrot</title>
+      <link>./tags/linkrot.html</link>
+      <pubDate>Mon, 19 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/linkrot.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>security</title>
+      <link>./tags/security.html</link>
+      <pubDate>Thu, 11 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/security.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linux</title>
+      <link>./tags/linux.html</link>
+      <pubDate>Fri, 05 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/linux.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>python</title>
+      <link>./tags/python.html</link>
+      <pubDate>Fri, 13 Jan 2017 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/python.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>networking</title>
+      <link>./tags/networking.html</link>
+      <pubDate>Tue, 06 Dec 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/networking.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>electron</title>
+      <link>./tags/electron.html</link>
+      <pubDate>Thu, 24 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/electron.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>javascript</title>
+      <link>./tags/javascript.html</link>
+      <pubDate>Thu, 24 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/javascript.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>hardware</title>
+      <link>./tags/hardware.html</link>
+      <pubDate>Tue, 22 Mar 2016 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/hardware.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tor</title>
+      <link>./tags/tor.html</link>
+      <pubDate>Wed, 11 Nov 2015 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/tor.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>react</title>
+      <link>./tags/react.html</link>
+      <pubDate>Mon, 20 Jul 2015 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/react.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>games</title>
+      <link>./tags/games.html</link>
+      <pubDate>Sun, 14 Jun 2015 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/games.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>osu</title>
+      <link>./tags/osu.html</link>
+      <pubDate>Sun, 14 Jun 2015 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/osu.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>wasm</title>
+      <link>./tags/wasm.html</link>
+      <pubDate>Sun, 30 Nov 2014 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/wasm.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kernel hacking</title>
+      <link>./tags/kernel-hacking.html</link>
+      <pubDate>Tue, 02 Sep 2014 00:00:00 +0000</pubDate>
+      
+      <guid>./tags/kernel-hacking.html</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

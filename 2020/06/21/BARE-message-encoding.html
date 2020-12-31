@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Introducing the BARE message encoding</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Introducing the BARE message encoding
+  <small>
+    <span class="date">June 21, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I like stateless tokens. We started with state<em>ful</em> tokens: where a generated
+string acts as a unique identifier for a resource, and the resource itself is
+looked up separately. For example, your sr.ht OAuth token is a stateful token:
+we just generate a random number and hand it to you, something like
+&ldquo;a97c4aeeec705f81539aa&rdquo;. To find the information associated with this token, we
+query the database — our local <em>state</em> — to find it.</p>
+<a href="#announcement">
+  Click here to skip the context and read the actual announcement -&gt;
+</a>
+<p>But, increasingly, we&rsquo;ve been using stateless tokens, which are a bloody good
+idea. The idea is that, instead of using random numbers, you encode the actual
+state you need into the token. For example, your sr.ht login session cookie is a
+JSON blob which is encrypted and base64 encoded. Rather than associating your
+session with a record in the database, we just decrypt the cookie when your
+browser sends it to us, and the session information is right there. This
+improves performance and simplicity in a single stroke, which is a huge win in
+my book.</p>
+<p>There is one big problem, though: stateless tokens tend to be a lot larger than
+their stateful counterparts. For a stateful token, we just need to generate
+enough random numbers to be both unique and unpredictable, and then store the
+rest of the data elsewhere. Not so for a stateless token, whose length is a
+function of the amount of state which has been sequestered into it. Here&rsquo;s an
+example: the cursor fields on the new GraphQL APIs are stateless. This is one of
+them:</p>
+<pre><code>gAAAAABe7-ysKcvmyavwKIT9k1uVLx_GXI6OunjFIHa3OJmK3eBC9NT6507PBr1WbuGtjlZSTYLYvicH2EvJXI1eAejR4kuNExpwoQsogkE9Ua6JhN10KKYzF9kJKW0hA_-737NurotB
+</code></pre>
+<p>A whopping 141 characters long! It&rsquo;s hardly as convenient to lug this monster
+around. Most of the time it&rsquo;ll be programs doing the carrying, but it&rsquo;s still
+annoying when you&rsquo;re messing with the API and debugging your programs. This
+isn&rsquo;t an isolated example, either: these stateless tokens tend to be large
+throughout sr.ht.</p>
+<p>In general, JSON messages are pretty bulky. They represent everything as text,
+which can be 2x as inefficient for certain kinds of data right off the bat.
+They&rsquo;re also self-describing: the schema of the message is encoded into the
+message itself; that is, the names of fields, hierarchy of objects, and data
+types.</p>
+<p>There are many alternatives that attempt to address this problem, and I
+considered many of them. Here were a selected few of my conclusions:</p>
+<ul>
+<li><a href="https://developers.google.com/protocol-buffers/">protobuf</a>: too
+complicated and too fragile, and I&rsquo;ve never been fond of the generated code
+for protobufs in any language. Writing a third-party protobuf implementation
+would be a gargantuan task, and there&rsquo;s no standard. RPC support is also
+undesirable for this use-case.</li>
+<li><a href="https://capnproto.org/">Cap&rsquo;n Proto</a>: fixed width, alignment, and so on
+— good for performance, bad for message size. Too complex. RPC support
+is also undesirable for this use-case. I also passionately hate C++ and I
+cannot in good faith consider something which makes it their primary target.</li>
+<li><a href="http://bsonspec.org/">BSON</a>: MonogoDB implementation details have leaked into
+the specification, and it&rsquo;s extensible in the worst way. I appreciate that
+JSON is a closed spec and no one is making vendor extensions for it —
+and, similarly, a diverse extension ecosystem is not something I want to see
+for this technology. Additionally, encoding schema into the message is wasting
+space.</li>
+<li><a href="https://msgpack.org/">MessagePack</a>: ruled out for similar reasons: too much
+extensibility, and the schema is encoded into the message, wasting space.</li>
+<li><a href="https://cbor.io/">CBOR</a>: ruled out for similar reasons: too much
+extensibility, and the schema is encoded into the message. Has the advantage
+of a specification, but the disadvantage of that spec being 54 pages long.</li>
+</ul>
+<p>There were others, but hopefully this should give you an idea of what I was
+thinking about when evaluating my options.</p>
+<p>There doesn&rsquo;t seem to be anything which meets my criteria just right:</p>
+<ul>
+<li>Optimized for small messages</li>
+<li>Standardized</li>
+<li>Easy to implement</li>
+<li>Universal — little to no support for extensions</li>
+<li>Simple — no extra junk that isn&rsquo;t contributing to the core mission</li>
+</ul>
+<p>The solution is evident.</p>
+<p><a href="https://xkcd.com/927"><img src="https://imgs.xkcd.com/comics/standards.png" alt="xkcd comic 927, &ldquo;Standards&rdquo;"></a></p>
+<p><a id="announcement"></a></p>
+<h2 id="bare-binary-application-record-encoding">BARE: Binary Application Record Encoding</h2>
+<p><a href="https://baremessages.org">BARE</a> meets all of the criteria:</p>
+<ul>
+<li><strong>Optimized for small messages</strong>: messages are binary, not self-describing,
+and have no alignment or padding.</li>
+<li><strong>Standardized &amp; simple</strong>: the specification is just over 1,000 words —
+shorter than this blog post.</li>
+<li><strong>Easy to implement</strong>: the first implementation (for Go) was done in a single
+weekend (this weekend, in fact).</li>
+<li><strong>Universal</strong>: there is room for user extensibility, but it&rsquo;s done in a manner
+which does not require expanding the implementation nor making messages which
+are incompatible with other implementations.</li>
+</ul>
+<p>Stateless tokens aren&rsquo;t the only messages that I&rsquo;ve wanted a simple binary
+encoding for. On many occasions I&rsquo;ve evaluated and re-evaluated the same set of
+existing solutions, and found none of them quite right. I hope that BARE will
+help me solve many of these problems in the future, and I hope you find it
+useful, too!</p>
+<p>The cursor token I shared earlier in the article looks like this when encoded
+with BARE:</p>
+<pre><code>gAAAAABe7_K9PeskT6xtLDh_a3JGQa_DV5bkXzKm81gCYqNRV4FLJlVvG3puusCGAwQUrKFLO-4LJc39GBFPZomJhkyqrowsUw==
+</code></pre>
+<p>100 characters (41 fewer than JSON), which happens to be the minimum size of a
+padded <a href="https://github.com/fernet/spec/">Fernet</a> message. If we compare only the
+cleartext:</p>
+<pre><code>JSON: eyJjb3VudCI6MjUsIm5leHQiOiIxMjM0NSIsInNlYXJjaCI6bnVsbH0=
+BARE: EAUxMjM0NQA=
+</code></pre>
+<p>Much improved!</p>
+<p>BARE also has an optional schema language for defining your message structure.
+Here&rsquo;s a sample:</p>
+<pre><code>type PublicKey data&lt;128&gt;
+type Time string # ISO 8601
+
+enum Department {
+  ACCOUNTING
+  ADMINISTRATION
+  CUSTOMER_SERVICE
+  DEVELOPMENT
+
+  # Reserved for the CEO
+  JSMITH = 99
+}
+
+type Customer {
+  name: string
+  email: string
+  address: Address
+  orders: []{
+    orderId: i64
+    quantity: i32
+  }
+  metadata: map[string]data
+}
+
+type Employee {
+  name: string
+  email: string
+  address: Address
+  department: Department
+  hireDate: Time
+  publicKey: optional
+  metadata: map[string]data
+}
+
+type Person (Customer | Employee)
+
+type Address {
+  address: [4]string
+  city: string
+  state: string
+  country: string
+}
+</code></pre><p>You can feed this into a code generator and get types which can encode &amp; decode
+these messages. But, you can also describe your schema just using your
+language&rsquo;s existing type system, like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Coordinates</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">X</span> <span class="kt">uint</span>  <span class="c1">// uint
+</span><span class="c1"></span>    <span class="nx">Y</span> <span class="kt">uint</span>  <span class="c1">// uint
+</span><span class="c1"></span>    <span class="nx">Z</span> <span class="kt">uint</span>  <span class="c1">// uint
+</span><span class="c1"></span>    <span class="nx">Q</span> <span class="o">*</span><span class="kt">uint</span> <span class="c1">// optional&lt;uint&gt;
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">coords</span> <span class="nx">Coordinates</span>
+    <span class="nx">payload</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">{</span><span class="mh">0x01</span><span class="p">,</span> <span class="mh">0x02</span><span class="p">,</span> <span class="mh">0x03</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">,</span> <span class="mh">0x04</span><span class="p">}</span>
+    <span class="nx">err</span> <span class="o">:=</span> <span class="nx">bare</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">payload</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">coords</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;coords: %d, %d, %d (%d)\n&#34;</span><span class="p">,</span> <span class="cm">/* coords: 1, 2, 3 (4) */</span>
+        <span class="nx">coords</span><span class="p">.</span><span class="nx">X</span><span class="p">,</span> <span class="nx">coords</span><span class="p">.</span><span class="nx">Y</span><span class="p">,</span> <span class="nx">coords</span><span class="p">.</span><span class="nx">Z</span><span class="p">,</span> <span class="o">*</span><span class="nx">coords</span><span class="p">.</span><span class="nx">Q</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>Bonus: you can get the schema language definition for this struct with
+<code>schema.SchemaFor(coords)</code>.</p>
+<h2 id="bare-is-under-development">BARE is under development</h2>
+<p>There are some possible changes that could come to BARE before finalizing the
+specification. Here are some questions I&rsquo;m thinking about:</p>
+<ul>
+<li>Should the schema language include support for arbitrary annotations to
+inform code generators? I&rsquo;m inclined to think &ldquo;no&rdquo;, but if you use BARE and
+find yourself wishing for this, tell me about it.</li>
+<li>Should BARE have first-class support for bitfield enums?</li>
+<li>Should maps be ordered?</li>
+</ul>
+<p><a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">Feedback welcome</a>!</p>
+<p><strong>Errata</strong></p>
+<ul>
+<li>This article was originally based on an older version of the draft
+specification, and was updated accordingly.</li>
+</ul>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

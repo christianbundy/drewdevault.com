@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>status update on Drew DeVault&#39;s blog</title>
+    <link>./tags/status-update.html</link>
+    <description>Recent content in status update on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 15 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="./tags/status-update/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Status update, September 2020</title>
+      <link>./2020/09/15/Status-update-September-2020.html</link>
+      <pubDate>Tue, 15 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/09/15/Status-update-September-2020.html</guid>
+      <description>A mercifully cool September is upon us, and after years of searching, I finally was able to secure Club Mate in the US. Let&amp;rsquo;s decant a bottle and recant the story of this month&amp;rsquo;s progress in free software development.
+First of all, I&amp;rsquo;ve been able to put a pin on operations work on SourceHut for the time being, and focus again on its software development. The GraphQL APIs are a major focus area here, and I&amp;rsquo;ve made a lot of progress towards OAuth 2.</description>
+    </item>
+    
+    <item>
+      <title>Status update, August 2020</title>
+      <link>./2020/08/16/Status-update.html</link>
+      <pubDate>Sun, 16 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/08/16/Status-update.html</guid>
+      <description>Greetings! Today is another rainy day here in Philadelphia, which rather sours my plans of walking over to the nearby cafe to order some breakfast to-go. But I am tired, and if I&amp;rsquo;m going to make it to the end of this blog post in one piece, I&amp;rsquo;m gonna need a coffee. brb.
+Hey, that was actually pretty refreshing. It&amp;rsquo;s just drizzling, and the rain is nice and cool. Alright, here goes!</description>
+    </item>
+    
+    <item>
+      <title>Status update, July 2020</title>
+      <link>./2020/07/15/Status-update-July-2020.html</link>
+      <pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/07/15/Status-update-July-2020.html</guid>
+      <description>Hello again! Another month of FOSS development behind us, and we&amp;rsquo;re back again to share the results. I took a week off at the end of June, so my progress this month is somewhat less than usual. Regardless, I have some updates for you, mainly in the domain of SourceHut work.
+But before we get to that, let&amp;rsquo;s go over this month&amp;rsquo;s small victories. One was the invention of the BARE message format, which I wrote a blog post about if you want to learn more.</description>
+    </item>
+    
+    <item>
+      <title>Status update, June 2020</title>
+      <link>./2020/06/15/Status-update-June-2020.html</link>
+      <pubDate>Mon, 15 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/06/15/Status-update-June-2020.html</guid>
+      <description>Like last month, I am writing to you from the past, preparing this status update a day earlier than usual. This time it&amp;rsquo;s because I expect to be busy with planned sr.ht maintenance tomorrow, so I&amp;rsquo;m getting the status updates written ahead of time.
+aerc has seen lots of patches merged recently thanks to the hard work of co-maintainer Reto Brunner and the many contributors who sent patches, ranging from a scrollable folder list to improvements and bugfixes for PGP support.</description>
+    </item>
+    
+    <item>
+      <title>Status update, May 2020</title>
+      <link>./2020/05/15/Status-update-May-2020.html</link>
+      <pubDate>Fri, 15 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/05/15/Status-update-May-2020.html</guid>
+      <description>Hello, future readers! I am writing to you from one day in the past. I finished my plans for today early and thought I&amp;rsquo;d get a head start on writing the status updates for tomorrow, or rather, for today. From your reference frame, that is.
+Let&amp;rsquo;s start with Wayland. First, as you might have heard, The Wayland Protocol is now free for anyone to read, and has been relicensed as CC-BY-SA.</description>
+    </item>
+    
+    <item>
+      <title>Status update, April 2020</title>
+      <link>./2020/04/15/Status-update-April-2020.html</link>
+      <pubDate>Wed, 15 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/04/15/Status-update-April-2020.html</guid>
+      <description>Wow, it&amp;rsquo;s already time for another status update? I&amp;rsquo;m starting to lose track of the days stuck inside. I have it easier than many - I was already used to working from home before any of this began. But, weeks and weeks of not spending IRL time with anyone else is starting to get to me. Remember to call your friends and family and let them know how you&amp;rsquo;re doing. Meanwhile, I&amp;rsquo;ve had a productive month - let&amp;rsquo;s get you up to date!</description>
+    </item>
+    
+    <item>
+      <title>Status update, February 2020</title>
+      <link>./2020/02/15/Status-update-February-2020.html</link>
+      <pubDate>Sat, 15 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/02/15/Status-update-February-2020.html</guid>
+      <description>Today I thought it&amp;rsquo;d try out something new: I have an old family recipe simmering on the stove right now, but instead of beef I&amp;rsquo;m trying out impossible beef. It cooked up a bit weird — it doesn&amp;rsquo;t brown up in the same way I expect of ground beef, and it made a lot more fond than I expected. Perhaps the temperature is too high? We&amp;rsquo;ll see how it fares when it&amp;rsquo;s done.</description>
+    </item>
+    
+    <item>
+      <title>Status update, January 2020</title>
+      <link>./2020/01/15/Status-update-January-2020.html</link>
+      <pubDate>Wed, 15 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/01/15/Status-update-January-2020.html</guid>
+      <description>I forgot to write this post this morning, and I&amp;rsquo;m on cup 3 of coffee while knee-deep in some arcane work with tarballs in Python. Forgive the brevity of this introduction. Let&amp;rsquo;s get right into the status update.
+First of all, FOSDEM 2020 is taking place on February 1st and 2nd, and I&amp;rsquo;m planning on being there again this year. I hope to see you there! I&amp;rsquo;ll be hosting another small session for SourceHut and aerc users where I&amp;rsquo;ll take questions, demo some new stuff, and give out stickers.</description>
+    </item>
+    
+    <item>
+      <title>Status update, November 2019</title>
+      <link>./2019/11/15/Status-update-November-2019.html</link>
+      <pubDate>Fri, 15 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/11/15/Status-update-November-2019.html</guid>
+      <description>Today&amp;rsquo;s update is especially exciting, because today marks the 1 year anniversary of Sourcehut opening it&amp;rsquo;s alpha to public registration. I wrote a nice long article which goes into detail about what Sourcehut accomplished in 2019, what&amp;rsquo;s to come for 2020, and it lays out the entire master plan for your consideration. Be sure to give that a look if you have the time. I haven&amp;rsquo;t slowed down on my other projects, though, so here&amp;rsquo;re some more updates!</description>
+    </item>
+    
+    <item>
+      <title>Status update, October 2019</title>
+      <link>./2019/10/15/Status-update-October-2019.html</link>
+      <pubDate>Tue, 15 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/10/15/Status-update-October-2019.html</guid>
+      <description>Last month, I gave you an update at the conclusion of a long series of travels. But, I wasn&amp;rsquo;t done yet - this month, I spent a week in Montreal for XDC. Simon Ser put up a great write-up which goes over a lot of the important things we discussed there. It was a wonderful conference and well worth the trip - but I truly am sick of travelling. Now, I can enjoy some time at home, working on free and open source software.</description>
+    </item>
+    
+    <item>
+      <title>Status update, September 2019</title>
+      <link>./2019/09/15/Status-update-September-2019.html</link>
+      <pubDate>Sun, 15 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/09/15/Status-update-September-2019.html</guid>
+      <description>Finally home again after a long series of travels! I spent almost a month in Japan, then visited my sister&amp;rsquo;s new home in Hawaii on the way eastwards, then some old friends in Seattle, and finally after 5½ long weeks, it&amp;rsquo;s home sweet home here in Philadelphia. At least until I leave for XDC in Montreal 2 weeks from now. Someday I&amp;rsquo;ll have some rest&amp;hellip; throughout all of these wild travels, I&amp;rsquo;ve been hard at work on my free software projects.</description>
+    </item>
+    
+    <item>
+      <title>Status update, August 2019</title>
+      <link>./2019/08/15/Status-update-August-2019.html</link>
+      <pubDate>Thu, 15 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/08/15/Status-update-August-2019.html</guid>
+      <description>Outside my window, the morning sun can be seen rising over the land of the rising sun, as I sip from a coffee purchased at the konbini down the street. I almost forgot to order it, as the staffer behind the counter pointed out with a smile and a joke that, having been told in Japanese, mostly went over my head. It&amp;rsquo;s on this quiet Osaka morning I write today&amp;rsquo;s status update - there are lots of existing developments to share!</description>
+    </item>
+    
+    <item>
+      <title>Status update, July 2019</title>
+      <link>./2019/07/15/Status-update-July-2019.html</link>
+      <pubDate>Mon, 15 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/07/15/Status-update-July-2019.html</guid>
+      <description>Today I received the keys to my new apartment, which by way of not being directly in the middle of the city1 saves me a decent chunk of money - and allows me to proudly announce that I have officially broken even on doing free software full time! I owe a great deal of thanks to all of you who have donated to support my work or purchased a paid SourceHut account.</description>
+    </item>
+    
+    <item>
+      <title>Status update, May 2019</title>
+      <link>./2019/05/15/Status-update-May-2019.html</link>
+      <pubDate>Wed, 15 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/05/15/Status-update-May-2019.html</guid>
+      <description>This month, it seems the most exciting developments again come from the realm of email. I&amp;rsquo;ve got cool email-related news to share for aerc, lists.sr.ht, and todo.sr.ht, and many cool developments in my other projects to share.
+Let&amp;rsquo;s start with lists.sr.ht: I have broken ground on the web-based patch review tools! I promised these features when I started working on sourcehut, to make the email-based workflow more enticing to those who would rather work on the web.</description>
+    </item>
+    
+    <item>
+      <title>Status update, April 2019</title>
+      <link>./2019/04/15/Status-update-April-2019.html</link>
+      <pubDate>Mon, 15 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/04/15/Status-update-April-2019.html</guid>
+      <description>Spring is here, and I&amp;rsquo;m already miserable in the heat. Crazy weather here in Philadelphia - I was woken up at 3 AM by my phone buzzing, telling me to take immediate shelter from a tornado. But with my A/C cranked up and the tornado safely passed, I&amp;rsquo;ve been able to get a lot of work done.
+The project with the most impressive progress is aerc2. It can now read emails, including filtering them through arbitrary commands for highlighting diffs or coloring quotes, or even rendering HTML email with a TUI browser like w3m.</description>
+    </item>
+    
+    <item>
+      <title>Status update, March 2019</title>
+      <link>./2019/03/15/Status-update-March-2019.html</link>
+      <pubDate>Fri, 15 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/03/15/Status-update-March-2019.html</guid>
+      <description>My todo list is getting completed at a pace it&amp;rsquo;s never seen before, and growing at a new pace, too. This full-time FOSS gig is really killing it! As the good weather finally starts to roll in, it&amp;rsquo;s time for March&amp;rsquo;s status update. Note: I posted updates on Patreon before, but will start posting here instead. This medium doesn&amp;rsquo;t depend on a proprietary service, allows for richer content, and is useful for my supporters who support my work via other donation platforms.</description>
+    </item>
+    
+  </channel>
+</rss>

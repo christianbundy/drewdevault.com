@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>How does virtual memory work?</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  How does virtual memory work?
+  <small>
+    <span class="date">October 29, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Virtual memory is an essential part of your computer, and has been for several
+decades. In my <a href="/2016/05/28/Understanding-pointers.html">earlier article on pointers</a>, I compared memory to a
+giant array of octets (bytes), and explained some of the abstractions we make
+on top of that. In actual fact, memory is more complicated than a flat array of
+bytes, and in this article I&rsquo;ll explain how.</p>
+<p>An astute reader of my earlier article may have considered that pointers on,
+say, an x86_64 system, are 64 bits long<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. With this, we can address up to
+18,446,744,073,709,551,616 bytes (16 exbibytes<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>) of memory. I only have 16
+GiB of RAM on this computer, so what gives? What&rsquo;s the rest of the address space
+for? The answer: all kinds of things! Only a small subset of your address space
+is mapped to physical RAM. A system on your computer called the MMU, or Memory
+Management Unit, is responsible for managing the abstraction that enables this
+and other uses of your address space. This abstraction is called virtual memory.</p>
+<p>The kernel interacts directly with the MMU, and provides syscalls like
+[mmap(2)][mmap] for userspace programs to do the same. Virtual memory is
+typically allocated a page at a time, and given a purpose on allocation, along
+with various flags (documented on the mmap page). When you call <code>malloc</code>, libc
+uses the mmap syscall to allocate pages of heap, then assigns a subset of that
+to the memory you asked for. However, since many programs can run concurrently
+on your system and may request pages of RAM at any time, your physical RAM can
+get fragmented.  Each time the kernel hits a context switch<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>, it swaps out
+the page table for the next process.</p>
+<p>This is used in this way to give each process its own clean address space and to
+provide memory isolation between processes, preventing them from accessing each
+other&rsquo;s memory. Sometimes, however, in the case of shared memory, the same
+physical memory is deliberately shared with multiple processes.  Many pages can
+also be any combination readable, writable, or executable - the latter meaning
+that you could jump to it and execute it as native code.  Your compiled program
+is a file, after all - mmap some executable pages, load it into memory, jump to
+it, and huzzah: you&rsquo;re running your program<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>. This is how JITs, dynamic
+recompiling emulators, etc, do their job. A common way to reduce risk here,
+popular on *BSD, is enforcing W^X (writable XOR executable), so that a page can
+be either writable or executable, but never both.</p>
+<p>Sometimes all of the memory you think you have isn&rsquo;t actually there, too. If you
+blow your RAM budget across your whole system, swap gets involved. This is when
+pages of RAM are &ldquo;swapped&rdquo; to disk - as soon as your program tries to access it
+again, a page fault occurs, transferring control to the kernel. The kernel
+restores from swap, damning some other poor process to the fate, and returns
+control to your program.</p>
+<p>Another very common use for virtual memory is for memory mapped I/O. This can
+be, for example, mapping a file to memory so you can efficiently read and write
+to disk. You can map other sorts of hardware, too, such as video memory. On 8086
+(which is what your computer probably pretends to be when it initially
+boots<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>), a simple 96x64 cell text buffer is available at address <code>0xB8000</code>.
+On my TI-Nspire CX calculator, I can read the current time from the real-time
+clock at <code>0x90090000</code>.</p>
+<p>In summary, MMUs arrived almost immediately on the computing scene, and have
+become increasingly sophisticated ever since. Virtual memory is a powerful tool
+which grants userspace programmers elegant, convenient, and efficient access to
+the underlying hardware.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Fun fact: most x86_64 implementations actually use 48 bit addresses internally, for a maximum theoretical limit of 256 TiB of RAM. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>I had to look that SI prefix up. This number is 2<sup>64</sup>, by the way. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>This means to switch between which process/thread is currently running on a single CPU. I&rsquo;ll write an article about this sometime.
+[mmap]: <a href="http://man7.org/linux/man-pages/man2/mmap.2.html">http://man7.org/linux/man-pages/man2/mmap.2.html</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p>There are actually at least a dozen other steps involved in this process. I&rsquo;ll write an article about loaders at some point, too. <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p>You can make it stop pretending to do this with <a href="https://wiki.osdev.org/Protected_Mode">an annoying complicated sequence of esoteric machine code instructions</a>. An even more annoying sequence is required to <a href="https://wiki.osdev.org/Setting_Up_Long_Mode">enter 64-bit mode</a>. It gets even better if you want to set up <a href="https://wiki.osdev.org/Symmetric_Multiprocessing">multiple CPU cores</a>! <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

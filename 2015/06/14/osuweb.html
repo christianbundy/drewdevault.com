@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>osu!web - WebGL &amp; Web Audio</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  osu!web - WebGL &amp; Web Audio
+  <small>
+    <span class="date">June 14, 2015</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <script src="/js/underscore-min.js"></script>
+<p>I&rsquo;ve taken a liking to a video game called <a href="https://osu.ppy.sh">osu!</a> over the
+past few months. It&rsquo;s a rhythm game where you use move your mouse to circles
+that appear with the beat, and click (or press a key) at the right time. It
+looks something like this:</p>
+<iframe src="https://www.youtube.com/embed/qdaZnQQAPqQ" frameborder="0" allowfullscreen></iframe>
+<p>The key of this game is that the &ldquo;beatmaps&rdquo; (a song plus notes to hit) are
+user-submitted. There are thousands of them, and the difficulty curve is very
+long - I&rsquo;ve been playing for 10 months and I&rsquo;m only maybe 70% of the way up the
+difficulty curve. It&rsquo;s also a competitive game, which leads to a lot more fun,
+where each user tries to complete maps a little bit better than everyone else
+can. You can see on the left in that video - this is a very good player who
+earned the #1 rank during this play.</p>
+<p>In my tendency to start writing code related to every game I play, I&rsquo;ve been
+working on a cool project called <a href="http://www.drewdevault.com/osuweb">osu!web</a>.
+This is a Javascript project that can:</p>
+<ul>
+<li>Decompress osu beatmap archives</li>
+<li>Decode the music with Web Audio</li>
+<li>Decode the osu! beatmap format</li>
+<li>Play the map!</li>
+</ul>
+<p>In case you don&rsquo;t have any osz files hanging around, try out <a href="https://sr.ht/f30.osz">this
+one</a>, which is the one from the video above.</p>
+<p><img src="https://sr.ht/044.png" alt=""></p>
+<h2 id="osuweb-and-the-future">osu!web and the future</h2>
+<p>This part of the blog post is for non-technical readers, mostly osu players.
+osu!web is pretty cool, and I want to make it even better. My current plans are
+just to make it a beatmap viewer, and I&rsquo;m working now on achieving that goal. I
+have to finish sliders and add spinners, and eventually work on things like
+storyboards. Playing background videos is not in the cards because of
+limitations with HTML5 video.</p>
+<p>Eventually, I&rsquo;d like to make it possible to link to a certain time in a certain
+map, or in a certain replay. Oh yeah, I want to make it support replays, too.
+If I get replays working, though, then I don&rsquo;t see any reason not to let players
+try the maps out in their web browsers, too. Keep an eye out!</p>
+<h2 id="technical-details">Technical Details</h2>
+<p>This project is only possible thanks to a whole bunch of new web technologies
+that have been stabilizing in the past year or so. The source code is <a href="https://github.com/SirCmpwn/osuweb">on
+Github</a> if you want to check it out.</p>
+<h3 id="loading-beatmaps">Loading beatmaps</h3>
+<p>When the user <a href="https://github.com/SirCmpwn/osuweb/blob/gh-pages/scripts/scenes/need-files.js#L8-L41">drags and
+drops</a>
+an osz file, we use <a href="https://github.com/gildas-lormeau/zip.js">zip.js</a> and
+create a virtual filesystem of sorts to browse through the archive. In this
+archive we have several things:</p>
+<ul>
+<li>A number of &ldquo;tracks&rdquo; - osu files that define notes and such for various
+difficulties</li>
+<li>The song (mp3) and optionally a video background (avi)</li>
+<li>Assets - a background image and optionally a skin (like a Minecraft texture
+pack)</li>
+</ul>
+<p><img src="https://sr.ht/ce6.png" alt=""></p>
+<p>We then load the *.osu files and decode them. They look similar to ini files or
+Unix config files. Here&rsquo;s a snippet:</p>
+<pre><code>[General]
+AudioFilename: MuryokuP - Sweet Sweet Cendrillon Drug.mp3
+AudioLeadIn: 1000
+PreviewTime: 69853
+
+# snip
+
+[Metadata]
+Title:Sweet Sweet Cendrillon Drug
+TitleUnicode:Sweet Sweet Cendrillon Drug
+Artist:MuryokuP
+ArtistUnicode:MuryokuP
+Creator:Smoothie
+Version:Cendrillon
+
+# snip
+
+[HitObjects]
+104,308,1246,5,0,0:0:0:0:
+68,240,1553,1,0,0:0:0:0:
+68,164,1861,1,0,0:0:0:0:
+104,96,2169,1,0,0:0:0:0:
+172,60,2476,2,0,P|256:48|340:60,1,170,0|0,0:0|0:0,0:0:0:0:
+404,104,3399,5,0,0:0:0:0:
+
+# snip
+</code></pre>
+<p>This is decoded by
+<a href="https://github.com/SirCmpwn/osuweb/blob/gh-pages/scripts/osu.js">osu.js</a>. For
+some sections (like <code>[Metadata]</code>), it just puts each entry into a dict that you
+can pull from later. It does more for things like hit objects, and understands
+which of these lines is a slider versus a hit circle versus a spinner and so on.</p>
+<p>I sneakily loaded a beatmap in the background in your browser as you were
+reading. If you want to check it out, open up your console and play with the
+<code>track</code> object. Ignore all the disqus errors, they&rsquo;re irrelevant.</p>
+<p><img src="https://sr.ht/a81.png" alt=""></p>
+<h2 id="enter-stage-web-audio">Enter stage: Web Audio</h2>
+<p>Web Audio had a bit of a rocky development cycle, what with Chrome thinking it&rsquo;s
+special and implementing a completely different standard from everyone else.
+Things have <a href="http://caniuse.com/#feat=audio-api">settled</a> by now, and I can
+start playing with it 😁 Bonus: Mozilla finally added mp3 support to all
+platforms, including Linux (which my dev machine runs).</p>
+<p>The osz file includes an mp3, which we
+<a href="https://github.com/SirCmpwn/osuweb/blob/gh-pages/scripts/osu.js#L209-L224">extract</a>
+into an ArrayBuffer, and
+<a href="https://github.com/SirCmpwn/osuweb/blob/gh-pages/scripts/osu-audio.js">load</a>
+into a Web Audio context. This is super cool and totally would not have been
+possible even a few months ago - kudos to the teams implementing all this
+exciting stuff in the browsers.</p>
+<p>That&rsquo;s about all we&rsquo;re doing with Web Audio right now. I do add a gain node so
+that you can control the volume with your mouse wheel. In the future, we can get
+more creative by:</p>
+<ul>
+<li>Adding support for HT/DT mods</li>
+<li>Adding support for NC</li>
+</ul>
+<h2 id="enter-stage-pixi">Enter stage: PIXI</h2>
+<p>Once we&rsquo;ve decoded the beatmap and loaded the audio, we can play it. After
+briefly showing the user a difficulty selection, we jump into rendering the map.
+For this, I&rsquo;ve decided to use <a href="http://pixijs.com/">PIXI.js</a>, which gives us a
+really nice API to use on top of WebGL with a canvas fallback for when WebGL is
+not available. I was originally just using canvas, but it wasn&rsquo;t very
+performant, so I went looking for a 2D WebGL framework and found PIXI. It&rsquo;s
+pretty cool.</p>
+<p>First, we iterate over all of the hit objects on the beatmap and generate
+sprites for them:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="k">this</span><span class="p">.</span><span class="nx">populateHit</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">hit</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Creates PIXI objects for a given hit
+</span><span class="c1"></span>    <span class="nx">hit</span><span class="p">.</span><span class="nx">objects</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="nx">hit</span><span class="p">.</span><span class="nx">score</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="nx">hit</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="s2">&#34;circle&#34;</span><span class="o">:</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">createHitCircle</span><span class="p">(</span><span class="nx">hit</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="s2">&#34;slider&#34;</span><span class="o">:</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">createSlider</span><span class="p">(</span><span class="nx">hit</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">hits</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">populateHit</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">hits</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span> <span class="c1">// Prepare sprites and such
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p>This is all done before we start playing. We consider the timestamp in the music
+that the hit is scheduled for, and then we place <em>all</em> of the hit objects into
+an array and start the song. See code for
+<a href="https://github.com/SirCmpwn/osuweb/blob/gh-pages/scripts/scenes/playback.js#L88-L143">createHitCircle</a>,
+which puts together a bunch of sprites for each hit cirlce and sets their alpha
+to zero. See also
+<a href="https://github.com/SirCmpwn/osuweb/blob/gh-pages/scripts/scenes/playback.js#L145-L228">createSlider</a>,
+which is more complicated (I&rsquo;ll go into detail later).</p>
+<p>Each frame, we get the current time from the Web Audio layer, and we run a
+function that updates a list of upcoming hit objects:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="k">this</span><span class="p">.</span><span class="nx">updateUpcoming</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">timestamp</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Cache the next ten seconds worth of hit objects
+</span><span class="c1"></span>    <span class="k">while</span> <span class="p">(</span><span class="nx">current</span> <span class="o">&lt;</span> <span class="nx">self</span><span class="p">.</span><span class="nx">hits</span><span class="p">.</span><span class="nx">length</span>
+        <span class="o">&amp;&amp;</span> <span class="nx">futuremost</span> <span class="o">&lt;</span> <span class="nx">timestamp</span> <span class="o">+</span> <span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="nx">TIME_CONSTANT</span><span class="p">))</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">hit</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">hits</span><span class="p">[</span><span class="nx">current</span><span class="o">++</span><span class="p">];</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">objects</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">stage</span><span class="p">.</span><span class="nx">addChildAt</span><span class="p">(</span><span class="nx">hit</span><span class="p">.</span><span class="nx">objects</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="mi">2</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">upcomingHits</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">hit</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">hit</span><span class="p">.</span><span class="nx">time</span> <span class="o">&gt;</span> <span class="nx">futuremost</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">futuremost</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">time</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">self</span><span class="p">.</span><span class="nx">upcomingHits</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">hit</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">upcomingHits</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+        <span class="kd">var</span> <span class="nx">diff</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">time</span> <span class="o">-</span> <span class="nx">timestamp</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">despawn</span> <span class="o">=</span> <span class="nx">NOTE_DESPAWN</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">hit</span><span class="p">.</span><span class="nx">type</span> <span class="o">===</span> <span class="s2">&#34;slider&#34;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">despawn</span> <span class="o">-=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">sliderTimeTotal</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">diff</span> <span class="o">&lt;</span> <span class="nx">despawn</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">upcomingHits</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+            <span class="nx">i</span><span class="o">--</span><span class="p">;</span>
+            <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">hit</span><span class="p">.</span><span class="nx">objects</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">o</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">stage</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="nx">o</span><span class="p">);</span>
+                <span class="nx">o</span><span class="p">.</span><span class="nx">destroy</span><span class="p">();</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>I adopted this pattern early on for performance reasons. During each frame&rsquo;s
+rendering step, we only have the sprites and such loaded for hit objects in the
+near future. This saves a lot of time. PIXI has all of these sprites loaded and
+draws them for us each frame. During each frame, all we have to do is update
+them:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="k">this</span><span class="p">.</span><span class="nx">updateHitObjects</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">time</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">self</span><span class="p">.</span><span class="nx">updateUpcoming</span><span class="p">(</span><span class="nx">time</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">upcomingHits</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">hit</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">upcomingHits</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="nx">hit</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="s2">&#34;circle&#34;</span><span class="o">:</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">updateHitCircle</span><span class="p">(</span><span class="nx">hit</span><span class="p">,</span> <span class="nx">time</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="s2">&#34;slider&#34;</span><span class="o">:</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">updateSlider</span><span class="p">(</span><span class="nx">hit</span><span class="p">,</span> <span class="nx">time</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="s2">&#34;spinner&#34;</span><span class="o">:</span>
+                <span class="c1">//self.updateSpinner(hit, time); // TODO
+</span><span class="c1"></span>                <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>This is passed in the current timestamp in the song, and based on this we are
+able to do some simple math to calculate how much alpha each note should have,
+as well as the scale of the approach circle (which tells you when to click the
+note):</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="k">this</span><span class="p">.</span><span class="nx">updateHitCircle</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">hit</span><span class="p">,</span> <span class="nx">time</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">diff</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">time</span> <span class="o">-</span> <span class="nx">time</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">diff</span> <span class="o">&lt;=</span> <span class="nx">NOTE_APPEAR</span> <span class="o">&amp;&amp;</span> <span class="nx">diff</span> <span class="o">&gt;</span> <span class="nx">NOTE_FULL_APPEAR</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">alpha</span> <span class="o">=</span> <span class="nx">diff</span> <span class="o">/</span> <span class="nx">NOTE_APPEAR</span><span class="p">;</span>
+        <span class="nx">alpha</span> <span class="o">-=</span> <span class="mf">0.5</span><span class="p">;</span> <span class="nx">alpha</span> <span class="o">=</span> <span class="o">-</span><span class="nx">alpha</span><span class="p">;</span> <span class="nx">alpha</span> <span class="o">+=</span> <span class="mf">0.5</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">diff</span> <span class="o">&lt;=</span> <span class="nx">NOTE_FULL_APPEAR</span> <span class="o">&amp;&amp;</span> <span class="nx">diff</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">diff</span> <span class="o">&gt;</span> <span class="nx">NOTE_DISAPPEAR</span> <span class="o">&amp;&amp;</span> <span class="nx">diff</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">alpha</span> <span class="o">=</span> <span class="nx">diff</span> <span class="o">/</span> <span class="nx">NOTE_DISAPPEAR</span><span class="p">;</span>
+        <span class="nx">alpha</span> <span class="o">-=</span> <span class="mf">0.5</span><span class="p">;</span> <span class="nx">alpha</span> <span class="o">=</span> <span class="o">-</span><span class="nx">alpha</span><span class="p">;</span> <span class="nx">alpha</span> <span class="o">+=</span> <span class="mf">0.5</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">diff</span> <span class="o">&lt;=</span> <span class="nx">NOTE_APPEAR</span> <span class="o">&amp;&amp;</span> <span class="nx">diff</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">approach</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="p">((</span><span class="nx">diff</span> <span class="o">/</span> <span class="nx">NOTE_APPEAR</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">;</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">approach</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="p">((</span><span class="nx">diff</span> <span class="o">/</span> <span class="nx">NOTE_APPEAR</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">approach</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">objects</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="nx">scale</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">hit</span><span class="p">.</span><span class="nx">objects</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">o</span><span class="p">)</span> <span class="p">{</span> <span class="nx">o</span><span class="p">.</span><span class="nx">alpha</span> <span class="o">=</span> <span class="nx">alpha</span><span class="p">;</span> <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div><p>I&rsquo;ve left out sliders, which again are pretty complicated. We&rsquo;ll get to them
+after you look at this screenshot again:</p>
+<p><img src="https://sr.ht/044.png" alt=""></p>
+<p>All of these hit objects are having their alpha and approach circle scale
+adjusted each frame by the above method. Since we&rsquo;re basing this on the
+timestamp of the map, a convenient side effect is that we can pass in any time
+to see what the map should look like at that time.</p>
+<h2 id="curves">Curves</h2>
+<p>The hardest thing so far has been rendering sliders, which are hit objects that
+you&rsquo;re meant to click and hold as you move across the &ldquo;slider&rdquo;. They look like
+this:</p>
+<p><img src="https://sr.ht/c97.png" alt=""></p>
+<p>The golden circle is the area you need to keep your mouse in if you want to pass
+this slider. Sliders are defined as a series of curves. There are a few kinds:</p>
+<ul>
+<li>Linear sliders (not curves)</li>
+<li>Catmull sliders</li>
+<li>Bezier sliders</li>
+</ul>
+<p>For now I&rsquo;ve only done bezier sliders. I give many thanks to
+<a href="https://github.com/itdelatrisu/opsu">opsu</a>, which I learned a lot of useful
+stuff about sliders from. Each slider is currently generated using the
+now-deprecated &ldquo;peppysliders&rdquo; method, where the sprite is repeated along the
+curve several times. If you look carefully as a slider fades out, you can notice
+that this is the case.</p>
+<p><img src="https://sr.ht/787.png" alt=""></p>
+<p>The newer style of sliders involves rendering them with a custom shader. This
+should be possible with PIXI, but I haven&rsquo;t done any research on them yet.
+Again, I expect to be able to draw a lot of knowledge from reading the opsu
+source code.</p>
+<p>I left out the initializer for sliders earlier, because it&rsquo;s long and
+complicated. I&rsquo;ll include it here so you can see how this goes:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="k">this</span><span class="p">.</span><span class="nx">createSlider</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">hit</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">lastFrame</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">keyframes</span><span class="p">[</span><span class="nx">hit</span><span class="p">.</span><span class="nx">keyframes</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+    <span class="kd">var</span> <span class="nx">timing</span> <span class="o">=</span> <span class="nx">track</span><span class="p">.</span><span class="nx">timingPoints</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">track</span><span class="p">.</span><span class="nx">timingPoints</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">t</span> <span class="o">=</span> <span class="nx">track</span><span class="p">.</span><span class="nx">timingPoints</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">t</span><span class="p">.</span><span class="nx">offset</span> <span class="o">&lt;</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">time</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="nx">timing</span> <span class="o">=</span> <span class="nx">t</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">hit</span><span class="p">.</span><span class="nx">sliderTime</span> <span class="o">=</span> <span class="nx">timing</span><span class="p">.</span><span class="nx">millisecondsPerBeat</span> <span class="o">*</span>
+        <span class="p">(</span><span class="nx">hit</span><span class="p">.</span><span class="nx">pixelLength</span> <span class="o">/</span> <span class="nx">track</span><span class="p">.</span><span class="nx">difficulty</span><span class="p">.</span><span class="nx">SliderMultiplier</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span><span class="p">;</span>
+    <span class="nx">hit</span><span class="p">.</span><span class="nx">sliderTimeTotal</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">sliderTime</span> <span class="o">*</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">repeat</span><span class="p">;</span>
+    <span class="c1">// TODO: Other sorts of curves besides LINEAR and BEZIER
+</span><span class="c1"></span>    <span class="c1">// TODO: Something other than shit peppysliders
+</span><span class="c1"></span>    <span class="nx">hit</span><span class="p">.</span><span class="nx">curve</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">LinearBezier</span><span class="p">(</span><span class="nx">hit</span><span class="p">,</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">type</span> <span class="o">===</span> <span class="nx">SLIDER_LINEAR</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">curve</span><span class="p">.</span><span class="nx">curve</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">curve</span><span class="p">.</span><span class="nx">curve</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+        <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PIXI</span><span class="p">.</span><span class="nx">Sprite</span><span class="p">(</span><span class="nx">Resources</span><span class="p">[</span><span class="s2">&#34;hitcircle.png&#34;</span><span class="p">]);</span>
+        <span class="nx">base</span><span class="p">.</span><span class="nx">anchor</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">base</span><span class="p">.</span><span class="nx">anchor</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
+        <span class="nx">base</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">xoffset</span> <span class="o">+</span> <span class="nx">c</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
+        <span class="nx">base</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">yoffset</span> <span class="o">+</span> <span class="nx">c</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
+        <span class="nx">base</span><span class="p">.</span><span class="nx">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="nx">base</span><span class="p">.</span><span class="nx">tint</span> <span class="o">=</span> <span class="nx">combos</span><span class="p">[</span><span class="nx">hit</span><span class="p">.</span><span class="nx">combo</span> <span class="o">%</span> <span class="nx">combos</span><span class="p">.</span><span class="nx">length</span><span class="p">];</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">objects</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">base</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nx">self</span><span class="p">.</span><span class="nx">createHitCircle</span><span class="p">({</span> <span class="c1">// Far end
+</span><span class="c1"></span>        <span class="nx">time</span><span class="o">:</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">time</span><span class="p">,</span>
+        <span class="nx">combo</span><span class="o">:</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">combo</span><span class="p">,</span>
+        <span class="nx">index</span><span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="nx">x</span><span class="o">:</span> <span class="nx">lastFrame</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span>
+        <span class="nx">y</span><span class="o">:</span> <span class="nx">lastFrame</span><span class="p">.</span><span class="nx">y</span><span class="p">,</span>
+        <span class="nx">objects</span><span class="o">:</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">objects</span>
+    <span class="p">});</span>
+    <span class="nx">self</span><span class="p">.</span><span class="nx">createHitCircle</span><span class="p">(</span><span class="nx">hit</span><span class="p">);</span> <span class="c1">// Near end
+</span><span class="c1"></span>    <span class="c1">// Add follow circle
+</span><span class="c1"></span>    <span class="kd">var</span> <span class="nx">follow</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">follow</span> <span class="o">=</span>
+        <span class="k">new</span> <span class="nx">PIXI</span><span class="p">.</span><span class="nx">Sprite</span><span class="p">(</span><span class="nx">Resources</span><span class="p">[</span><span class="s2">&#34;sliderfollowcircle.png&#34;</span><span class="p">]);</span>
+    <span class="nx">follow</span><span class="p">.</span><span class="nx">visible</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">follow</span><span class="p">.</span><span class="nx">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">follow</span><span class="p">.</span><span class="nx">anchor</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">follow</span><span class="p">.</span><span class="nx">anchor</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
+    <span class="nx">follow</span><span class="p">.</span><span class="nx">manualAlpha</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="nx">hit</span><span class="p">.</span><span class="nx">objects</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">follow</span><span class="p">);</span>
+    <span class="c1">// Add follow ball
+</span><span class="c1"></span>    <span class="kd">var</span> <span class="nx">ball</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">ball</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PIXI</span><span class="p">.</span><span class="nx">Sprite</span><span class="p">(</span><span class="nx">Resources</span><span class="p">[</span><span class="s2">&#34;sliderb0.png&#34;</span><span class="p">]);</span>
+    <span class="nx">ball</span><span class="p">.</span><span class="nx">visible</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">ball</span><span class="p">.</span><span class="nx">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">ball</span><span class="p">.</span><span class="nx">anchor</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">ball</span><span class="p">.</span><span class="nx">anchor</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
+    <span class="nx">ball</span><span class="p">.</span><span class="nx">tint</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">ball</span><span class="p">.</span><span class="nx">manualAlpha</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="nx">hit</span><span class="p">.</span><span class="nx">objects</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">ball</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">hit</span><span class="p">.</span><span class="nx">repeat</span> <span class="o">!==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Add reverse symbol
+</span><span class="c1"></span>        <span class="kd">var</span> <span class="nx">reverse</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">reverse</span> <span class="o">=</span>
+            <span class="k">new</span> <span class="nx">PIXI</span><span class="p">.</span><span class="nx">Sprite</span><span class="p">(</span><span class="nx">Resources</span><span class="p">[</span><span class="s2">&#34;reversearrow.png&#34;</span><span class="p">]);</span>
+        <span class="nx">reverse</span><span class="p">.</span><span class="nx">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="nx">reverse</span><span class="p">.</span><span class="nx">anchor</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">reverse</span><span class="p">.</span><span class="nx">anchor</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
+        <span class="nx">reverse</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">xoffset</span> <span class="o">+</span> <span class="nx">lastFrame</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
+        <span class="nx">reverse</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">yoffset</span> <span class="o">+</span> <span class="nx">lastFrame</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
+        <span class="nx">reverse</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">reverse</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">;</span>
+        <span class="nx">reverse</span><span class="p">.</span><span class="nx">tint</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="c1">// This makes the arrow point back towards the start of the slider
+</span><span class="c1"></span>        <span class="c1">// TODO: Make it point at the previous keyframe instead
+</span><span class="c1"></span>        <span class="kd">var</span> <span class="nx">deltaX</span> <span class="o">=</span> <span class="nx">lastFrame</span><span class="p">.</span><span class="nx">x</span> <span class="o">-</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">deltaY</span> <span class="o">=</span> <span class="nx">lastFrame</span><span class="p">.</span><span class="nx">y</span> <span class="o">-</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">y</span><span class="p">;</span>
+        <span class="nx">reverse</span><span class="p">.</span><span class="nx">rotation</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">atan2</span><span class="p">(</span><span class="nx">deltaY</span><span class="p">,</span> <span class="nx">deltaX</span><span class="p">)</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="p">;</span>
+
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">objects</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">reverse</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">hit</span><span class="p">.</span><span class="nx">repeat</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Add another reverse symbol
+</span><span class="c1"></span>        <span class="kd">var</span> <span class="nx">reverse</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">reverse_b</span>
+            <span class="o">=</span> <span class="k">new</span> <span class="nx">PIXI</span><span class="p">.</span><span class="nx">Sprite</span><span class="p">(</span><span class="nx">Resources</span><span class="p">[</span><span class="s2">&#34;reversearrow.png&#34;</span><span class="p">]);</span>
+        <span class="nx">reverse</span><span class="p">.</span><span class="nx">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="nx">reverse</span><span class="p">.</span><span class="nx">anchor</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">reverse</span><span class="p">.</span><span class="nx">anchor</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
+        <span class="nx">reverse</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">xoffset</span> <span class="o">+</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
+        <span class="nx">reverse</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">yoffset</span> <span class="o">+</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
+        <span class="nx">reverse</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">reverse</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">;</span>
+        <span class="nx">reverse</span><span class="p">.</span><span class="nx">tint</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">deltaX</span> <span class="o">=</span> <span class="nx">lastFrame</span><span class="p">.</span><span class="nx">x</span> <span class="o">-</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">deltaY</span> <span class="o">=</span> <span class="nx">lastFrame</span><span class="p">.</span><span class="nx">y</span> <span class="o">-</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">y</span><span class="p">;</span>
+        <span class="nx">reverse</span><span class="p">.</span><span class="nx">rotation</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">atan2</span><span class="p">(</span><span class="nx">deltaY</span><span class="p">,</span> <span class="nx">deltaX</span><span class="p">);</span>
+        <span class="c1">// Only visible when it&#39;s the next end to hit:
+</span><span class="c1"></span>        <span class="nx">reverse</span><span class="p">.</span><span class="nx">visible</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">objects</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">reverse</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>As you can see, there are many more moving pieces here. The important part is
+the curve:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="nx">hit</span><span class="p">.</span><span class="nx">curve</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">LinearBezier</span><span class="p">(</span><span class="nx">hit</span><span class="p">,</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">type</span> <span class="o">===</span> <span class="nx">SLIDER_LINEAR</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">curve</span><span class="p">.</span><span class="nx">curve</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">curve</span><span class="p">.</span><span class="nx">curve</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+    <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PIXI</span><span class="p">.</span><span class="nx">Sprite</span><span class="p">(</span><span class="nx">Resources</span><span class="p">[</span><span class="s2">&#34;hitcircle.png&#34;</span><span class="p">]);</span>
+    <span class="nx">base</span><span class="p">.</span><span class="nx">anchor</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">base</span><span class="p">.</span><span class="nx">anchor</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
+    <span class="nx">base</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">xoffset</span> <span class="o">+</span> <span class="nx">c</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
+    <span class="nx">base</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">yoffset</span> <span class="o">+</span> <span class="nx">c</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
+    <span class="nx">base</span><span class="p">.</span><span class="nx">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">base</span><span class="p">.</span><span class="nx">tint</span> <span class="o">=</span> <span class="nx">combos</span><span class="p">[</span><span class="nx">hit</span><span class="p">.</span><span class="nx">combo</span> <span class="o">%</span> <span class="nx">combos</span><span class="p">.</span><span class="nx">length</span><span class="p">];</span>
+    <span class="nx">hit</span><span class="p">.</span><span class="nx">objects</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">base</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>In the <a href="https://github.com/SirCmpwn/osuweb/tree/gh-pages/scripts/curves">curve
+code</a>, a
+series of points along each curve are generated for us to place sprites at.
+These are precomputed like all other hit objects to save time during playback.
+However, the render updater is still quite complicated:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="k">this</span><span class="p">.</span><span class="nx">updateSlider</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">hit</span><span class="p">,</span> <span class="nx">time</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">diff</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">time</span> <span class="o">-</span> <span class="nx">time</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">diff</span> <span class="o">&lt;=</span> <span class="nx">NOTE_APPEAR</span> <span class="o">&amp;&amp;</span> <span class="nx">diff</span> <span class="o">&gt;</span> <span class="nx">NOTE_FULL_APPEAR</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Fade in (before hit)
+</span><span class="c1"></span>        <span class="nx">alpha</span> <span class="o">=</span> <span class="nx">diff</span> <span class="o">/</span> <span class="nx">NOTE_APPEAR</span><span class="p">;</span>
+        <span class="nx">alpha</span> <span class="o">-=</span> <span class="mf">0.5</span><span class="p">;</span> <span class="nx">alpha</span> <span class="o">=</span> <span class="o">-</span><span class="nx">alpha</span><span class="p">;</span> <span class="nx">alpha</span> <span class="o">+=</span> <span class="mf">0.5</span><span class="p">;</span>
+
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">approach</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="p">((</span><span class="nx">diff</span> <span class="o">/</span> <span class="nx">NOTE_APPEAR</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">;</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">approach</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="p">((</span><span class="nx">diff</span> <span class="o">/</span> <span class="nx">NOTE_APPEAR</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">diff</span> <span class="o">&lt;=</span> <span class="nx">NOTE_FULL_APPEAR</span> <span class="o">&amp;&amp;</span> <span class="nx">diff</span> <span class="o">&gt;</span> <span class="o">-</span><span class="nx">hit</span><span class="p">.</span><span class="nx">sliderTimeTotal</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// During slide
+</span><span class="c1"></span>        <span class="nx">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">diff</span> <span class="o">&gt;</span> <span class="nx">NOTE_DISAPPEAR</span> <span class="o">-</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">sliderTimeTotal</span> <span class="o">&amp;&amp;</span> <span class="nx">diff</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Fade out (after slide)
+</span><span class="c1"></span>        <span class="nx">alpha</span> <span class="o">=</span> <span class="nx">diff</span> <span class="o">/</span> <span class="p">(</span><span class="nx">NOTE_DISAPPEAR</span> <span class="o">-</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">sliderTimeTotal</span><span class="p">);</span>
+        <span class="nx">alpha</span> <span class="o">-=</span> <span class="mf">0.5</span><span class="p">;</span> <span class="nx">alpha</span> <span class="o">=</span> <span class="o">-</span><span class="nx">alpha</span><span class="p">;</span> <span class="nx">alpha</span> <span class="o">+=</span> <span class="mf">0.5</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Update approach circle
+</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="nx">diff</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">approach</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="p">((</span><span class="nx">diff</span> <span class="o">/</span> <span class="nx">NOTE_APPEAR</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">;</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">approach</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="p">((</span><span class="nx">diff</span> <span class="o">/</span> <span class="nx">NOTE_APPEAR</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">diff</span> <span class="o">&gt;</span> <span class="nx">NOTE_DISAPPEAR</span> <span class="o">-</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">sliderTimeTotal</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">approach</span><span class="p">.</span><span class="nx">visible</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">follow</span><span class="p">.</span><span class="nx">visible</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">follow</span><span class="p">.</span><span class="nx">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">ball</span><span class="p">.</span><span class="nx">visible</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">ball</span><span class="p">.</span><span class="nx">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+        <span class="c1">// Update ball and follow circle
+</span><span class="c1"></span>        <span class="kd">var</span> <span class="nx">t</span> <span class="o">=</span> <span class="o">-</span><span class="nx">diff</span> <span class="o">/</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">sliderTimeTotal</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">at</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">curve</span><span class="p">.</span><span class="nx">pointAt</span><span class="p">(</span><span class="nx">t</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">at_next</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">curve</span><span class="p">.</span><span class="nx">pointAt</span><span class="p">(</span><span class="nx">t</span> <span class="o">+</span> <span class="mf">0.01</span><span class="p">);</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">follow</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">at</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">width</span> <span class="o">+</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">xoffset</span><span class="p">;</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">follow</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">at</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">height</span> <span class="o">+</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">yoffset</span><span class="p">;</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">ball</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">at</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">width</span> <span class="o">+</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">xoffset</span><span class="p">;</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">ball</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">at</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">height</span> <span class="o">+</span> <span class="nx">gfx</span><span class="p">.</span><span class="nx">yoffset</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">deltaX</span> <span class="o">=</span> <span class="nx">at</span><span class="p">.</span><span class="nx">x</span> <span class="o">-</span> <span class="nx">at_next</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">deltaY</span> <span class="o">=</span> <span class="nx">at</span><span class="p">.</span><span class="nx">y</span> <span class="o">-</span> <span class="nx">at_next</span><span class="p">.</span><span class="nx">y</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">at</span><span class="p">.</span><span class="nx">x</span> <span class="o">!==</span> <span class="nx">at_next</span><span class="p">.</span><span class="nx">x</span> <span class="o">||</span> <span class="nx">at</span><span class="p">.</span><span class="nx">y</span> <span class="o">!==</span> <span class="nx">at_next</span><span class="p">.</span><span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">hit</span><span class="p">.</span><span class="nx">ball</span><span class="p">.</span><span class="nx">rotation</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">atan2</span><span class="p">(</span><span class="nx">deltaY</span><span class="p">,</span> <span class="nx">deltaX</span><span class="p">)</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">diff</span> <span class="o">&gt;</span> <span class="o">-</span><span class="nx">hit</span><span class="p">.</span><span class="nx">sliderTimeTotal</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">index</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">sliderTime</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span><span class="p">;</span>
+            <span class="nx">hit</span><span class="p">.</span><span class="nx">ball</span><span class="p">.</span><span class="nx">texture</span> <span class="o">=</span> <span class="nx">Resources</span><span class="p">[</span><span class="s2">&#34;sliderb&#34;</span> <span class="o">+</span> <span class="nx">index</span> <span class="o">+</span> <span class="s2">&#34;.png&#34;</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">hit</span><span class="p">.</span><span class="nx">reverse</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">reverse</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">reverse</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">diff</span> <span class="o">%</span> <span class="mi">300</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.001</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">hit</span><span class="p">.</span><span class="nx">reverse_b</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">hit</span><span class="p">.</span><span class="nx">reverse_b</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">reverse_b</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">diff</span> <span class="o">%</span> <span class="mi">300</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.001</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">hit</span><span class="p">.</span><span class="nx">objects</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">o</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isUndefined</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">_manualAlpha</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nx">o</span><span class="p">.</span><span class="nx">alpha</span> <span class="o">=</span> <span class="nx">alpha</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div><p>Much of this is the same as the hit circle updater, since we have a similar hit
+circle at the start of the slider that needs to update in a similar fashion.
+However, we also have to move the rolling ball and the follow circle along the
+slider as the song progresses. This involves calling out to the curve code to
+figure out what point is (<code>current_time / slider_end</code>) along the length of the
+slider. We put the ball there, and we also ask for the point at (<code>(current_time + 0.01) / slider_end</code>) and make the ball rotate to face that direction.</p>
+<h2 id="conclusions">Conclusions</h2>
+<p>That&rsquo;s the bulk of the work neccessary to make an osu renderer. I&rsquo;ll have to add
+spinners once I feel like the slider code is complete, and a friend is working
+on adding hit sounds (sound effects that play when you correctly hit a note).
+The biggest problem he&rsquo;s facing is that Web Audio has no good solution for
+low-latency audio playback. On my side of things, though, everything is going
+great. PIXI was a really good choice - it&rsquo;s an easy to use API and the WebGL
+frontend is fast as hell. osu!web plays a map with performance that compares to
+the performance of osu! native.</p>
+<script src="/js/osu.js"></script>
+<script>
+var xhr = new XMLHttpRequest();
+xhr.open("GET", "/example.osu");
+xhr.onload = function() {
+    window.track = new Track(xhr.responseText);
+    window.track.decode();
+};
+xhr.send();
+</script>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

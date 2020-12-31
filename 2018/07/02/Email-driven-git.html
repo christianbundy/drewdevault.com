@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>The advantages of an email-driven git workflow</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  The advantages of an email-driven git workflow
+  <small>
+    <span class="date">July 2, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p><a href="https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.18.0.txt">git 2.18.0</a> has been released, and with it my first contribution to
+git has shipped! My patch was for a git feature which remains disappointingly
+obscure: <a href="https://git-scm.com/docs/git-send-email">git send-email</a>. I want to
+introduce my readers to this feature and speak to the benefits of using an
+email-driven git workflow - the workflow git was originally designed for.</p>
+<p>Email isn&rsquo;t as sexy as GitHub (and its imitators), but it has several
+advantages over the latter. Email is standardized, federated, well-understood,
+and venerable. A very large body of email-related software exists and is equally
+reliable and well-understood. You can interact with email using only open source
+software and customize your workflow at every level of the stack - filtering,
+organizing, forwarding, replying, and so on; in any manner you choose.</p>
+<p>Git has several built-in tools for leveraging email. The first one of note is
+<a href="https://git-scm.com/docs/git-format-patch">format-patch</a>. This can take a git
+commit (or series of commits) and format them as plaintext emails with embedded
+diffs. Here&rsquo;s a small example of its output:</p>
+<pre><code class="language-mail" data-lang="mail">From 8f5045c871c3060ff5f5f99ce1ada09f4b4cd105 Mon Sep 17 00:00:00 2001
+From: Drew DeVault &lt;sir@cmpwn.com&gt;
+Date: Wed, 2 May 2018 08:59:27 -0400
+Subject: [PATCH] Silently ignore touch_{motion,up} for unknown ids
+
+---
+ types/wlr_seat.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/types/wlr_seat.c b/types/wlr_seat.c
+index f77a492d..975746db 100644
+--- a/types/wlr_seat.c
++++ b/types/wlr_seat.c
+@@ -1113,7 +1113,6 @@ void wlr_seat_touch_notify_up(struct wlr_seat *seat, uint32_t time,
+ 	struct wlr_seat_touch_grab *grab = seat-&gt;touch_state.grab;
+ 	struct wlr_touch_point *point = wlr_seat_touch_get_point(seat, touch_id);
+ 	if (!point) {
+-		wlr_log(L_ERROR, &quot;got touch up for unknown touch point&quot;);
+ 		return;
+ 	}
+ 
+@@ -1128,7 +1127,6 @@ void wlr_seat_touch_notify_motion(struct wlr_seat *seat, uint32_t time,
+ 	struct wlr_seat_touch_grab *grab = seat-&gt;touch_state.grab;
+ 	struct wlr_touch_point *point = wlr_seat_touch_get_point(seat, touch_id);
+ 	if (!point) {
+-		wlr_log(L_ERROR, &quot;got touch motion for unknown touch point&quot;);
+ 		return;
+ 	}
+ 
+-- 
+2.18.0
+
+</code></pre><p>git format-patch is at the bottom of git&rsquo;s stack of outgoing email features. You
+can send the emails it generates manually, but usually you&rsquo;ll use git send-email
+instead. It logs into the SMTP server of your choice and sends the email for
+you, after running git format-patch for you and giving you an opportunity to
+make any edits you like. Given that most popular email clients these days are
+awful and can&rsquo;t handle basic tasks like &ldquo;sending email&rdquo; properly, I strongly
+recommend this tool over attempting to send format-patch&rsquo;s output yourself.</p>
+<p><img style="max-width: 75%" src="https://sr.ht/wmKv.jpg" /></p>
+<p style="text-align: center; max-width: 80%; margin: 1rem auto">
+    <em>
+        I put a notch in my keyboard for each person who ignores my advice,
+        struggles through sending emails manually, and eventually comes around
+        to letting git send-email do it for them.
+    </em>
+</p>
+<p>I recommend a few settings to apply to git send-email to make your workflow a
+bit easier. One is <code>git config --global sendemail.verify off</code>, which turns off
+a sometimes-annoying and always-confusing validation step which checks for
+features only supported by newer SMTP servers - newer, in this case, meaning
+more recent than November of 1995. I started a thread on the git mailing list
+this week to discuss changing this option to off by default.</p>
+<p>You can also set the default recipient for a given repository by using a local
+git config: <code>git config sendemail.to admin@example.org</code>. This lets you skip a
+step if you send your patches to a consistent destination for that project, like
+a mailing list. I also recommend <code>git config --global sendemail.annotate yes</code>,
+which will always open the emails in your editor to allow you to make changes
+(you can get this with <code>--annotate</code> if you don&rsquo;t want it every time).</p>
+<p>The main edit you&rsquo;ll want to make when annotating is to provide what some call
+&ldquo;timely commentary&rdquo; on your patch. Immediately following the <code>---</code> after your
+commit message, you can add a summary of your changes which can be seen by the
+recipient, but doesn&rsquo;t appear in the final commit log. This is a useful place to
+talk about anything useful regarding the testing, review, or integration of your
+changes. You may also want to edit the <code>[PATCH]</code> text in the subject line to
+something like <code>[PATCH v2]</code> - this can also be done with the <code>-v</code> flag as well.
+I also like to add additional To&rsquo;s, Cc&rsquo;s, etc at this time.</p>
+<p>Git also provides tools for the recipient of your messages. One such tool is
+<a href="https://git-scm.com/docs/git-am">git am</a>, which accepts an email prepared with
+format-patch and integrates it into their repository. Several flags are provided
+to assist with common integration activities, like signing off on the commit or
+attempting a 3-way merge. The difficult part can be getting the email to git am
+in the first place. If you simply use the GMail web UI, this can be difficult. I
+use <a href="http://www.mutt.org/">mutt</a>, a TUI email client, to manage incoming
+patches. This is useful for being able to compose replies with vim rather than
+fighting some other mail client to write emails the way I want, but more
+importantly it has the <code>|</code> key, which prompts you for a command to pipe the
+email into. Other tools like <a href="http://www.offlineimap.org/">OfflineIMAP</a> are also
+useful here.</p>
+<p>On the subject of composing replies, reviewing patches is quite easy with the
+email approach as well. Many bad, yet sadly popular email clients have
+popularized the idea that the sender&rsquo;s message is immutable, encouraging you to
+<a href="https://en.wikipedia.org/wiki/Posting_style#Top-posting">top post</a> and leave an endlessly growing chain of replies
+underneath your message. A secret these email clients have kept from you is that
+you are, in fact, permitted by the mail RFCs to edit the sender&rsquo;s message as you
+please when replying - a style called <a href="https://en.wikipedia.org/wiki/Posting_style#Bottom-posting">bottom posting</a>. I
+strongly encourage you to get comfortable doing this in general, but it&rsquo;s
+essential when reviewing patches received over email.</p>
+<p>In this manner, you can dissect the patch and respond to specific parts of it
+requesting changes or clarifications. It&rsquo;s just email - you can reply, forward
+the message, Cc interested parties, start several chains of discussion, and so
+on. I recently sent the following feedback on a patch I received:</p>
+<pre><code class="language-mail" data-lang="mail">Date: Mon, 11 Jun 2018 14:19:22 -0400
+From: Drew DeVault &lt;sir@cmpwn.com&gt;
+To: Gregory Mullen &lt;omitted&gt;
+Subject: Re: [PATCH 2/3 todo] Filter private events from events feed
+
+On 2018-06-11  9:14 AM, Gregory Mullen wrote:
+&gt; diff --git a/todosrht/alembic/versions/cb9732f3364c_clear_defaults_from_tickets_to_support_.py b/todosrht/alembic/versions/cb9732f3364c_clear_defaults_from_tickets_to_support_.py
+&gt; -%&lt;-
+&gt; +class FlagType(types.TypeDecorator):
+
+I think you can safely import the srht FlagType here without implicating
+the entire sr.ht database support code
+
+&gt; diff --git a/todosrht/blueprints/html.py b/todosrht/blueprints/html.py
+&gt; -%&lt;-
+&gt; +def collect_events(target, count):
+&gt; +    events = []
+&gt; +    for e in EventNotification.query.filter(EventNotification.user_id == target.id).order_by(EventNotification.created.desc()):
+
+80 cols
+
+I suspect this 'collect_events' function can be done entirely in SQL
+without having to process permissions in Python and do several SQL
+round-trips
+
+&gt;  @html.route(&quot;/~&lt;username&gt;&quot;)
+&gt;  def user_GET(username):
+&gt; -    print(username)
+
+Whoops! Nice catch.
+
+&gt;      user = User.query.filter(User.username == username.lower()).first()
+&gt;      if not user:
+&gt;          abort(404)
+&gt;      trackers, _ = get_tracker(username, None)
+&gt;      # TODO: only show public events (or events the current user can see)
+
+Can remove the comment
+</code></pre><p>Obviously this isn&rsquo;t the whole patch we&rsquo;re seeing - I&rsquo;ve edited it down to just
+the parts I want to talk about. I also chose to leave the file names in to aid
+in navigating my feedback, with casual <code>-%&lt;-</code> symbols indicating where I had
+trimmed out parts of the patch. This approach is common and effective.</p>
+<p>The main disadvantage of email driven development is that some people are more
+comfortable working with email in clients which are not well-suited to this kind
+of work. Popular email clients have caused terrible ideas like HTML email to
+proliferate, not only enabling spam, privacy leaks, and security
+vulnerabilities, but also making it more difficult for people to write emails
+that can be understood by git or tolerated by advanced email users.</p>
+<p>I don&rsquo;t think that the solution to these problems is to leave these powerful
+tools hanging in the wind and move to less powerful models like GitHub&rsquo;s pull
+requests. This is why on my own platform, <a href="https://sr.ht">sr.ht</a>, I chose to
+embrace git&rsquo;s email-driven approach, and extend it with new tools that make it
+easier to participate without directly using email. For those like me, I still
+want the email to be there so you can dig my heels in and do it old-school, but
+I appreciate that it&rsquo;s not for everyone.</p>
+<p>I started working on the sr.ht mailing list service a couple of weeks ago, which
+is where these goals will be realized with new email-driven code review tools.
+My friend <a href="https://emersion.fr">Simon</a> has been helping out with a Python module
+named <a href="https://git.sr.ht/~emersion/python-emailthreads/">emailthreads</a> which can
+be used to parse email discussions - with a surprising degree of accuracy,
+considering the flexibility of email. Once I get these tools into a usable
+state, we&rsquo;ll likely see sr.ht registrations finally opened to the general public
+(interested in trying it earlier? <a href="mailto:sir@cmpwn.com">Email me</a>). Of course,
+it&rsquo;s all <a href="https://git.sr.ht/~sircmpwn/?search=sr.ht">open source</a>, so you can
+follow along and try it on your own infrastructure if you like.</p>
+<p>Using email for git scales extremely well. The canonical project, of course, is
+the Linux kernel. A change is made to the Linux kernel an average of 7 times per
+hour, constantly. It is maintained by dozens of veritable clans of software
+engineers hacking on dozens of modules, and email allows these changes to
+efficiently flow code throughout the system. Without email, Linux&rsquo;s maintenance
+model would be impossible. It&rsquo;s worth noting that git was designed for
+maintaining Linux, of course.</p>
+<p>With the right setup, it&rsquo;s well suited to small projects as well. Sending a
+patch along for review is a single git command. It lands directly in the
+maintainer&rsquo;s inbox and can be integrated with a handful of keystrokes. All of
+this works without any centralization or proprietary software involved. We
+should embrace this!</p>
+<hr>
+<p>Related articles sent in by readers:</p>
+<p><a href="https://begriffs.com/posts/2018-06-05-mailing-list-vs-github.html">Mailing lists vs Github</a>
+by Joe Nelson</p>
+<p><a href="https://web.archive.org/web/20180522180815/https://dpc.pw/blog/2017/08/youre-using-git-wrong/">You&rsquo;re using git wrong</a> by
+Dawid Ciężarkiewicz</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

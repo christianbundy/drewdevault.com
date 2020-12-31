@@ -1,0 +1,61 @@
+```ASCII art of a rocket next to "Drew DeVault" in a stylized font
+  /\
+  ||    ________                         ________       ____   ____            .__   __
+  ||    \______ \_______   ______  _  __ \______ \   ___\   \ /   /____   __ __|  |_/  |_
+ /||\    |    |  \_  __ \_/ __ \ \/ \/ /  |    |  \_/ __ \   Y   /\__  \ |  |  \  |\   __\
+/:||:\   |    `   \  | \/\  ___/\     /   |    `   \  ___/\     /  / __ \|  |  /  |_|  |
+|:||:|  /_______  /__|    \___  >\/\_/   /_______  /\___  >\___/  (____  /____/|____/__|
+|/||\|        \/            \/                 \/     \/             \/
+  **
+  **
+```
+
+# Drew DeVault's geminispace
+
+Contact: sir@cmpwn.com
+
+My Gemini-related projects:
+
+=> gmni.gmi gmni: a Gemini client
+=> gmnisrv.gmi gmnisrv: a Gemini server
+=> kineto.gmi kineto: an HTTP to Gemini proxy
+
+Gemini services:
+
+=> /cgi-bin/man.sh Look up a POSIX man page
+
+## Blog posts
+
+=> gemini://./2020/12/25/H0-H0-H0.gmi December 25, 2020: H0 H0 H0
+=> gemini://./2020/12/25/How-to-design-a-new-programming-language.gmi December 25, 2020: How to design a new programming language from scratch
+=> gemini://./2020/12/15/Status-update-December-2020.gmi December 15, 2020: Status update, December 2020
+=> gemini://./2020/12/12/Shell-literacy.gmi December 12, 2020: Become shell literate
+=> gemini://./2020/12/04/Analytics-and-informed-consent.gmi December 4, 2020: Web analytics should at least meet the standards of informed consent
+=> gemini://./2020/11/29/skytree.gmi November 29, 2020: 俺のスカイツリー旅行
+=> gemini://./2020/11/20/A-few-ways-to-make-money-in-FOSS.gmi November 20, 2020: A few ways to make money in FOSS
+=> gemini://./2020/11/17/Better-than-DuckDuckGo.gmi November 17, 2020: We can do better than DuckDuckGo
+=> gemini://./2020/11/15/RE-Is-this-aggregator-idea-good.gmi November 15, 2020: RE: Is This Aggregator Idea Good?
+=> gemini://./2020/11/15/Status-update-November-2020.gmi November 15, 2020: Status update, November 2020
+=> gemini://./2020/11/12/Copying-aint-stealing.gmi November 12, 2020: Copying ain't stealing
+=> gemini://./2020/11/10/2020-Election-worker.gmi November 10, 2020: My experience as a poll worker in Pennsylvania
+=> gemini://./2020/11/08/HN-over-Gemini.gmi November 8, 2020: Hacker News over Gemini
+=> gemini://./2020/11/06/Utility-vs-usability.gmi November 6, 2020: Utility vs usability
+=> gemini://./2020/11/01/What-is-Gemini-anyway.gmi November 1, 2020: What is this Gemini thing anyway, and why am I excited about it?
+=> gemini://./2020/10/23/Im-handing-wlroots-and-sway-to-Simon.gmi October 23, 2020: I'm handing over maintenance of wlroots and sway to Simon Ser
+=> gemini://./2020/10/22/Firefox-the-embarassment-of-FOSS.gmi October 22, 2020: Firefox: The Jewel^WEmbarassment of Open Source
+=> gemini://./2020/10/18/New-workstation.gmi October 18, 2020: New workstation
+=> gemini://./2020/10/15/Status-update-October-2020.gmi October 15, 2020: Status update, October 2020
+=> gemini://./2020/10/11/Kineto-a-gemini-proxy.gmi October 11, 2020: Kineto: An HTTP to Gemini proxy
+=> gemini://./2020/10/09/Four-principles-of-software-engineering.gmi October 9, 2020: Four principles of software engineering
+=> gemini://./2020/10/01/Spamtoberfest.gmi October 1, 2020: Spamtoberfest
+=> gemini://./2020/09/27/Gemini-and-Hugo.gmi September 27, 2020: Gemini and Hugo
+=> gemini://./2020/09/25/A-story-of-two-libcs.gmi September 25, 2020: A tale of two libcs
+=> gemini://./2020/09/21/Gemini-TOFU.gmi September 21, 2020: TOFU recommendations for Gemini
+
+=> /feed.xml RSS feed
+
+A backlog of additional articles is available on the World Wide Web:
+
+=> https://drewdevault.com Drew DeVault's blog
+
+The content for this site is CC-BY-SA. The code for this site is MIT.

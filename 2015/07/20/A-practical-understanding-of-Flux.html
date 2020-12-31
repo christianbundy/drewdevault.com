@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>A practical understanding of Flux</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  A practical understanding of Flux
+  <small>
+    <span class="date">July 20, 2015</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p><a href="https://facebook.github.io/react/">React.js</a> and the
+<a href="https://facebook.github.io/flux/">Flux</a> are shaping up to be some of the most
+important tools for web development in the coming years. The MVC model was
+strong on the server when we decided to take the frontend seriously, and it was
+shoehorned into the frontend since we didn&rsquo;t know any better. React and Flux
+challenge that and I like where it&rsquo;s going very much. That being said, it was
+very difficult for me to get into. I put together this blog post to serve as a
+more <em>practical</em> guide - the upstream documentation tells you a lot of concepts
+and expects you to put them together yourself. Hopefully at the end of this
+blog post you can confidently start writing things with React+Flux instead of
+reading brain-melting docs for a few hours like I did.</p>
+<p>At the core of it, React and Flux are very simple and elegant. Far more simple
+than the voodoo sales pitch upstream would have you believe. To be clear,
+<strong>React</strong> is a framework-ish that lets you describe your UI through reusable
+components, and includes <em>jsx</em> for describing HTML elements directly in your
+JavaScript code. <strong>Flux</strong> is an <em>optional</em> architectural design philosophy that
+you can adopt to help structure your applications. I have been using
+<a href="https://babeljs.io/">Babel</a> to compile my React+Flux work, which gives me
+ES6/ES7 support - I strongly suggest you do the same. This blog post assumes
+you&rsquo;re doing so. For a crash course on ES6, <a href="http://git.io/es6features">read this entire
+page</a>. Crash course for ES7 is omitted here for
+brevity, but <a href="https://gist.github.com/SirCmpwn/2e8e455c91494b7c3713">click this</a>
+if you&rsquo;re interested.</p>
+<h2 id="flux-overview">Flux overview</h2>
+<p>Flux is based on a unidirectional data flow. The direction is: dispatcher ➜
+stores ➜ views, and the data is actions. At the stores or views level, you can
+give actions to the dispatcher, which passes them down the line.</p>
+<p>Let&rsquo;s explain exactly what piece is, and how it fits in to your application.
+After this I&rsquo;ll tell you some specific details and I have a starter kit prepared
+for you to grab as well.</p>
+<h3 id="dispatcher">Dispatcher</h3>
+<p>The dispatcher is very simple. Anything can register to receive a callback when
+an &ldquo;action&rdquo; happens. There is one dispatcher and one set of callbacks, and
+everything that registers for it will receive every action given to the
+dispatcher, and can do with this as it pleases. Generally speaking you will only
+have the stores listen to this. The kind of actions you will send along may look
+something like this:</p>
+<ul>
+<li>Add a record</li>
+<li>Delete a record</li>
+<li>Fetch a record with a given ID</li>
+<li>Refresh a store</li>
+</ul>
+<p>Anything that would change data is going to be given to the dispatcher and
+passed along to the actions. Since everything receives every action you give to
+the dispatcher, you have to encode something into each action that describes
+what it&rsquo;s for. I use objects that look something like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+    <span class="nt">&#34;action&#34;</span><span class="p">:</span> <span class="s2">&#34;STORE_NAME.ACTION_TYPE.ETC&#34;</span><span class="p">,</span>
+    <span class="err">...</span>
+<span class="p">}</span>
+</code></pre></div><p>Where <code>...</code> is whatever extra data you need to include (the ID of the record
+to fetch, the contents of the record to be added, the property that needs to
+change, etc). Here&rsquo;s an example payload:</p>
+<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+    <span class="nt">&#34;action&#34;</span><span class="p">:</span> <span class="s2">&#34;ACCOUNTS.CREATE.USER&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;username&#34;</span><span class="p">:</span> <span class="s2">&#34;SirCmpwn&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;email&#34;</span><span class="p">:</span> <span class="s2">&#34;sir@cmpwn.com&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;password&#34;</span><span class="p">:</span> <span class="s2">&#34;hunter2&#34;</span>
+<span class="p">}</span>
+</code></pre></div><p>The Accounts store is listening for actions that start with <code>ACCOUNTS.</code> and when
+it sees <code>CREATE.USER</code>, it knows a new user needs to be created with these
+details.</p>
+<h3 id="stores">Stores</h3>
+<p>The stores just have ownership of data and handle any changes that happen to
+that data. When the data changes, they raise events that the views can subscribe
+to to let them know what&rsquo;s up. There&rsquo;s nothing magic going on here (I initially
+thought there was magic). Here&rsquo;s a really simple store:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="kr">import</span> <span class="nx">Dispatcher</span> <span class="nx">from</span> <span class="s2">&#34;whatever&#34;</span><span class="p">;</span>
+
+<span class="kr">export</span> <span class="kr">class</span> <span class="nx">UserStore</span> <span class="p">{</span>
+    <span class="nx">constructor</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">_users</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">action</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">action</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+        <span class="nx">Dispatcher</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">action</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">get</span> <span class="nx">Users</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_users</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">action</span><span class="p">(</span><span class="nx">payload</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="nx">payload</span><span class="p">.</span><span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="s2">&#34;ACCOUNTS.CREATE.USER&#34;</span><span class="o">:</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">_users</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span> 
+                <span class="s2">&#34;username&#34;</span><span class="o">:</span> <span class="nx">payload</span><span class="p">.</span><span class="nx">username</span><span class="p">,</span>
+                <span class="s2">&#34;email&#34;</span><span class="o">:</span> <span class="nx">payload</span><span class="p">.</span><span class="nx">email</span><span class="p">,</span>
+                <span class="s2">&#34;password&#34;</span><span class="o">:</span> <span class="nx">payload</span><span class="p">.</span><span class="nx">password</span>
+            <span class="p">});</span>
+            <span class="nx">raiseChangeEvent</span><span class="p">();</span> <span class="c1">// Exercise for the reader
+</span><span class="c1"></span>            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="nx">store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">UserStore</span><span class="p">();</span>
+<span class="kr">export</span> <span class="k">default</span> <span class="k">new</span> <span class="nx">UserStore</span><span class="p">();</span>
+</code></pre></div><p>Yeah, that&rsquo;s all there is to it. Each store should be a singleton. You use it
+like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="kr">import</span> <span class="nx">UserStore</span> <span class="nx">from</span> <span class="s2">&#34;whatever/UserStore&#34;</span><span class="p">;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">UserStore</span><span class="p">.</span><span class="nx">Users</span><span class="p">);</span>
+
+<span class="nx">UserStore</span><span class="p">.</span><span class="nx">registerChangeEvent</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">UserStore</span><span class="p">.</span><span class="nx">Users</span><span class="p">);</span> <span class="c1">// This has changed now
+</span><span class="c1"></span><span class="p">});</span>
+</code></pre></div><p>Stores end up having a lot of boilerplate. I haven&rsquo;t quite figured out the best
+way to address that yet.</p>
+<h3 id="views">Views</h3>
+<p>Views are react components. What makes React components interesting is that they
+re-render the whole thing when you call <code>setState</code>. If you want to change the
+way it appears on the page for any reason, a call to <code>setState</code> will need to
+happen. And here are the two circumstances under which they will change:</p>
+<ul>
+<li>In response to user input to change non-semantic view state</li>
+<li>In response to a change event from a store</li>
+</ul>
+<p>The first bullet here means that you can call <code>setState</code> to change view states,
+but not data. The second bullet is for when the data changes. When you change
+view states, this refers to things like &ldquo;click button to reveal form&rdquo;. When you
+change data, this refers to things like &ldquo;a new record was created, show it&rdquo;, or
+even &ldquo;a single property of a record changed, show that change&rdquo;.</p>
+<p><strong>Wrong way</strong>: you have a text box that updates the &ldquo;name&rdquo; of a record. When the
+user presses the &ldquo;Apply&rdquo; key, the view will re-render itself with the new name.</p>
+<p><strong>Right way</strong>: When you press &ldquo;Apply&rdquo;, the view sends an action to the
+dispatcher to apply the change. The relevant store picks up the action, applies
+the change to its own data store, and raises an event. Your view hears that
+event and re-renders itself.</p>
+<p><img src="https://facebook.github.io/flux/img/flux-simple-f8-diagram-1300w.png" alt=""></p>
+<p><img src="https://facebook.github.io/flux/img/flux-simple-f8-diagram-with-client-action-1300w.png" alt=""></p>
+<h3 id="why-bother">Why bother?</h3>
+<ul>
+<li>Easy to have stores depend on each other</li>
+<li>All views that depend on the same stores are updated when it changes</li>
+<li>It follows that all cross-store dependencies are updated in a similar fashion</li>
+<li>Single source of truth for data</li>
+<li>Easy as pie to pick up and maintain with little knowledge of the codebase</li>
+</ul>
+<h2 id="practical-problems">Practical problems</h2>
+<p>Here are some problems I ran into, and the fluxy solution to each.</p>
+<h3 id="need-to-load-data-async">Need to load data async</h3>
+<p>You have a list of DNS records to show the user, but they&rsquo;re hanging out on the
+server instead of in JavaScript objects. Here&rsquo;s how you accomodate for this:</p>
+<ul>
+<li>When you use a store, call <code>Store.fetchIfNecessary()</code> first.</li>
+<li>When you pull data from the store, expect <code>null</code> and handle this elegantly.</li>
+<li>When the initial fetch finishes in the store, raise a change event.</li>
+</ul>
+<p>From <code>fetchIfNecessary</code> in the store, go do the request unless it&rsquo;s in progress or
+done. On the view side, show a loading spinner or something if you get <code>null</code>.
+When the change event happens, whatever code set the state of your component
+initially will be re-run, and this time it won&rsquo;t get <code>null</code> - deal with it
+appropriately (show the actual UI).</p>
+<p>This works for more than things that are well-defined at dev time. If you need
+to, for example, fetch data for an arbitrary ID:</p>
+<ul>
+<li>View calls <code>Store.userById(10)</code> and gets <code>null</code>, renders lack of data
+appropriately</li>
+<li>Store is like &ldquo;my bad&rdquo; and fetches it from the server</li>
+<li>Store raises change event when it arrives and the view re-renders</li>
+</ul>
+<h3 id="batteries-not-included">Batteries not included</h3>
+<p>Upstream, in terms of actual usable code, flux just gives you a dispatcher. You
+also need something to handle your events. This is easy to roll yourself, or you
+can grab one of a bazillion things online that will do it for you. There is also
+no base Store class for you, so make one of those. You should probably just
+include some shared code for raising events and consuming actions. Mine looks
+something like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="kr">class</span> <span class="nx">UserStore</span> <span class="kr">extends</span> <span class="nx">Store</span> <span class="p">{</span>
+    <span class="nx">constructor</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kr">super</span><span class="p">(</span><span class="s2">&#34;USER&#34;</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">_users</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="kr">super</span><span class="p">.</span><span class="nx">action</span><span class="p">(</span><span class="s2">&#34;CREATE.USER&#34;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">userCreated</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">userCreated</span><span class="p">(</span><span class="nx">payload</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">_users</span><span class="p">.</span><span class="nx">push</span><span class="p">(...);</span>
+        <span class="kr">super</span><span class="p">.</span><span class="nx">raiseChangeEvent</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="nx">get</span> <span class="nx">Users</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_users</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>Do what works best for you.</p>
+<h2 id="starter-kit">Starter Kit</h2>
+<p>If you want something with the batteries in and a base to build from, I&rsquo;ve got
+you covered. Head over to
+<a href="https://github.com/SirCmpwn/react-starter-kit">SirCmpwn/react-starter-kit</a> on
+Github.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>React and Flux are going to be big. This feels like the right way to build a
+frontend. Hopefully I saved you from all the headache I went through trying to
+&ldquo;get&rdquo; this stuff, and I hope it serves you well in the future. I&rsquo;m going to be
+pushing pretty hard for this model at my new gig, so I may be writing more blog
+posts as I explore it in a large-scale application - stay tuned.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

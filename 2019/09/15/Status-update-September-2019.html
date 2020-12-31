@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Status update, September 2019</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Status update, September 2019
+  <small>
+    <span class="date">September 15, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Finally home again after a long series of travels! I spent almost a month in
+Japan, then visited my sister&rsquo;s new home in Hawaii on the way eastwards, then
+some old friends in Seattle, and finally after 5½ long weeks, it&rsquo;s home sweet
+home here in Philadelphia. At least until I leave for
+<a href="https://xdc2019.x.org/">XDC</a> in Montreal 2 weeks from now. Someday I&rsquo;ll have
+some rest&hellip; throughout all of these wild travels, I&rsquo;ve been hard at work on my
+free software projects. Let&rsquo;s get started with this month&rsquo;s status update!</p>
+<p><img src="https://sr.ht/iuDE.jpg" alt=""></p>
+<p style="text-align: center">
+  <small>Great view from a hike on O'ahu</small>
+</p>
+<p>First, Wayland news. I&rsquo;m happy to share with you that the Wayland book is now
+more than halfway complete, and I&rsquo;ve made the drafts available online for a
+discounted price: <a href="https://wayland-book.com">The Wayland Protocol</a>. Thanks to
+all of my collaborators and readers who volunteered to provide feedback! There&rsquo;s
+more Wayland-related news still, as this month marked the release of <a href="https://github.com/swaywm/sway/releases/tag/1.2">sway
+1.2</a> and <a href="https://github.com/swaywm/wlroots/releases/tag/0.7.0">wlroots 0.7.0</a>. I like this release
+because it&rsquo;s light on new features - showing that sway is maturing into a stable
+and reliable Wayland desktop. The features which were added are subtle and serve
+to improve sway&rsquo;s status as a member of the broader ecosystem - sway 1.2
+supports the new <a href="https://github.com/mate-desktop/mate-panel/pull/991">layer shell support in the MATE panel</a>, and the
+same improvements are already helping with the development of other software.</p>
+<p><a href="https://sr.ht/9Oro.png"><img src="https://sr.ht/9Oro.png" alt="Screenshot of MATE panel running on sway"></a></p>
+<p style="text-align: center">
+  <small>Rest assured, the weird alignment issues were fixed</small>
+</p>
+<p>On the topic of <a href="https://aerc-mail.org">aerc</a>, I still haven&rsquo;t gotten around to
+that write-up responding to <a href="http://www.kroah.com/log/blog/2019/08/14/patch-workflow-with-mutt-2019/">Greg KH&rsquo;s post</a>&hellip; but I will. Travels have
+made it difficult to sit down for a while and do some serious long-term project
+planning. Regardless, the current plans have still been being executed well.
+Notmuch support continues to improve thanks to Reto Brunner&rsquo;s help, completions
+are improving throughout, and heaps of little features - signatures, unread
+message counts, :prompt, forward-as-attachment - are now supported.</p>
+<p>I also spent some time this month working on Simon Ser&rsquo;s
+<a href="https://mrsh.sh">mrsh</a>. I cleaned up call frames, implemented the <code>return</code>
+builtin, finished the <code>pwd</code> builtin, improved readline support, fleshed out job
+control, and made many other small improvements. With mrsh nearing completion,
+I&rsquo;ve started up another project: <a href="https://git.sr.ht/~sircmpwn/ctools">ctools</a>. This provides the rest of the
+POSIX commands required of a standard scripting environment (it replaces
+coreutils or busybox). I&rsquo;m taking this one pretty seriously from the start -
+every command has full POSIX.1-2017 support with a conformance test and a man
+page, in one C source file and no dependencies. If you&rsquo;re looking for a good
+afternoon project (or weekend, for some utilities), how about picking up your
+favorite <a href="https://pubs.opengroup.org/onlinepubs/9699919799/">POSIX</a> tool and
+sending along an implementation?</p>
+<p><a href="https://builds.sr.ht/~sircmpwn/job/88955"><img src="https://sr.ht/DSxS.png" alt="Screenshot of ctools test suite"></a></p>
+<p>With these projects, along with ~mcf&rsquo;s <a href="https://git.sr.ht/~mcf/cproc">cproc</a>,
+we&rsquo;re starting to see a simple and elegant operating system come together -
+exactly the kind I wish we already had. To track our progress towards this goal,
+I&rsquo;ve put up <a href="https://arewesimpleyet.org">arewesimpleyet.org</a>. A day may soon
+come when computers become the again elegant and simple tools they were always
+meant to be! At least if we assume &ldquo;within a few decades&rdquo; as a valid definition
+of &ldquo;soon&rdquo;.</p>
+<p>To cover SourceHut news briefly: we hit 10,000 users this month! And it&rsquo;s
+continued to grow since, up to 10,649 users at the time of writing. On the
+subject of feature development, with Denis Laxalde&rsquo;s help we&rsquo;re starting to put
+together a Debian repository for installing the services on Debian hosts. On
+todo.sr.ht, users without accounts can now create and comment on tickets via
+email. I also redesigned <a href="https://sourcehut.org">sourcehut.org</a>, adding a blog
+with a greater breadth of topics than we&rsquo;ll see on the sr.ht-announce mailing
+list.</p>
+<p>That&rsquo;s all for this month! I enjoyed my vacation and some much needed time away
+from work&hellip; though for me a &ldquo;day off&rdquo; is a day where I write less than 1,000
+lines of code. Thank you again for your support - it means the world to me. I&rsquo;ll
+see you next month!</p>
+<p><img src="https://sr.ht/1cuE.jpg" alt=""></p>
+<p style="text-align: center">
+  <small>Had the best seats at a concert in Tokyo!</small>
+</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

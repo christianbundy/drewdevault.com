@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Rust is not a good C replacement</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Rust is not a good C replacement
+  <small>
+    <span class="date">March 25, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I have a saying that summarizes my opinion of Rust compared to Go: &ldquo;Go is the
+result of C programmers designing a new programming language, and Rust is the
+result of C++ programmers designing a new programming language&rdquo;. This isn&rsquo;t just
+a metaphor - Go was designed by plan9 alumni, an operating system written in C
+and the source of inspiration for many of Go&rsquo;s features, and Rust was designed
+by the folks at Mozilla - whose flagship product is one of the largest C++
+codebases in the world.</p>
+<p>The values of good C++ programmers are incompatible with the values of good C
+programmers<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. Rust is a decent C++ replacement if you have the same goals as
+C++, but if you don&rsquo;t, the design has very similar drawbacks. Both Rust and C++
+are what I like to call &ldquo;kitchen sink&rdquo; programming languages, with the obvious
+implication. These languages solve problems by adding more language features. A
+language like C solves problems by writing more C code.</p>
+<p>I did some back of the napkin estimates of the rate at which these languages
+become more complex, based on the rate at which they add features per year. My
+approach wasn&rsquo;t very scientific, but I&rsquo;m sure the point comes across.</p>
+<ul>
+<li><strong>C: 0.73 new features per year</strong>, measured by the number of bullet points in
+the C11 article on Wikipedia which summarizes the changes from C99, adjusted to
+account for the fact that C18 introduced no new features.</li>
+<li><strong>Go: 2 new features per year</strong>, measured by the number of new features listed
+on the Wikipedia summary of new Go versions.</li>
+<li><strong>C++: 11.3 new features per year</strong>, measured by the number of bullet points
+in the C++17 article which summarizes the changes from C++14.</li>
+<li><strong>Rust: 15 new features per year</strong>, measured by the number of headers in the
+release notes of major Rust versions over the past year, minus things like
+linters.</li>
+</ul>
+<p>This speaks volumes to the stability of these languages, but more importantly it
+speaks to their complexity. Over time it rapidly becomes difficult for one to
+keep an up-to-date mental map of Rust and how to solve your problems
+idiomatically. A Rust program written last year already looks outdated, whereas
+a C program written ten years ago has pretty good odds of being just fine.
+Systems programmers don&rsquo;t want shiny things - we just want things that work.
+That really cool feature $other_language has? Not interested. It&rsquo;ll be more
+trouble than it&rsquo;s worth.</p>
+<p>With the philosophical wish-wash out of the way and the tone set, let me go over
+some more specific problems when considering Rust as a C replacement.</p>
+<p><strong>C is the most portable programming language</strong>. Rust actually has a pretty
+admirable selection of supported targets for a new language (thanks mostly to
+LLVM), but it pales in comparison to C, which runs on almost <em>everything</em>. A new
+CPU architecture or operating system can barely be considered to exist until it
+has a C compiler. And once it does, it unlocks access to a vast repository of
+software written in C. Many other programming languages, such as Ruby and
+Python, are implemented in C and you get those for free too.</p>
+<p><strong>C has a spec</strong>. No spec means there&rsquo;s nothing keeping rustc honest. Any
+behavior it exhibits could change tomorrow. Some weird thing it does could be a
+feature <em>or</em> a bug. There&rsquo;s no way to know until your code breaks. That they
+can&rsquo;t slow down to pin down exactly what defines Rust is also indicative of an
+immature language.</p>
+<iframe
+  src="https://cmpwn.com/@sir/100437209244243864/embed"
+  class="mastodon-embed"
+  style="max-width: 100%; border: 0; margin: 0 auto; display: block;"
+  width="400"></iframe>
+<script src="https://cmpwn.com/embed.js" async="async"></script>
+<p><strong>C has many implementations</strong>. C has many competing compilers. They all work
+together stressing out the spec, fishing out the loosely defined corners, and
+pinning down exactly what C is. Code that compiles in one and not another is
+indicative of a bug in one of them, which gives a nice extra layer of testing to
+each. By having many implementations, we force C to be well defined, and this is
+good for the language and its long-term stability. Rustc could stand to have
+some competition as well, maybe it would get faster<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></p>
+<p><strong>C has a consistent &amp; stable ABI</strong>. The System-V ABI is supported on a wide
+variety of systems and has been mostly agreed upon by now. Rust, on the other
+hand, has no stable internal ABI. You have to compile and link everything all in
+one go on the same version of the Rust compiler. The only code which can
+interact with the rest of the ecosystem is unidiomatic Rust, written at some
+kind of checkpoint between Rust and the outside world. The outside world exists,
+it speaks System-V, and us systems programmers spend a lot of our time talking
+to it.</p>
+<p><strong>Cargo is mandatory</strong>. On a similar line of thought, Rust&rsquo;s compiler flags are
+not stable. Attempts to integrate it with other build systems have been met with
+hostility from the Rust &amp; Cargo teams. The outside world exists, and us systems
+programmers spend a lot of our time integrating things. Rust refuses to play
+along.</p>
+<p><strong>Concurrency is generally a bad thing.</strong> Serial programs have X problems, and
+parallel programs have X<sup>Y</sup> problems, where Y is the amount of
+parallelism you introduce. Parallelism in C is a pain in the ass for sure, and
+this is one reason I find Go much more suitable to those cases. However, nearly
+all programs needn&rsquo;t be parallel. A program which uses poll effectively is going
+to be simpler, reasonably performant, and have orders of magnitude fewer bugs.
+&ldquo;Fearless concurrency&rdquo; allows you to fearlessly employ bad software design 9
+times out of 10.</p>
+<p><strong>Safety</strong>. Yes, Rust is more safe. I don&rsquo;t really care. In light of all of
+these problems, I&rsquo;ll take my segfaults and buffer overflows. I especially refuse
+to &ldquo;rewrite it in Rust&rdquo; - because no matter what, rewriting an entire program
+from scratch is <em>always</em> going to introduce more bugs than maintaining the C
+program ever would. I don&rsquo;t care what language you rewrite it in.</p>
+<hr>
+<p>C is far from the perfect language - it has many flaws. However, its
+replacement will be simpler - not more complex. Consider Go, which has had a lot
+of success in supplanting C for many problems. It does this by specializing on
+certain classes of programs and addressing them with the simplest solution
+possible. It hasn&rsquo;t completely replaced C, but it has made a substantial dent in
+its problem space - more than I can really say for Rust (which has made similar
+strides for C++, but definitely not for C).</p>
+<p>The kitchen sink approach doesn&rsquo;t work. Rust will eventually fail to the &ldquo;jack
+of all trades, master of none&rdquo; problem that C++ has. Wise languages designers
+start small and stay small. Wise systems programmers extend this philosophy to
+designing entire systems, and Rust is probably not going to be invited. I
+understand that many people, particularly those already enamored with Rust,
+won&rsquo;t agree with much of this article. But now you know why we are still writing
+C, and hopefully you&rsquo;ll stop bloody bothering us about it.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Aside: the term &ldquo;C/C++&rdquo; infuriates me. They are completely different languages. Idiomatic C++ looks nothing like idiomatic C. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Rust does have one competing compiler, but without a spec it&rsquo;s hard to define its level of compatibility and correctness, and it&rsquo;s always playing catch-up. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

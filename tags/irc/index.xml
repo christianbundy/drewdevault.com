@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>irc on Drew DeVault&#39;s blog</title>
+    <link>./tags/irc.html</link>
+    <description>Recent content in irc on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 01 Jul 2019 00:00:00 +0000</lastBuildDate><atom:link href="./tags/irc/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Absence of certain features in IRC considered a feature</title>
+      <link>./2019/07/01/Absence-of-features-in-IRC.html</link>
+      <pubDate>Mon, 01 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>./2019/07/01/Absence-of-features-in-IRC.html</guid>
+      <description>The other day a friend of mine (an oper on Freenode) wanted to talk about IRC compared to its peers, such as Matrix, Slack, Discord, etc. The ensuing discussion deserves summarization here. In short: I&amp;rsquo;m glad that IRC doesn&amp;rsquo;t have the features that are &amp;ldquo;showstoppers&amp;rdquo; for people choosing other platforms, and I&amp;rsquo;m worried that attempts to bring these showstopping &amp;ldquo;features&amp;rdquo; to IRC will worsen the platform for the people who use it now.</description>
+    </item>
+    
+    <item>
+      <title>How to write an IRC bot</title>
+      <link>./2018/03/10/How-to-write-an-IRC-bot.html</link>
+      <pubDate>Sat, 10 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>./2018/03/10/How-to-write-an-IRC-bot.html</guid>
+      <description>My disdain for Slack and many other Silicon Valley chat clients is well known, as is my undying love for IRC. With Slack making the news lately after their recent decision to disable the IRC and XMPP gateways in a classic Embrace Extend Extinguish move, they&amp;rsquo;ve been on my mind and I feel like writing about them more. Let&amp;rsquo;s compare writing a bot for Slack with writing an IRC bot.</description>
+    </item>
+    
+    <item>
+      <title>Please don&#39;t use Slack for FOSS projects</title>
+      <link>./2015/11/01/Please-stop-using-slack.html</link>
+      <pubDate>Sun, 01 Nov 2015 00:00:00 +0000</pubDate>
+      
+      <guid>./2015/11/01/Please-stop-using-slack.html</guid>
+      <description>I&amp;rsquo;ve noticed that more and more projects are using things like Slack as the chat medium for their open source projects. In the past couple of days alone, I&amp;rsquo;ve been directed to Slack for Babel and Bootstrap. I&amp;rsquo;d like to try and curb this phenomenon before it takes off any more.
+Problems with Slack Slack&amp;hellip;
+ is closed source has only one client (update: errata at the bottom of this article) is a walled garden requires users to have a different tab open for each project they want to be involved in requires that Heroku hack to get open registration  The last one is a real stinker.</description>
+    </item>
+    
+  </channel>
+</rss>

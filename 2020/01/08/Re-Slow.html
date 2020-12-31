@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Following up on &#34;Hello world&#34;</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Following up on &#34;Hello world&#34;
+  <small>
+    <span class="date">January 8, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>This is a follow-up to my last article, <a href="https://drewdevault.com/2020/01/04/Slow.html">Hello
+world</a>, which is easily the most
+negatively received article I&rsquo;ve written — a remarkable feat for someone
+who&rsquo;s written as much flame bait as me. Naturally, the fault lies with the
+readers.</p>
+<p><a href="https://xkcd.com/1984/" rel="noopener"><img src="https://imgs.xkcd.com/comics/misinterpretation_2x.png" width="294" /></a></p>
+<p>All jokes aside, I&rsquo;ll try to state my point better. The &ldquo;Hello world&rdquo; article
+was a lot of work to put together — frustrating work — by the time
+I had finished collecting numbers, I was exhausted and didn&rsquo;t pay much mind to
+putting context to them. This left a lot of it open to interpretation, and a lot
+of those interpretations didn&rsquo;t give the benefit of the doubt.</p>
+<p>First, it&rsquo;s worth clarifying that the assembly program I gave is a
+<em>hypothetical, idealized</em> hello world program, and in practice not even the
+assembly program is safe from bloat. After it&rsquo;s wrapped up in an ELF, even after
+stripping, the binary bloats up to <strong>157×</strong> the size of the
+actual machine code. I had hoped this would be more intuitively clear, but the
+take-away is that the ideal program is a pipe dream, not a standard to which the
+others are held. As the infinite frictionless plane in vacuum is to physics,
+that assembly program is to compilers.</p>
+<p>I also made the mistake of including the runtime in the table. What I wanted you
+to notice about the timestamp is that it <em>rounds to zero</em> for 15 of the 21 test
+cases, and arguably only one or two approach the realm of human perception.
+It&rsquo;s meant to lend balance to the point I&rsquo;m making with the number of syscalls:
+despite the complexity on display, the user generally can&rsquo;t even tell. The other
+problem with including the runtimes is that it makes it look like a benchmark,
+which it&rsquo;s not (you&rsquo;ll notice that if you grep for &ldquo;benchmark&rdquo;, you will find no
+results).</p>
+<p>Another improvement would have been to group rows of the table by orders of
+magnitude (in terms of number of syscalls), and maybe separate the outliers in
+each group. There is little difference between many of the languages in the
+middle of the table, but when one of them is your favorite language, &ldquo;stacking
+it up&rdquo; against its competitors like this is a good way to get the reader&rsquo;s blood
+pumping and bait some flames. If your language appears to be represented
+unfavorably on this chart, you&rsquo;re likely to point out the questionable
+methodology, golf your way to a more generous sample code, etc; things I could
+have done myself were I trying to make a benchmark rather than a point about
+complexity.</p>
+<p>And hidden therein is my actual point: complexity. There has long been a trend
+in computing of endlessly piling on the abstractions, with no regard for the
+consequences. The web is an ever growing mess of complexity, with larger and
+larger blobs of inscrutable JavaScript being shoved down pipes with no regard
+for the pipe&rsquo;s size or the bridge toll charged by the end-user&rsquo;s telecom.
+Electron apps are so far removed from hardware that their jarring non-native UIs
+can take seconds to respond and eat up the better part of your RAM to merely
+show a text editor or chat application.</p>
+<p>The PC in front of me is literally five thousand times faster than the graphing
+calculator in my closet - but the latter can boot to a useful system in a
+fraction of a millisecond, while my PC takes almost a minute. Productivity per
+CPU cycle per Watt is the lowest it&rsquo;s been in decades, and is orders of
+magnitude (plural) beneath its potential. So far as most end-users are
+concerned, computers haven&rsquo;t improved in meaningful ways in the past 10 years,
+and in many respects have become worse. The cause is well-known: programmers
+have spent the entire lifetime of our field recklessly piling abstraction on top
+of abstraction on top of abstraction. We&rsquo;re more concerned with shoving more
+spyware at the problem than we are with optimization, outside of a small number
+of high-value problems like video decoding.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> Programs have grown fat and
+reckless in scope, and it affects literally everything, even down to the last
+bastion of low-level programming: C.</p>
+<p>I use syscalls as an approximation of this complexity. Even for one of the
+simplest possible programs, there is a huge amount of abstraction and complexity
+that comes with many approaches to its implementation. If I just print &ldquo;hello
+world&rdquo; in Python, users are going to bring along almost a million lines of code
+to run it, the fraction of which isn&rsquo;t dead code is basically a rounding error.
+This isn&rsquo;t <em>always</em> a bad thing, but it often is and no one is thinking about
+it.</p>
+<p>That&rsquo;s the true message I wanted you to take away from my article: most
+programmers aren&rsquo;t thinking about this complexity. Many choose tools because
+it&rsquo;s easier for them, or because it&rsquo;s what they know, or because developer time
+is more expensive than the user&rsquo;s CPU cycles or battery life and the engineers
+aren&rsquo;t signing the checks. I hoped that many people would be surprised at just
+how much work their average programming language could end up doing even when
+given simple tasks.</p>
+<p>The point was not that your programming language is wrong, or that being higher
+up on the table is better, or that programming languages should be blindly
+optimizing these numbers. The point is, if these numbers surprised you, then you
+should find out why! I&rsquo;m a systems programmer — I want you to be
+interested in your systems! And if this surprises you, I wonder what else
+might&hellip;</p>
+<p>I know that article didn&rsquo;t do a good job of explaining any of this. I&rsquo;m sorry.</p>
+<hr>
+<p>Now to address more specific comments:</p>
+<p><strong>What the fuck is a syscall</strong>?</p>
+<p>This question is more common with users of the languages which make more of
+them, ironically. A syscall is when your program asks the kernel to do something
+for it. This causes a transition from <em>user space</em> to <em>kernel space</em>. This
+transition is one of the more expensive things your programs can do, but a
+program that doesn&rsquo;t make any syscalls is not a useful program: syscalls are
+necessary to do any kind of I/O (input or output). <a href="https://en.wikipedia.org/wiki/System_call">Wikipedia
+page</a>.</p>
+<p>On Linux, you can use the <a href="https://linux.die.net/man/1/strace">strace</a> tool to
+analyze the syscalls your programs are making, which is how I obtained the
+numbers in the original article.</p>
+<p><strong>This &ldquo;benchmark&rdquo; is biased against JIT&rsquo;d and interpreted languages</strong>.</p>
+<p>Yes, it is. It <em>is</em> true that many programming environments have to factor
+in a &ldquo;warm up&rdquo; time. This argument on its face-value is apparently validated by
+the cargo-culted (and often correct) wisdom that benchmarks should be conducted
+with timers in-situ, post warm-up period, with the measured task being
+repeated many times so that trends become more obvious.<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> It&rsquo;s precisely these
+details, which the conventional benchmarking wisdom aims to obscure, that I&rsquo;m
+trying to cast a light on. While a benchmark which shows how quickly a bunch of
+programming languages can print &ldquo;hello world&rdquo; a million times<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> might be
+interesting, it&rsquo;s not what I&rsquo;m going for here.</p>
+<p><strong>Rust is doing important things with those syscalls</strong>.</p>
+<p>My opinion on this is mixed: yes, stack guards are useful. However, my &ldquo;hello
+world&rdquo; program has zero chance of causing a stack overflow. In theory, Rust
+should be able to reckon whether or not many programs are at risk of stack
+overflow.  If not, it can ask the programmer to specify some bounds, or it can
+emit the stack guards <em>only in those cases</em>. The worst option is panicking, and
+I&rsquo;m surprised that Crustaceans feel like this is sufficient. Funny, given their
+obsession with &ldquo;zero cost&rdquo; abstractions, that a nonzero-cost abstraction would
+be so fiercely defended. They&rsquo;re already used to overlong compile times, adding
+more analysis probably won&rsquo;t be noticed ;)</p>
+<p><strong>Go is doing important things with those syscalls</strong>.</p>
+<p>On this I wholly disagree. I hate the Go runtime, it&rsquo;s the worst thing about an
+otherwise great language. Go programs are almost impossible to debug for having
+to sift through mountains of unrelated bullshit the program is doing, all to
+support a concurrency/parallelism model that I also strongly dislike. There are
+some bad design decisions in Golang and stracing the average Go program brings a
+lot of them to light. Illumos has many of its own problems, but <a href="http://dtrace.org/blogs/wesolows/2014/12/29/golang-is-trash/">this
+article</a> about
+porting Go to it covers a number of related problems.</p>
+<p><strong>Wow, Zig is competitive with assembly?</strong></p>
+<p>Yeah, I totally had the same reaction. I&rsquo;m interested to see how it measures up
+under more typical workloads. People keep asking me what I think about Zig in
+general, and I think it has potential, but I also have a lot of complaints. It&rsquo;s
+not likely to replace C for me, but it might have a place somewhere in my stack.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>For efficient display of unskippable 30 second video ads, of course. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>This approach is the most &ldquo;fair&rdquo; for comparison&rsquo;s sake, but it also often obscures a lot of the practical value of the benchmark in the first place. For example, how often is the branch predictor and L1 cache going to be warmed up in favor of the measured code in practice? <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>All of them being handily beaten by <code>/bin/yes &quot;hello world&quot;</code> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Please use text/plain for email</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Please use text/plain for email
+  <small>
+    <span class="date">April 11, 2016</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>A lot of people have come to hate email, and not without good reason. I don&rsquo;t
+hate using email, and I attribute this to better email habits. Unfortunately,
+most email clients these days lead users into bad habits that probably
+contribute to the sad state of email in 2016. The biggest problem with email is
+the widespread use of HTML email.</p>
+<p>Compare email to snail mail. You probably throw out most of the mail you get -
+it&rsquo;s all junk, ads. Think about the difference between snail mail you read and
+snail mail you throw out. Chances are, the mail you throw out is flashy flyers
+and spam that&rsquo;s carefully laid out by a designer and full of eye candy (kind of
+like many HTML emails). However, if you receive a letter from a friend it&rsquo;s
+probably going to be a lot less flashy - just text on a page. Reading letters
+like this is pleasant and welcome. Emails should be more like this.</p>
+<p>I consider this the basic argument for plaintext emails - they make email
+better. There are more specific problems with HTML emails that I can give,
+though (not to mention the fact that I read emails <a href="https://drewdevault.com/2016/03/22/Integrating-a-VT220-into-my-life.html">on
+this</a>
+now).</p>
+<h2 id="whats-wrong-with-html-email">What&rsquo;s wrong with HTML email</h2>
+<p><strong>Tracking images</strong> are images that are included in HTML emails with &lt;img
+/&gt; tags. These images have URLs with unique IDs in them that hit remote
+servers and let them know that you opened the email, along with various details
+about your mail client and such. This is a form of tracking, which many people
+go to great lengths to prevent with tools like
+<a href="https://github.com/gorhill/uBlock">uBlock</a>. Most email clients recognize this,
+and actually <em>block</em> images from being shown without explicit user consent. If
+your images aren&rsquo;t even being shown, then why include them? Tracking users is
+evil.</p>
+<p>Many <strong>vulnerabilities</strong> in mail clients also stem from rendering HTML email.
+Luckily, no mail clients have JavaScript enabled on their HTML email renderers.
+However, security issues related to HTML emails are still found quite often in
+mail clients. I don&rsquo;t want to view this crap (and I don&rsquo;t).</p>
+<p>HTML email also makes <strong>phishing</strong> much easier. I&rsquo;ve often received HTML emails
+with links that hide their true intent by using a different href than their text
+would suggest (and almost always with a tracking code added, ugh). They are also
+<strong>incompatible</strong> with many email-based workflows, such as inline quoting,
+mailing list participation, and sending &amp; working with source code patches.</p>
+<h2 id="good-habits-for-plaintext-emails">Good habits for plaintext emails</h2>
+<p>Some nice things are possible when you choose to use plaintext emails. Remember
+before when I was comparing emails to snail mail letters? Well, let&rsquo;s continue
+those comparisons. Popular email clients of 2016 have thoroughly bastardized
+email, but here&rsquo;s what it once was and perhaps what it could be today.</p>
+<p>The common mail client today uses the abhorrent &ldquo;<a href="https://en.wikipedia.org/wiki/Posting_style#Top-posting">top
+posting</a>&rdquo; format, where
+the entire previous message is dumped underneath your reply. As the usual quote
+goes:</p>
+<blockquote>
+<p>A: Because it messes up the order in which people normally read text.</p>
+<p>Q: Why is top-posting such a bad thing?</p>
+<p>A: Top-posting.</p>
+<p>Q: What is the most annoying thing in e-mail?</p>
+</blockquote>
+<p>A better way to write emails is the same way you write a letter to send via
+snail mail. Would you photocopy the entire history of your correspondence and
+staple it to your response? After a while you would start paying more for the
+weight! Though bandwidth seems cheap now, the habit is still silly. Instead of
+copying the entire conversation into your email, quote only the relevant parts
+and respond to them inline. For example, let&rsquo;s say I receive this email:</p>
+<pre><code>Hi Drew!
+
+Could you take a look at the server this afternoon? I think it's having some
+issues with nginx.
+
+I also took care of the upgrades you asked for last night. Sorry it took so
+long!
+
+--
+John Doe
+</code></pre>
+<p>The best way to respond to this would be:</p>
+<pre><code>Hi John!
+
+&gt;Could you take a look at the server this afternoon? I think it's having some
+&gt;issues with nginx.
+
+No problem. I just had a quick look now and nginx was busted. Should be
+working now.
+
+&gt;I also took care of the upgrades you asked for last night. Sorry it took so
+&gt;long!
+
+Thanks!
+
+--
+Drew DeVault
+</code></pre>
+<p>John might follow up with this:</p>
+<pre><code>&gt;Should be working now.
+
+Yep, seems to be up. Thanks!
+
+--
+John Doe
+</code></pre>
+<p>Much better if you ask me. This works particularly well on mailing lists for
+open source projects, where you send a patch and reviewers will respond by
+quoting specific parts of your patch and leaving feedback. Just treat emails
+like letters!</p>
+<h2 id="multipart-emails">Multipart emails</h2>
+<p>I think there are nothing but negatives to HTML email. I use
+<a href="http://www.mutt.org/">mutt</a> to read email, which doesn&rsquo;t even render HTML
+emails and allows me to compose emails with Vim. But if you absolutely insist on
+using HTML emails, please use <a href="https://en.wikipedia.org/wiki/MIME#Multipart_messages">multipart
+emails</a>. If you&rsquo;re
+sending automated emails, your programming language likely contains a mechanism
+to facilitate this. The idea is that you send an alternative text/plain body for
+your email. Be sure that this body contains all of the information of the HTML
+version. If you do this, I will at least be willing to read your emails.</p>
+<h2 id="how-do-i-use-plaintext-emails">How do I use plaintext emails?</h2>
+<p>Your mail client should have an option for composing emails with plaintext. Look
+through your settings for it and it&rsquo;ll change the default. Then you&rsquo;re free!
+Tell your friends to do the same, and your email life will be happier.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

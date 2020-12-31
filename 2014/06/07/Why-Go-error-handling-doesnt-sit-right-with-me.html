@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Go&#39;s error handling doesn&#39;t sit right with me</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Go&#39;s error handling doesn&#39;t sit right with me
+  <small>
+    <span class="date">June 7, 2014</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I&rsquo;ll open up by saying that I am not a language designer, and I do like a lot of
+things about Go. I just recently figured out how to describe why Go&rsquo;s error
+handling mechanics don&rsquo;t sit right with me.</p>
+<p>If you aren&rsquo;t familiar with Go, here&rsquo;s an example of how Go programmers might do
+error handling:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">result</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">SomethingThatMightGoWrong</span><span class="p">()</span>
+<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+    <span class="c1">// Handle error
+</span><span class="c1"></span><span class="p">}</span>
+<span class="c1">// Proceed
+</span></code></pre></div><p>Let&rsquo;s extrapolate this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">MightFail</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">result</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">doStuffA</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="c1">// Error handling omitted
+</span><span class="c1"></span>    <span class="p">}</span>
+    <span class="nx">result</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nf">doStuffB</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="c1">// Error handling omitted
+</span><span class="c1"></span>    <span class="p">}</span>
+    <span class="nx">result</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nf">doStuffC</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="c1">// Error handling omitted
+</span><span class="c1"></span>    <span class="p">}</span>
+    <span class="nx">result</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nf">doStuffD</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="c1">// Error handling omitted
+</span><span class="c1"></span>    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>Go has good intentions by removing exceptions. They add a lot of overhead and
+returning errors isn&rsquo;t a bad thing in general. However, I spend a lot of my time
+writing assembly. Assembly can use similar mechanics, but I&rsquo;m spoiled by it (I
+know, spoiled by assembly?) and I can see how Go could have done better. In
+assembly, <code>goto</code> (or instructions like it) are the only means you have of
+branching. It&rsquo;s not like other languages where it&rsquo;s taboo - you pretty much <em>have</em>
+to use it. Most assembly also makes it fancy and conditional. For example:</p>
+<pre><code>goto condition, label
+</code></pre>
+<p>This would jump to <code>label</code> given that <code>condition</code> is met. Like Go, assembly
+generally doesn&rsquo;t have exceptions or anything similar. In my own personal flavor
+of assembly, I have my functions return error codes as well.  Here&rsquo;s how it&rsquo;s
+different, though. Let&rsquo;s look at some code:</p>
+<pre><code>call somethingThatMightFail
+jp nz, errorHandler
+call somethingThatMightFailB
+jp nz, errorHandler
+call somethingThatMightFailC
+jp nz, errorHandler
+call somethingThatMightFailD
+jp nz, errorHandler
+</code></pre><p>The difference here is that all functions return errors in the same way - by
+resetting the Z flag. If that flag is set, we do a quick branch (the <code>jp</code>
+instruction is short for <code>jump</code>) to the error handler. It&rsquo;s not clear from looking
+at this snippet, but the error code is stored in the A register, which the
+<code>errorHandler</code> recognizes as an error code and shows an appropriate message for.
+We can have one error handler for an entire procedure, and it feels natural.</p>
+<p>In Go, you have to put an if statement here. Each error caught costs you three
+lines of code in the middle of your important logic flow. With languages that
+throw exceptions, you have all the logic in a readable procedure, and some error
+handling at the end of it all. With Go, you have to throw a bunch of
+3-line-minimum error handlers all over the middle of your procedure.</p>
+<p>In my examples, you can still return errors like this, but you can do so with a
+lot less visual clutter. One line of error handling is better than 3 lines, if you
+ask me. Also, no one gives a damn how you format assembly code, so if you wanted
+to do something like this you&rsquo;d be fine:</p>
+<pre><code>call somethingThatMightFail
+  jp nz, errorHandler
+call somethingThatMightFailB
+  jp nz, errorHandler
+call somethingThatMightFailC
+  jp nz, errorHandler
+call somethingThatMightFailD
+  jp nz, errorHandler
+</code></pre><p>Or something like this:</p>
+<pre><code>call somethingThatMightFail  \ jp nz, errorHandler
+call somethingThatMightFailB \ jp nz, errorHandler
+call somethingThatMightFailC \ jp nz, errorHandler
+call somethingThatMightFailD \ jp nz, errorHandler
+</code></pre><p>The point is, I think Go&rsquo;s error handling stuff make your code harder to read and
+more tedious to write. The basic idea - return errors instead of throwing them -
+has good intentions. It&rsquo;s just that how they&rsquo;ve done it isn&rsquo;t so great.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

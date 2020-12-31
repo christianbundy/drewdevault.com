@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Calculating your donation&#39;s value following Patreon&#39;s fee changes</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Calculating your donation&#39;s value following Patreon&#39;s fee changes
+  <small>
+    <span class="date">May 6, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>In January 2018, I wrote a blog post which included a <a href="https://drewdevault.com/2018/01/16/Fees-on-donation-platforms.html">fee
+calculator</a>.
+Patreon <a href="https://www.patreon.com/new-creator-plans">changes their fee model
+tomorrow</a>, and it&rsquo;s time for an
+updated calculator. I&rsquo;m grandfathered into the old fees, so not much has changed
+for me, but I want to equip Patreon users - creators and supporters - with more
+knowledge of how their money is moving through the platform.</p>
+<p>Patreon makes money by siphoning some money off the top of a donation flow
+between supporters and creators. Because of the nature of its business (a
+private, VC-backed corporation), the siphon&rsquo;s size and semantics are prone to
+change in undesirable ways, since VC&rsquo;s expect infinite growth and a private
+business generally puts profit first. For this reason, I diversify my income, so
+that when Patreon makes these changes it limits their impact on my financial
+well-being.  Even so, Patreon is the biggest of my donation platforms,
+representing over $500/month at the time of writing (<a href="https://drewdevault.com/donate/">full breakdown
+here</a>)<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
+<p>So, for any patrons who are curious about where their money goes, here&rsquo;s a handy
+calculator to help you navigate the complex fees. Enjoy!</p>
+<p><strong>Note</strong>: I don&rsquo;t normally ask you to share my posts, but the Patreon community
+is too distributed for me to effectively reach them alone. Please share this
+with your Patreon creators and communities!</p>
+<p><noscript>Sorry, the calculator requires JavaScript.</noscript></p>
+<div id="react-root"></div>
+<script src="/js/donation-calc.js"></script>
+<p><strong>Note</strong>: this calculator does not include the withdrawal fee. When the creator
+withdraws their funds from the platform, an additional fee is charged, but the
+nature of that fee changes depending on the frequency with which they make
+withdrawals and the total amount of money they make from all patrons - which is
+information that&rsquo;s not easily available to the average patron for using with
+this calculator. For details on the withdrawal fees, see <a href="https://support.patreon.com/hc/en-us/articles/203913489-What-are-my-options-to-receive-payout-">Patreon&rsquo;s support
+article on the
+subject</a>.</p>
+<p>One question that&rsquo;s been left unanswered is how many times Patreon is going to
+charge patrons for each creator they support. Previously, they batched payments
+and only accordingly charged the payment processing fees once. However, along
+with these changes, they&rsquo;re going to charge payment processing fees for each
+creator, but they haven&rsquo;t lowered the payment processing fees. When we take a
+look at our bank returns in the coming months, if Patreon is still batching
+payments internally&hellip; hmm, where is the extra money going? We&rsquo;ll have to wait
+and see.</p>
+<h2 id="founding-creators">What are founding creators?</h2>
+<p>Creators who used the Patreon platform prior to 2019-05-07 are &ldquo;founding
+creators&rdquo;, and have different rates. They have different rates for each plan,
+and lower payment processing fees. Founding creators are also not usually lite
+creators, but were grandfathered into the pro plan.</p>
+<h2 id="charge-up-front">What does charge up front mean?</h2>
+<p>Some creators have the option to charge you as soon as you join the platform,
+rather than once monthly or per-creation. This results in higher payment
+processing fees for founding creators, as Patreon cannot batch the charge
+alongside with your other creators.</p>
+<h2 id="which-plan">How do I know what plan my creator uses?</h2>
+<p>We can guess which plan our creator uses by looking at the features they use on
+Patreon. Here are some giveaways:</p>
+<ul>
+<li>If they have different membership tiers, they use the Pro plan or better.</li>
+<li>If they offer merch through Patreon, they use the Premium plan.</li>
+</ul>
+<p>You can also just reach out to your creator and ask!</p>
+<!-- Hack to get footnotes from javascript to work -->
+<p><span style="display: none"><sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></span></p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>This is supplemented with my Sourcehut income as well, which is covered in the recent <a href="https://lists.sr.ht/~sircmpwn/sr.ht-discuss/%3C20190426160729.GC1351@homura.localdomain%3E">Q1 financial report</a>, as well as some <a href="/consulting">consulting work</a>, which I don&rsquo;t publish numbers for. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>This is an assumption based on public PayPal and Stripe payment processing rates. In practice, it&rsquo;s likely that Patreon has a volume discount with their payment processors. Patreon does not publish these rates. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

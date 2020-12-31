@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Setting up a local dev mail server</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Setting up a local dev mail server
+  <small>
+    <span class="date">August 5, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>As part of my work on <a href="https://meta.sr.ht">lists.sr.ht</a>, it was necessary for
+me to configure a self-contained mail system on localhost that I could test
+with. I hope that others will go through a similar process in the future when
+they set up <a href="https://git.sr.ht/~sircmpwn/lists.sr.ht">the code</a> for hacking on
+locally or when working on other email related software, so here&rsquo;s a guide on
+how you can set it up.</p>
+<p>There are lots of things you can set up on a mail server, like virtual mail
+accounts backed by a relational database, IMAP access, spam filtering, and so
+on. We&rsquo;re not going to do any of that in this article - we&rsquo;re just interested in
+something we can test our email code with. To start, install your distribution
+of <code>postfix</code> and pop open that <code>/etc/postfix/main.cf</code> file.</p>
+<p>Let&rsquo;s quickly touch on the less interesting config keys to change. If you want
+the details about how these work, consult the postfix manual.</p>
+<ul>
+<li><em>myhostname</em> should be your local hostname</li>
+<li><em>mydomain</em> should also be your local hostname</li>
+<li><em>mydestination</em> should be <code>$myhostname, localhost.$mydomain, localhost</code></li>
+<li><em>mynetworks</em> should be <code>127.0.0.0/8</code></li>
+<li><em>home_mailbox</em> should be <code>Maildir/</code></li>
+</ul>
+<p>Also ensure your hostname is set up right in <code>/etc/hosts</code>, something like this:</p>
+<pre><code>127.0.0.1 homura.localdomain homura
+</code></pre><p>Okay, those are the easy ones. That just makes it so that your mail server
+oversees mail delivery for the <code>127.0.0.0/8</code> network (localhost) and delivers
+mail to local Unix user mailboxes. It will store incoming email in each user&rsquo;s
+home directory at <code>~/Maildir</code>, and will deliver email to other Unix users. Let&rsquo;s
+set up an email client for reading these emails with. Here&rsquo;s my development
+<a href="http://mutt.org">mutt</a> config:</p>
+<pre><code>set edit_headers=yes
+set realname=&quot;Drew DeVault&quot;
+set from=&quot;sircmpwn@homura&quot;
+set editor=vim
+set spoolfile=&quot;~/Maildir/&quot;
+set folder=&quot;~/Maildir/&quot;
+set timeout=5
+color index blue default ~P
+</code></pre><p>Make any necessary edits. If you use mutt to read your normal mail, I suggest
+also setting up an alias which runs <code>mutt -C path/to/dev/config</code>. Now, you
+should be able to send an email to yourself or other Unix accounts with
+mutt<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. Hooray!</p>
+<p>To accept email over SMTP, mozy on over to <code>/etc/postfix/master.cf</code> and
+uncomment the submission service. You&rsquo;re looking for something like this:</p>
+<pre><code>127.0.0.1:submission inet n       -       n       -       -       smtpd
+#  -o syslog_name=postfix/submission
+#  -o smtpd_tls_security_level=encrypt
+#  -o smtpd_sasl_auth_enable=yes
+#  -o smtpd_tls_auth_only=yes
+#  -o smtpd_reject_unlisted_recipient=no
+#  -o smtpd_client_restrictions=$mua_client_restrictions
+#  -o smtpd_helo_restrictions=$mua_helo_restrictions
+#  -o smtpd_sender_restrictions=$mua_sender_restrictions
+#  -o smtpd_recipient_restrictions=
+  -o smtpd_relay_restrictions=permit
+#  -o milter_macro_daemon_name=ORIGINATING
+</code></pre><p>This will permit delivery via localhost on the submission port (587) to anyone
+whose hostname is in <code>$mydestination</code>. A good old <code>postfix reload</code> later and you
+should be able to send yourself an email with SMTP:</p>
+<pre><code>$ telnet 127.0.0.1 587
+Trying 127.0.0.1...
+Connected to 127.0.0.1.
+Escape character is '^]'.
+220 homura ESMTP Postfix
+EHLO example.org
+250-homura
+250-PIPELINING
+250-SIZE 10240000
+250-VRFY
+250-ETRN
+250-ENHANCEDSTATUSCODES
+250-8BITMIME
+250-DSN
+250 SMTPUTF8
+MAIL FROM:&lt;sircmpwn@homura&gt;
+250 2.1.0 Ok
+RCPT TO:&lt;sircmpwn@homura&gt; 
+250 2.1.5 Ok
+DATA
+354 End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;
+From: Drew DeVault &lt;sircmpwn@homura&gt;
+To: Drew DeVault &lt;sircmpwn@homura&gt;
+Subject: Hello world
+
+Hey there 
+.
+250 2.0.0 Ok: queued as 8267416366B
+QUIT
+221 2.0.0 Bye
+Connection closed by foreign host.
+</code></pre><p>Pull up mutt again to read this. Any software which will be sending out mail and
+speaks SMTP (for example, sr.ht) can be configured now. Last step is to set up
+LTMP delivery to lists.sr.ht or any other software you want to process incoming
+emails. I want most mail to deliver normally - I only want LTMP configured for
+my lists.sr.ht test domain. I&rsquo;ll set up some transport maps for this purpose. In
+<code>main.cf</code>:</p>
+<pre><code>local_transport = local:$myhostname
+transport_maps = hash:/etc/postfix/transport
+</code></pre><p>Then I&rsquo;ll edit <code>/etc/postfix/transport</code> and add these lines:</p>
+<pre><code>lists.homura.localdomain lmtp:unix:/tmp/lists.sr.ht-lmtp.sock
+homura.localdomain local:homura
+</code></pre><p>This will deliver mail normally to <code>$user@homura</code> (my hostname), but will
+forward mail sent to <code>$user@lists.homura</code> to the Unix socket where the
+<a href="https://git.sr.ht/~sircmpwn/lists.sr.ht/tree/master/listssrht-lmtp">lists.sr.ht LMTP
+server</a> lives.</p>
+<p>Add the subdomain to <code>/etc/hosts</code>:</p>
+<pre><code>127.0.0.1 lists.homura.localdomain lists.homura
+</code></pre><p>Run <code>postmap /etc/postfix/transport</code> and <code>postfix reload</code> and you&rsquo;re good to go.
+If you have the lists.sr.ht daemon working, send some emails to
+<code>~someone/example-list@lists.$hostname</code> and you should see them get picked up.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Mutt crash course: run <code>mutt</code>, press <code>m</code> to compose a new email, enter the recipient (<code>$USER@$HOSTNAME</code> to send to yourself) and the subject, then compose your email, exit the editor, and press <code>y</code> to send. A few moments later the email should arrive. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

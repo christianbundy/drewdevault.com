@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Become shell literate</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Become shell literate
+  <small>
+    <span class="date">December 12, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>Shell literacy is one of the most important skills you ought to possess as a
+programmer. The Unix shell is one of the most powerful ideas ever put to code,
+and should be second nature to you as a programmer. No other tool is nearly as
+effective at commanding your computer to perform complex tasks quickly —
+or at storing them as scripts you can use later.</p>
+<p>In my workflow, I use Vim as my editor, and Unix as my &ldquo;IDE&rdquo;. I don&rsquo;t trick out
+<a href="https://git.sr.ht/~sircmpwn/dotfiles/tree/master/.vimrc">my vimrc</a> to add a
+bunch of IDE-like features — the most substantial plugin I use on a daily
+basis is <a href="https://github.com/ctrlpvim/ctrlp.vim">Ctrl+P</a>, and that just makes it
+easier to open files. Being Vim literate is a valuable skill, but an important
+detail is knowing when to drop it. My daily workflow involves several open
+terminals, generally one with Vim, another to run builds or daemons, and a third
+which just keeps a shell handy for anything I might ask of it.</p>
+<p><a href="https://l.sr.ht/g_oL.png"><img src="https://l.sr.ht/g_oL.png" alt="Screenshot of my workspace"></a></p>
+<p>The shell I keep open allows me to perform complex tasks and answer complex
+questions as I work. I find interesting things with <a href="https://git-scm.com/docs/git-grep">git grep</a>,
+perform bulk find-and-replace with <a href="https://pubs.opengroup.org/onlinepubs/9699919799/utilities/sed.html#top">sed</a>, answer questions with
+<a href="https://pubs.opengroup.org/onlinepubs/9699919799/utilities/awk.html#top">awk</a>, and perform more intricate tasks on-demand with ad-hoc shell
+commands and pipelines. I have the freedom to creatively solve problems without
+being constrained to the rails laid by IDE designers.</p>
+<p>Here&rsquo;s an example of a problem I encountered recently: I had a bunch of changes
+in a git repository. I wanted to restore deleted files without dropping the rest
+of my changes, but there were hundreds of these. How can I efficiently address
+this problem?</p>
+<p>Well, I start by getting a grasp of the scale of the issue with git status,
+which shows hundreds of deleted files that need to be restored. This scale is
+beyond the practical limit of manual intervention, so I switch to git status
+-s to get a more pipeline-friendly output.</p>
+<pre><code>$ git status -s
+ D main/a52dec/APKBUILD
+ D main/a52dec/a52dec-0.7.4-build.patch
+ D main/a52dec/automake.patch
+ D main/a52dec/fix-globals-test-x86-pie.patch
+ D main/aaudit/APKBUILD
+ D main/aaudit/aaudit
+ D main/aaudit/aaudit-common.lua
+ D main/aaudit/aaudit-repo
+ D main/aaudit/aaudit-server.json
+ D main/aaudit/aaudit-server.lua
+ ...
+</code></pre><p>I can work with this. I add grep '^ D' to filter out any entries which were
+not deleted, and pipe it through awk '{ print $2 }' to extract just the
+filenames. I&rsquo;ll often run the incomplete pipeline just to check my work and
+catch my bearings:</p>
+<pre><code>$ git status -s | grep '^ D' | awk '{ print $2 }'
+main/a52dec/APKBUILD
+main/a52dec/a52dec-0.7.4-build.patch
+main/a52dec/automake.patch
+main/a52dec/fix-globals-test-x86-pie.patch
+main/aaudit/APKBUILD
+main/aaudit/aaudit
+main/aaudit/aaudit-common.lua
+main/aaudit/aaudit-repo
+main/aaudit/aaudit-server.json
+main/aaudit/aaudit-server.lua
+...
+</code></pre><p>Very good — we have produced a list of files which we need to address.
+Note that, in retrospect, I could have dropped the grep and just used awk to the
+same effect:</p>
+<pre><code>$ git status -s | awk '/^ D/ { print $2 }'
+main/a52dec/APKBUILD
+main/a52dec/a52dec-0.7.4-build.patch
+main/a52dec/automake.patch
+main/a52dec/fix-globals-test-x86-pie.patch
+main/aaudit/APKBUILD
+main/aaudit/aaudit
+main/aaudit/aaudit-common.lua
+main/aaudit/aaudit-repo
+main/aaudit/aaudit-server.json
+main/aaudit/aaudit-server.lua
+...
+</code></pre><p>However, we&rsquo;re just writing an ad-hoc command here to solve a specific,
+temporary problem — finesse is not important. This command isn&rsquo;t going to
+be subjected to a code review. Often my thinking in these situations is to solve
+one problem at a time: &ldquo;filter the list&rdquo; and &ldquo;reword the list&rdquo;.  Anyway, the
+last step is to actually use this list of files to address the issue, with the
+help of <a href="https://pubs.opengroup.org/onlinepubs/9699919799/utilities/xargs.html#top">xargs</a>.</p>
+<pre><code>$ git status -s | awk '/^ D/ { print $2 }' | xargs git checkout --
+</code></pre><p>Let&rsquo;s look at some more examples of interesting ad-hoc shell pipelines.
+Naturally, I wrote a shell pipeline to find some:</p>
+<pre><code>$ history | cut -d' ' -f2- | awk -F'|' '{ print NF-1 &quot; &quot; $0 }' | sort -n | tail
+</code></pre><p>Here&rsquo;s the breakdown:</p>
+<ul>
+<li><code>history</code> prints a list of my historical shell commands.</li>
+<li><code>cut -d' ' -f2-</code> removes the first field from each line, using space as a
+delimiter. <code>history</code> numbers every command, and this removes the number.</li>
+<li><code>awk -F'|' '{ print NF-1 &quot; &quot; $0 }</code> tells awk to use | as the field delimiter
+for each line, and print each line prefixed with the number of fields. This
+prints every line of my history, prefixed with the number of times the pipe
+operator appears in that line.</li>
+<li><code>sort -n</code> numerically sorts this list.</li>
+<li><code>tail</code> prints the last 10 items.</li>
+</ul>
+<p>This command, written in the moment, finds, characterizes, filters, and sorts my
+shell history by command complexity. Here are a couple of the cool shell
+commands I found:</p>
+<p>Play the 50 newest videos in a directory with
+<a href="https://github.com/mpv-player/mpv">mpv</a>:</p>
+<pre><code>ls -tc | head -n50 | tr '\n' '\0' | xargs -0 mpv
+</code></pre><p>I use this command all the time. If I want to watch a video later, I will
+<a href="https://pubs.opengroup.org/onlinepubs/9699919799/utilities/touch.html#top">touch</a> the file so it appears at the top of this list. Another command
+transmits a tarball of a patched version of <a href="http://www.celestegame.com/">Celeste</a> to a friend using
+netcat, minus the (large) game assets, with a progress display via <a href="http://www.ivarch.com/programs/pv.shtml">pv</a>:</p>
+<pre><code>find . ! -path './Content/*' | xargs tar -cv | pv | zstd | nc 204:fbf5:... 12345
+</code></pre><p>And on my friend&rsquo;s end:</p>
+<pre><code>nc -vll :: 12345 | zstdcat | pv | tar -xv
+</code></pre><p>tar, by the way, is an under-rated tool for moving multiple files through a
+pipeline. It can read and write tarballs to stdin and stdout!</p>
+<p>I hope that this has given you a tantalizing taste of the power of the Unix
+shell. If you want to learn more about the shell, I can recommend
+<a href="http://shellhaters.org/">shellhaters.org</a> as a great jumping-off point into
+various shell-related parts of the POSIX specification. Don&rsquo;t be afraid of the
+spec — it&rsquo;s concise, comprehensive, comprehensible, and full of examples.
+I would also <em>definitely</em> recommend taking some time to learn awk in particular:
+<a href="https://ferd.ca/awk-in-20-minutes.html">here&rsquo;s a brief tutorial</a>.</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+  <p>
+  ⇒ This article is also available <a href="gemini://./2020/12/12/Shell-literacy.gmi">on gemini</a>.
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>security on Drew DeVault&#39;s blog</title>
+    <link>./categories/security.html</link>
+    <description>Recent content in security on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 12 Jun 2020 00:00:00 +0000</lastBuildDate><atom:link href="./categories/security/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Can we talk about client-side certificates?</title>
+      <link>./2020/06/12/Can-we-talk-about-client-side-certs.html</link>
+      <pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/06/12/Can-we-talk-about-client-side-certs.html</guid>
+      <description>I&amp;rsquo;m working on improving the means by which API users authenticate with the SourceHut API. Today, I was reading RFC 6749 (OAuth2) for this purpose, and it got me thinking about the original OAuth spec. I recalled vaguely that it had the API clients actually sign every request, and&amp;hellip; yep, indeed it does. This also got me thinking: what else signs requests? TLS!
+OAuth is very complicated. The RFC is 76 pages long, the separate bearer token RFC (6750) is another 18, and no one has ever read either of them.</description>
+    </item>
+    
+  </channel>
+</rss>

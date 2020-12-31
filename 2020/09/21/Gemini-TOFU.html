@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>TOFU recommendations for Gemini</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  TOFU recommendations for Gemini
+  <small>
+    <span class="date">September 21, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>I will have more to say about <a href="https://gemini.circumlunar.space/">Gemini</a> in the future, but for now, I wanted to
+write up some details about one thing in particular: the trust-on-first-use
+algorithm I implemented for my client, <a href="https://sr.ht/~sircmpwn/gmni">gmni</a>. I think you should implement
+this algorithm, too!</p>
+<p>First of all, it&rsquo;s important to note that the Gemini specification explicitly
+mentions TOFU and the role of self-signed certificates: they are the norm in
+Geminiland, and if your client does not support them then you&rsquo;re going to be
+unable to browse many sites. However, the exact details are left up to the
+implementation. Here&rsquo;s what mine does:</p>
+<p>First, on startup, it finds the known_hosts file. For my client, this is
+<code>~/.local/share/gmni/known_hosts</code> (the exact path is adjusted as necessary per
+the XDG basedirs specification). Each line of this file represents a known host,
+and each host has four fields separated by spaces, in this order:</p>
+<ul>
+<li>Hostname (e.g. gemini.circumlunar.space)</li>
+<li>Fingerprint algorithm (e.g. SHA-512)</li>
+<li>Fingerprint, in hexadecimal, with &lsquo;:&rsquo; between each octet (e.g. 55:01:D8&hellip;)</li>
+<li>Unix timestamp of the certificate&rsquo;s notAfter date</li>
+</ul>
+<p>If a known_hosts entry is encountered with a hashing algorithm you don&rsquo;t
+understand, it is disregarded.</p>
+<p>Then, when processing a request and deciding whether or not to trust its
+certificate, take the following steps:</p>
+<ol>
+<li>Verify that the certificate makes sense. Check the notBefore and notAfter
+dates against the current time, and check that the hostname is correct
+(including wildcards). Apply any other scrutiny you want, like enforcing a
+good hash algorithm or an upper limit on the expiration date. If these checks
+do not pass, the trust state is INVALID, GOTO 5.</li>
+<li>Compute the certificate&rsquo;s fingerprint. Use the entire certificate (in OpenSSL
+terms, <code>X509_digest</code> will do this), not just the public key.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></li>
+<li>Look up the known_hosts record for this hostname. If one is found, but the
+record is expired, disregard it. If one is found, and the fingerprint does
+not match, the trust state is UNTRUSTED, GOTO 5. Otherwise, the trust state
+is TRUSTED. GOTO 7.</li>
+<li>The trust state is UNKNOWN. GOTO 5.</li>
+<li>Display information about the certficate and its trust state to the user, and
+prompt them to choose an action, from the following options:
+<ul>
+<li>If INVALID, the user&rsquo;s choices are ABORT or TRUST_TEMPORARY.</li>
+<li>If UNKNOWN, the user&rsquo;s choices are ABORT, TRUST_TEMPORARY, or TRUST_ALWAYS.</li>
+<li>If UNTRUSTED, abort the request and display a diagnostic message. The user
+must manually edit the known_hosts file to correct the issue.</li>
+</ul>
+</li>
+<li>Complete the requested action:
+<ul>
+<li>If ABORT, terminate the request.</li>
+<li>If TRUST_TEMPORARY, update the session&rsquo;s list of known hosts.</li>
+<li>If TRUST_ALWAYS, append a record to the known_hosts file and update the
+session&rsquo;s list of known hosts.</li>
+</ul>
+</li>
+<li>Allow the request to proceed.</li>
+</ol>
+<p>If the trust state is UNKNOWN, instead of requring user input to proceed, the
+implementation MAY proceed with the request IF the UI displays that a new
+certificate was trusted and provides a means to review the certificate and
+revoke that trust.</p>
+<p>Note that being signed by a certificate authority in the system trust store is
+not considered meaningful to this algorithm. Such a cert is TOFU&rsquo;d all the same.</p>
+<p>That&rsquo;s it! If you have feedback on this approach, please <a href="mailto:sir@cmpwn.com">send me an
+email</a>.</p>
+<p>My implementation doesn&rsquo;t <em>entirely</em> match this behavior, but it&rsquo;s close and
+I&rsquo;ll finish it up before 1.0. If you want to read the code, <a href="https://git.sr.ht/~sircmpwn/gmni/tree/master/src/tofu.c">here it is</a>.</p>
+<p>Bonus recommendation for servers: you <strong>should</strong> use a self-signed certificate,
+and you <strong>should not</strong> use a certificate signed by one of the mainstream
+certificate authorities. We don&rsquo;t need to carry along the legacy CA cabal into
+our brave new Gemini future.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Rationale: this fingerprint matches the output of <code>openssl x509 -sha512 -fingerprint</code>. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+  <p>
+  ⇒ This article is also available <a href="gemini://./2020/09/21/Gemini-TOFU.gmi">on gemini</a>.
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

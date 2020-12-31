@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>performance on Drew DeVault&#39;s blog</title>
+    <link>./tags/performance.html</link>
+    <description>Recent content in performance on Drew DeVault&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 21 Feb 2020 00:00:00 +0000</lastBuildDate><atom:link href="./tags/performance/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Thoughts on performance &amp; optimization</title>
+      <link>./2020/02/21/Thoughts-on-performance.html</link>
+      <pubDate>Fri, 21 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>./2020/02/21/Thoughts-on-performance.html</guid>
+      <description>The idea that programmers ought to or ought not to be called &amp;ldquo;software engineers&amp;rdquo; is a contentious one. How you approach optimization and performance is one metric which can definitely push my evaluation of a developer towards the engineering side. Unfortunately, I think that a huge number of software developers today, even senior ones, are approaching this problem poorly.
+Centrally, I believe that you cannot effectively optimize a system which you do not understand.</description>
+    </item>
+    
+  </channel>
+</rss>

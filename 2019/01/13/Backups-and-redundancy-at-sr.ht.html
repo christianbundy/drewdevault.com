@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Backups &amp; redundancy at sr.ht</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Backups &amp; redundancy at sr.ht
+  <small>
+    <span class="date">January 13, 2019</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p><a href="https://sr.ht">sr.ht</a><sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> is <a href="https://git.sr.ht/~sircmpwn?search=sr.ht">100% open source</a> and I encourage
+people to install it on their own infrastructure, especially if they&rsquo;ll be
+sending patches upstream. However, I am equally thrilled to host sr.ht for you
+on the &ldquo;official&rdquo; instance, and most users find this useful because the
+maintenance burden is non-trivial. Today I&rsquo;ll give you an idea of what your
+subscription fee pays for. In this first post on ops at sr.ht, I&rsquo;ll talk about
+backups and redundancy. In future posts, I&rsquo;ll talk about security, high
+availability, automation, and more.</p>
+<p>As sr.ht is still in the alpha phase, high availability has been on the
+backburner. However, data integrity has always been of paramount importance to
+me. The very earliest versions of sr.ht, from well before it was even trying to
+be a software forge, made a point to never lose a single byte of user data.
+Outages are okay - so long as when service is restored, everything is still
+there. Over time I&rsquo;m working to make outages a thing of the past, too, but let&rsquo;s
+start with backups.</p>
+<p>There are several ways that sr.ht stores data:</p>
+<ul>
+<li>Important data on the filesystem (e.g. bare git repositories)</li>
+<li>Important persistent data in PostgreSQL</li>
+<li>Unimportant ephemeral data in Redis (&amp; caches)</li>
+<li>Miscellaneous filesystem storage, like the operating system</li>
+</ul>
+<p>Some of this data is important and kept redundant (PostgreSQL, git repos), and
+others are unimportant and is not redundant. For example, I store a rendered
+Markdown cache for git.sr.ht in Redis. If the Redis cluster goes <em>poof</em>, the
+source Markdown is still available, so I don&rsquo;t bother backing up Redis. Most
+services run in a VM and I generally don&rsquo;t store important data on these - the
+hosts usually only have one hard drive with no backups and no redundancy. If the
+host dies, I have to reprovision all of those VMs.</p>
+<p>Other data is more important. Consider PostgreSQL, which contains some of the
+most important data for sr.ht. I have one master PostgreSQL server, a dedicated
+server in the space I colocate in my home town of Philadelphia. I run sr.ht on
+this server, but I also use it for a variety of other projects - I maintain many
+myself, and I volunteer as a sysadmin for more still. This box (named Remilia)
+has four hard drives configured in a ZRAID (ZFS). I buy these hard drives from a
+variety of vendors, mostly Western Digital and Seagate, and from different
+batches - reducing the likelihood that they&rsquo;ll fail around the same time. ZFS is
+well-known for it&rsquo;s excellent design, featureset and for simply keeping your
+data intact, and I don&rsquo;t trust any other filesystem with important data. I take
+ZFS snapshots every 15 minutes and retain them for 30 days. These snapshots are
+important for correcting the &ldquo;oh shit, I rm&rsquo;d something important&rdquo; mistakes -
+you can mount them later and see what the filesystem looked like at the time
+they were taken.</p>
+<p>On top of this, the PostgreSQL server is set up with two additional important
+features: continuous archiving and streaming replication. Continuous archiving
+has PostgreSQL writing each transaction to log files on disk, which represents a
+re-playable history of the entire database, and allows you to restore the
+database to any point in time. This helps with &ldquo;oh shit, I dropped an important
+table&rdquo; mistakes. Streaming replication ships changes to an off-site standby
+server, in this case set up in my second colocation in San Francisco (the main
+backup box, which we&rsquo;ll talk about more shortly). This takes a near real-time
+backup of the database, and has the advantage of being able to quickly failover
+to it as the primary database during maintenance and outages (more on this
+during the upcoming high availability article). Soon I&rsquo;ll be setting up a second
+failover server as well, on-site.</p>
+<p>So there are multiple layers to this:</p>
+<ul>
+<li>ZFS &amp; zraid prevents disk failure from causing data loss</li>
+<li>ZFS snapshots allows retrieving filesystem-level data from the past</li>
+<li>Continuous archiving allows retrieving database-level data from the past</li>
+<li>Streaming replication prevents datacenter existence failure from causing data
+loss</li>
+</ul>
+<p>Having multiple layers of data redundancy here protects sr.ht from a wide
+variety of failure modes, and also protects each redundant system from itself -
+if any of these systems fails, there&rsquo;s another place to get this data from.</p>
+<p>The off-site backup in San Francisco (this box is called Konpaku) has a whopping
+52T of storage in two ZFS pools, named &ldquo;small&rdquo; (4T) and &ldquo;large&rdquo; (48T). The
+PostgreSQL standby server lives in the small pool, and <a href="https://www.borgbackup.org/">borg
+backups</a> live in the large pool. This has the same
+ZFS snapshotting and retention policy as Remilia, and also has drives sourced
+from a variety of vendors and batches. Borg is how important filesystem-level
+data is backed up, for example git repositories on git.sr.ht. Borg is nice
+enough to compress, encrypt, and deduplicate its backups for us, which I take
+hourly with a cronjob on the machines which own that data. The retention policy
+is hourly backups stored for 48 hours, daily backups for 2 weeks, and weekly
+backups stored indefinitely.</p>
+<p>There are two other crucial steps in maintaining a working backup system:
+monitoring and testing. The old wisdom is &ldquo;you don&rsquo;t have backups until you&rsquo;ve
+tested them&rdquo;. The simplest monitoring comes from cron - when I provision a new
+box, I make sure to set <code>MAILTO</code>, make sure sendmail works, and set up a
+deliberately failing cron entry to ensure I hear about it when it breaks. I also
+set up zfs-zed to email me whenever ZFS encounters issues, which also has a test
+mode you should use. For testing, I periodically provision private replicas of
+sr.ht services from backups and make sure that they work as expected. PostgreSQL
+replication is fairly new to my setup, but my intention is to switch the primary
+and standby servers on every database upgrade for HA<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> purposes, which
+conveniently also tests that each standby is up-to-date and still replicating.</p>
+<p>To many veteran sysadmins, a lot of this is basic stuff, but it took me a long
+time to learn how all of this worked and establish a set of best practices for
+myself. With the rise in popularity of managed ops like AWS and GCP, it seems
+like ops &amp; sysadmin roles are becoming less common. Some of us still love the
+sound of a datacenter and the greater level of control you have over your
+services, and as a bonus my users aren&rsquo;t worrying about $bigcorp having access
+to their data.</p>
+<p>The next ops thing on my todo list is high availability, which is still
+in-progress on sr.ht. When it&rsquo;s done, expect another blog post!</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>sr.ht is a software project hosting website, with git hosting, ticket tracking, continuous integration, mailing lists, and more. <a href="https://sr.ht">Try it out!</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>High availability <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

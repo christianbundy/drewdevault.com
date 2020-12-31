@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Writing a Wayland Compositor, Part 2: Rigging up the server</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  Writing a Wayland Compositor, Part 2: Rigging up the server
+  <small>
+    <span class="date">February 22, 2018</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p>This is the second in a series of articles on the subject of writing a Wayland
+compositor from scratch using <a href="https://github.com/swaywm/wlroots">wlroots</a>.
+Check out <a href="/2018/02/17/Writing-a-Wayland-compositor-1.html">the first article</a>
+if you haven&rsquo;t already. Last time, we ended up with an application which fired
+up a wlroots backend, enumerated output devices, and drew some pretty colors on
+the screen. Today, we&rsquo;re going to start accepting Wayland client connections,
+though we aren&rsquo;t going to be doing much with them yet.</p>
+<p>The commit that this article dissects is
+<a href="https://github.com/SirCmpwn/mcwayland/commit/b45c651">b45c651</a>.</p>
+<p>A quick aside on the nature of these blog posts: it&rsquo;s going to take <em>a lot</em> of
+these articles to flesh out our compositor. I&rsquo;m going to be publishing these
+more frequently than usual, probably 1-2 per week, and continue posting my usual
+articles at the typical rate. Okay? Cool.</p>
+<p>So we&rsquo;ve started up the backend and we&rsquo;re rendering something interesting, but
+we still aren&rsquo;t running a Wayland server &ndash; Wayland clients aren&rsquo;t connecting to
+our application. Adding this is actually quite easy:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"><span class="gu">@@ -113,12 +113,18 @@ int main(int argc, char **argv) {
+</span><span class="gu"></span>        server.new_output.notify = new_output_notify;
+        wl_signal_add(&amp;server.backend-&gt;events.new_output, &amp;server.new_output);
+ 
+<span class="gi">+       const char *socket = wl_display_add_socket_auto(server.wl_display);
+</span><span class="gi">+       assert(socket);
+</span><span class="gi">+
+</span><span class="gi"></span>        if (!wlr_backend_start(server.backend)) {
+                fprintf(stderr, &#34;Failed to start backend\n&#34;);
+                wl_display_destroy(server.wl_display);
+                return 1;
+        }
+ 
+<span class="gi">+       printf(&#34;Running compositor on wayland display &#39;%s&#39;\n&#34;, socket);
+</span><span class="gi">+       setenv(&#34;WAYLAND_DISPLAY&#34;, socket, true);
+</span><span class="gi">+
+</span><span class="gi"></span>        wl_display_run(server.wl_display);
+        wl_display_destroy(server.wl_display);
+        return 0;
+</code></pre></div><p>That&rsquo;s it! If you run McWayface again, it&rsquo;ll print something like this:</p>
+<pre><code>Running compositor on wayland display 'wayland-1'
+</code></pre><p><a href="https://cgit.freedesktop.org/wayland/weston/">Weston</a>, the Wayland reference
+compositor, includes a number of simple reference clients. We can use
+<code>weston-info</code> to connect to our server and list the <strong>globals</strong>:</p>
+<pre><code>$ WAYLAND_DISPLAY=wayland-1 weston-info
+interface: 'wl_drm', version: 2, name: 1
+</code></pre><p>If you recall from my <a href="/2017/06/10/Introduction-to-Wayland.html">Introduction to
+Wayland</a>, the Wayland server exports a
+list of <strong>globals</strong> to clients via the Wayland registry. These globals provide
+interfaces the client can utilize to interact with the server. We get <code>wl_drm</code>
+for free with wlroots, but we have not actually wired up anything useful yet.
+Wlroots provides many &ldquo;types&rdquo;, of which the majority are implementations of
+Wayland global interfaces like this.</p>
+<p>Some of the wlroots implementations require some rigging from you, but several
+of them just take care of themselves. Rigging these up is easy:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff">        printf(&#34;Running compositor on wayland display &#39;%s&#39;\n&#34;, socket);
+        setenv(&#34;WAYLAND_DISPLAY&#34;, socket, true);
+<span class="gi">+
+</span><span class="gi">+       wl_display_init_shm(server.wl_display);
+</span><span class="gi">+       wlr_gamma_control_manager_create(server.wl_display);
+</span><span class="gi">+       wlr_screenshooter_create(server.wl_display);
+</span><span class="gi">+       wlr_primary_selection_device_manager_create(server.wl_display);
+</span><span class="gi">+       wlr_idle_create(server.wl_display);
+</span><span class="gi"></span> 
+        wl_display_run(server.wl_display);
+        wl_display_destroy(server.wl_display);
+</code></pre></div><p>Note that some of these interfaces are not necessarily ones that you typically
+would want to expose to all Wayland clients - screenshooter, for example, is
+something that should be secured. We&rsquo;ll get to security in a later article. For
+now, if we run <code>weston-info</code> again, we&rsquo;ll see a few more globals have appeared:</p>
+<pre><code>$ WAYLAND_DISPLAY=wayland-1 weston-info
+interface: 'wl_shm', version: 1, name: 3
+	formats: XRGB8888 ARGB8888
+interface: 'wl_drm', version: 2, name: 1
+interface: 'gamma_control_manager', version: 1, name: 2
+interface: 'orbital_screenshooter', version: 1, name: 3
+interface: 'gtk_primary_selection_device_manager', version: 1, name: 4
+interface: 'org_kde_kwin_idle', version: 1, name: 5
+</code></pre><p>You&rsquo;ll find that wlroots implements a variety of protocols from a variety of
+sources - here we see protocols from Orbital, GTK, and KDE represented. Wlroots
+includes an example client for the orbital screenshooter - we can use it now to
+take a screenshot of our compositor:</p>
+<pre><code>$ WAYLAND_DISPLAY=wayland-1 ./examples/screenshot
+cannot set buffer size
+</code></pre><p>Ah, this is a problem - you may have noticed that we don&rsquo;t have any wl_output
+globals, which the screenshooter client relies on to figure out the resolution
+of the screenshot buffer. We can add these, too:</p>
+<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"><span class="gu">@@ -95,6 +99,8 @@ static void new_output_notify(struct wl_listener *listener, void *data) {
+</span><span class="gu"></span>        wl_signal_add(&amp;wlr_output-&gt;events.destroy, &amp;output-&gt;destroy);
+        output-&gt;frame.notify = output_frame_notify;
+        wl_signal_add(&amp;wlr_output-&gt;events.frame, &amp;output-&gt;frame);
+<span class="gi">+
+</span><span class="gi">+       wlr_output_create_global(wlr_output);
+</span><span class="gi"></span> }
+</code></pre></div><p>Running <code>weston-info</code> again will give us some info about our outputs now:</p>
+<pre><code>$ WAYLAND_DISPLAY=wayland-1 weston-info
+interface: 'wl_drm', version: 2, name: 1
+interface: 'wl_output', version: 3, name: 2
+	x: 0, y: 0, scale: 1,
+	physical_width: 0 mm, physical_height: 0 mm,
+	make: 'wayland', model: 'wayland',
+	subpixel_orientation: unknown, output_transform: normal,
+	mode:
+		width: 952 px, height: 521 px, refresh: 0.000 Hz,
+		flags: current
+interface: 'wl_shm', version: 1, name: 3
+	formats: XRGB8888 ARGB8888
+interface: 'gamma_control_manager', version: 1, name: 4
+interface: 'orbital_screenshooter', version: 1, name: 5
+interface: 'gtk_primary_selection_device_manager', version: 1, name: 6
+interface: 'org_kde_kwin_idle', version: 1, name: 7
+</code></pre><p>Now we can take that screenshot! Give it a shot (heh)!</p>
+<p>We&rsquo;re getting close to the good stuff now. The next article is going to
+introduce the concept of <strong>surfaces</strong>, and we will use them to render our first
+window. If you had any trouble with this article, please reach out to me at
+<a href="mailto:sir@cmpwn.com">sir@cmpwn.com</a> or to the wlroots team at
+<a href="http://webchat.freenode.net/?channels=sway-devel&amp;uio=d4">#sway-devel</a>.</p>
+<p style="float: right">
+    Next &mdash;
+    <a href="/2018/02/28/Writing-a-wayland-compositor-part-3.html">
+        Part 3: Rendering a window
+    </a>
+</p>
+<p>
+    Previous &mdash;
+    <a href="/2018/02/17/Writing-a-Wayland-compositor-1.html">
+        Part 1: Hello wlroots
+    </a>
+</p>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+

@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>KnightOS was an interesting operating system</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://drewdevault.com/blog/index.xml">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  
+  <link rel="stylesheet" href="/main.min.d007a22f956a425cfa3f96c70ba325efd0f789fa65d2e609314f66cbe89ef0de.css">
+</head>
+
+
+<h1>
+  KnightOS was an interesting operating system
+  <small>
+    <span class="date">January 27, 2020</span>
+    on
+    <span class="site"><a href=".">Drew DeVault&#39;s blog</a></span>
+  </small>
+</h1>
+
+<main>
+  <article>
+    <p><a href="https://knightos.org">KnightOS</a> is an operating system I started writing about
+10 years ago, for Texas Instruments line of z80 calculators — the TI-73,
+TI-83+, TI-84+, and similar calculators are supported. It still gets the rare
+improvements, but these days myself and most of the major contributors are just
+left with starry eyed empty promises to themselves that one day they&rsquo;ll do one
+of those big refactorings we&rsquo;ve been planning&hellip; for 4 or 5 years now.</p>
+<p>Still, it was a really interesting operating system which was working under some
+challenging constraints, and overcame them to offer a rather nice Unix-like
+environment, with a filesystem, preemptive multiprocessing <em>and</em> multithreading,
+assembly and C programming environments, and more. The entire system was written
+in handwritten z80 assembly, almost 50,000 lines of it, on a compiler toolchain
+we built from scratch.</p>
+<p>There was only 64 KiB of usable RAM. The kernel stored <em>all</em> of its state in
+1024 bytes of statically allocated RAM. Many subsystems used overlapping parts
+of this memory, which was carefully planned for to avoid conflicts. The
+userspace memory allocator used a simple linked list for tracking allocations,
+to minimize the overhead of each allocation and maximize the usable space for
+userspace programs. There was no MMU in the sense that we have on modern
+computers, so any program could freely overwrite any other programs. In fact,
+the &ldquo;userspace&rdquo; task switching GUI would read the kernel&rsquo;s process table
+directly to make a list of running programs.</p>
+<p>The non-volatile storage was NOR Flash, which presents some interesting
+constraints. In the worst case we only had 512 KiB of storage, and even in the
+best case just 4MiB (this for a device released in 2013). This space was shared
+with the kernel, whose core code was less than 4KiB, and including high-address
+subsystems still clocked in at less than 16KiB. Due to the constraints of NOR
+Flash, a custom filesystem was designed which did all daily operations by only
+<em>resetting</em> bits in the underlying storage. In order to <em>set</em> any bits, we had
+to set the entire 64 KiB sector to 1. Overhead was also kept to a bare minimum
+here to maximize storage space available to users.</p>
+<p>Writing to Flash storage also renders it unreadable while the operation is in
+progress. The kernel normally executes directly from Flash, resident at the
+bottom of the memory. Therefore, in order to modify Flash, the kernel&rsquo;s Flash
+driver copies part of itself to RAM, jumps to it, and then jumps back after the
+operation is complete. Recall that all of the kernel&rsquo;s memory is statically
+allocated, and there&rsquo;s not much of it — we used only 128 bytes for the
+code which runs in RAM, and it&rsquo;s shared with some other stuff that we had to
+plan around. In order to meet these constraints, we employ <em>self modifying code</em>
+— the Flash driver copies some of itself into RAM, then pre-computes some
+information and <em>modifies</em> that machine code in-place before jumping to it.</p>
+<p>We also had some basic networking support. The calculator has a 2.5mm jack,
+similar to headphone jacks — if you had a 3.5mm adapter, we had a music
+player which would play MIDI or WAV files. The kernel had direct control of the
+voltages on the ring and tip, and had to bitbang them directly in software<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.
+Based on this we built some basic networking support, which supported
+calculator-to-calculator and calculator-to-PC information exchange. Later models
+had a mini-USB controller (which, funnily enough, can also be bitbanged in
+software), but we never ended up writing a driver for it.</p>
+<p>The KnightOS kernel also includes some code which is the first time I ever wrote
+<a href="https://github.com/KnightOS/kernel/blob/e257f54e021ee743306a2a4a5a152860728fb3f8/src/00/restarts.asm#L129-L130">&ldquo;here be dragons&rdquo;</a>
+into a comment, and I don&rsquo;t think I&rsquo;ve topped it since.</p>
+<p>Despite these constraints, KnightOS is completely booted up to a useful
+Unix-like (with a graphical interface) faster than you can lift your finger off
+of the power button. The battery could last the entire semester, if you&rsquo;re
+lucky. Can the device you&rsquo;re reading this on claim the same?<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></p>
+<p><video controls src="https://yukari.sr.ht/knightos.webm"></video></p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Newer hardware revisions had some support hardware which was capable of transferring a single byte without software intervention. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>The device I&rsquo;m writing this blog post with is 3500× faster than my calculator, has 262,144× more RAM, and 2.1×10<sup>6</sup> times more storage space. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+</main>
+
+<section class="comment">
+  
+
+  <p>
+  Have a comment on one of my posts? Start a discussion in my public inbox by
+  sending an email to
+  <a href="mailto:~sircmpwn/public-inbox@lists.sr.ht">~sircmpwn/public-inbox@lists.sr.ht</a>
+  [<a href="https://man.sr.ht/lists.sr.ht/etiquette.md">mailing list etiquette</a>]
+</section>
+
+<section class="webring">
+  <h2>
+    Articles from blogs I read
+    <small class="attribution">
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring">openring</a>
+    </small>
+  </h2>
+  <section class="articles">
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://emersion.fr/blog/2020/status-update-21/" target="_blank" rel="noopener">Status update, August 2020</a>
+      </h4>
+      <p class="summary">Hi! Regardless of the intense heat I’ve been exposed to this last month,
+I’ve still been able to get some stuff done (although having to move out to
+another room which isn’t right under the roof).
+I’ve worked a lot on IRC-related projects. I’ve added a znc-i…</p>
+      <small class="source">
+        via <a href="https://emersion.fr/blog/">emersion</a>
+      </small>
+      <small class="date">2020-08-19 00:00:00 &#43;0200 &#43;0200</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://sourcehut.org/blog/2020-08-16-whats-cooking-august-2020/" target="_blank" rel="noopener">What&#39;s cooking on Sourcehut? August 2020</a>
+      </h4>
+      <p class="summary">Another month passes and we find ourselves writing (or reading) this status
+update on a quiet, rainy Sunday morning. Today our userbase numbers 16,683
+members strong, up 580 from last month. Please extend a kind welcome to our new
+colleagues! Thanks for read…</p>
+      <small class="source">
+        via <a href="https://sourcehut.org/blog/">Blogs on Sourcehut</a>
+      </small>
+      <small class="date">2020-08-16 00:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://blog.golang.org/go1.15" target="_blank" rel="noopener">Go 1.15 is released</a>
+      </h4>
+      <p class="summary">
+  
+  
+    
+      
+        Today the Go team is very happy to announce the release of Go 1.15. You can get it from the download page.
+Some of the highlights include:
+
+Substantial improvements to the Go linker
+Improved allocation for small objects at high core coun…</p>
+      <small class="source">
+        via <a href="https://blog.golang.org/feed.atom">The Go Programming Language Blog</a>
+      </small>
+      <small class="date">2020-08-11 11:00:00 &#43;0000 &#43;0000</small>
+    </div>
+    
+    <div class="article">
+      <h4 class="title">
+        <a href="https://100r.co/site/north_pacific_logbook.html" target="_blank" rel="noopener">North Pacific Logbook</a>
+      </h4>
+      <p class="summary">
+The passage from Japan (Shimoda) to Canada (Victoria) took 51 days, and it was the hardest thing we&#39;ve ever done. We decided to keep a logbook, to better remember it and so it can help others who wish to make this trip.Continue Reading
+  </p>
+      <small class="source">
+        via <a href="https://100r.co/">Hundred Rabbits</a>
+      </small>
+      <small class="date">2020-07-31 00:00:00 &#43;0000 GMT</small>
+    </div>
+    
+  </section>
+</section>
+
+
+<footer>
+  The content for this site is
+  <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.
+  The <a href="https://git.sr.ht/~sircmpwn/drewdevault.com">code for this site</a>
+  is <a href="https://opensource.org/licenses/MIT">MIT</a>.
+</footer>
+
